@@ -8389,6 +8389,11 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
 
+depay-web3-mock@^8.2.7:
+  version "8.2.7"
+  resolved "https://registry.yarnpkg.com/depay-web3-mock/-/depay-web3-mock-8.2.7.tgz#cf3df2ce8876d10b5c23b23cd47b290af835bde7"
+  integrity sha512-eQXS4QC0TpFWZnrRpgj4JXcwaoXMlL2L1eM59UWFb7hQLU6XRfpK/dGIzB2e4JehiDfHayeT0+QN9j+KT0SJng==
+
 depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"

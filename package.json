@@ -47,6 +47,7 @@
     "bnc-notify": "^1.5.0",
     "burner-provider": "^1.0.38",
     "date-fns": "^2.23.0",
+    "depay-web3-mock": "^8.2.7",
     "dotenv": "^10.0.0",
     "eth-hooks": "^1.1.2",
     "ethers": "^5.4.0",
@@ -123,7 +124,6 @@
     "ship": "yarn surge",
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
-    "synpress:run": "node tests/e2e/launcher.js",
-    "synpress:open": "synpress open"
+    "synpress:run": "node tests/e2e/launcher.js"
   }
 }
