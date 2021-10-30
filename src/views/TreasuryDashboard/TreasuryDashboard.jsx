@@ -162,12 +162,14 @@ function TreasuryDashboard() {
                     "treasuryFraxMarketValue",
                     "treasuryWETHMarketValue",
                     "treasuryXsushiMarketValue",
+                    "treasuryLusdMarketValue",
                   ]}
                   stopColor={[
                     ["#F5AC37", "#EA9276"],
                     ["#768299", "#98B3E9"],
                     ["#DC30EB", "#EA98F1"],
                     ["#8BFF4D", "#4C8C2A"],
+                    ["#ffb5bf", "#f52743"],
                   ]}
                   headerText="Market Value of Treasury Assets"
                   headerSubText={`${data && formatCurrency(data[0].treasuryMarketValue)}`}
@@ -186,17 +188,18 @@ function TreasuryDashboard() {
                   type="stack"
                   data={data}
                   format="currency"
-                  dataKey={["treasuryDaiRiskFreeValue", "treasuryFraxRiskFreeValue"]}
+                  dataKey={["treasuryDaiRiskFreeValue", "treasuryFraxRiskFreeValue", "treasuryLusdRiskFreeValue"]}
                   stopColor={[
                     ["#F5AC37", "#EA9276"],
                     ["#768299", "#98B3E9"],
+                    ["#ffb5bf", "#f52743"],
                     ["#000", "#fff"],
                     ["#000", "#fff"],
                   ]}
                   headerText="Risk Free Value of Treasury Assets"
                   headerSubText={`${data && formatCurrency(data[0].treasuryRiskFreeValue)}`}
-                  bulletpointColors={bulletpoints.coin}
-                  itemNames={tooltipItems.coin}
+                  bulletpointColors={bulletpoints.rfv}
+                  itemNames={tooltipItems.rfv}
                   itemType={itemType.dollar}
                   infoTooltipMessage={tooltipInfoMessages.rfv}
                   expandedGraphStrokeColor={theme.palette.graphStrokeColor}
