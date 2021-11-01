@@ -39,6 +39,8 @@ Note: The faucet is limited to one transfer per wallet every 6500 blocks (~1 day
 
 To run end to end tests you have to:
 
+- ensure that your system has xvfb installed. On Ubuntu, this can be achieved by: `sudo apt-get update && sudo apt-get install xvfb libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev`
+
 - set up synpress to use the adequate network and wallet. For instance if you want to run tests on rinkeby network you could export
 
 ```

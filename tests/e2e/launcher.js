@@ -3,7 +3,8 @@ const { spawn } = require("child_process");
 
 const yarn = /^win/.test(process.platform) ? "yarn.cmd" : "yarn";
 
-const args = ["synpress", "run"].concat(process.argv.slice(2));
+// Electron is bundled with Cypress, so use that.
+const args = ["synpress", "run", "--browser", "electron"].concat(process.argv.slice(2));
 // const app = spawn("yarn", args);
 const app = spawn(yarn, args);
 
