@@ -128,6 +128,8 @@
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js",
     "synpress:run": "node tests/e2e/launcher.js",
-    "synpress:open": "synpress open"
+    "synpress:open": "synpress open",
+    "predocker-start": "docker build -t olympus-frontend -f Dockerfile .",
+    "docker-start": "docker run -it --rm -v `pwd`/src:/usr/src/app/src -v `pwd`/public:/usr/src/app/public -p 3000:3000 olympus-frontend"
   }
 }
