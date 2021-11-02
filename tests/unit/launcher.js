@@ -1,4 +1,3 @@
-/* eslint-disable ui-testing/missing-assertion-in-test */
 require("dotenv").config();
 const { spawn } = require("child_process");
 
@@ -21,17 +20,19 @@ const args = [
 ];
 
 const npx = /^win/.test(process.platform) ? "npx.cmd" : "npx";
-const yarn = /^win/.test(process.platform) ? "yarn.cmd" : "yarn";
 
 const app_node = spawn(npx, args);
 
 app_node.stdout.on("data", data => {
-  console.log(`${data}`); // Uncomment this to see hardhat logging
+  // console.log(`${data}`); // Uncomment this to see hardhat logging
   // Launch tests
   if (data.includes("Account #19")) {
     console.log("Starting Tests");
     process.env["REACT_APP_SELF_HOSTED_NODE"] = `http://${NODE_HOST}:${NODE_PORT}`;
-    const app_test = spawn(yarn, ["synpress", "run"].concat(process.argv.slice(2)));
+    const app_test = spawn(
+      /^win/.test(process.platform) ? "npx.cmd" : "npx",
+      ["react-scripts", "test"].concat(process.argv.slice(2)),
+    );
     app_test.stdout.on("data", data => {
       console.error(`${data}`);
     });

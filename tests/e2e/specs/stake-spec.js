@@ -1,5 +1,3 @@
-import { Button, HTML, TextField } from "@interactors/material-ui";
-
 var STAKE_AMOUNT = 0.1;
 // Sometimes we need to round float values because bigint type does not exist (yet) in javascript
 function ohmRound(val) {
@@ -11,31 +9,35 @@ describe("Stake tests", () => {
     cy.visit("/#/");
   });
   it(`Stake ${STAKE_AMOUNT} OHM`, () => {
-    cy.do(Button("Connect Wallet", { id: "wallet-button" }).click());
-    cy.do(HTML("MetaMask").click());
-
+    cy.get("#wallet-button span").contains("Connect Wallet");
+    cy.get("#wallet-button").click();
+    cy.get(".web3modal-provider-name").contains("MetaMask").click();
     cy.acceptMetamaskAccess();
-
-    cy.do(TextField("Enter an amount").fillIn(STAKE_AMOUNT));
-    cy.do(Button("Approve").click());
-
+    cy.get(".stake-button").contains("Approve");
+    // Approve spend limit
+    cy.get(".stake-button").click();
     cy.confirmMetamaskPermissionToSpend();
-
+    cy.get("#amount-input").type(STAKE_AMOUNT);
     // Stake and check that balance changed accordingly
     cy.get("#user-balance").then($p => {
+      cy.log($p.text());
       const balance_before_txt = $p.text();
       cy.log(balance_before_txt);
       const target_balance = ohmRound(ohmRound(balance_before_txt) - STAKE_AMOUNT);
-
       // Stake
-      cy.do(Button("Stake OHM").click());
-
+      cy.get(".stake-button").contains("Stake OHM");
+      cy.get(".stake-button").click();
       cy.confirmMetamaskTransaction();
-
-      cy.expect([Button("In progress").exists(), Button("Pending...", { disabled: true }).exists()]);
-
+      cy.get("#wallet-button").contains("In progress");
+      cy.get(".stake-button").contains("Pending...");
       // Wait for balance to change
-      cy.expect(HTML(`${target_balance} OHM`, { id: "user-balance" }).exists());
+      cy.get("#user-balance")
+        .not(`:contains(${balance_before_txt})`)
+        .then($p => {
+          // Check new balance
+          const balance_after = ohmRound($p.text());
+          expect(balance_after).to.eq(target_balance);
+        });
     });
     assert(true);
   });
@@ -46,9 +48,9 @@ describe("Stake tests", () => {
     // cy.acceptMetamaskAccess();
     cy.get("#simple-tab-1").click();
     cy.get(".stake-button").contains("Approve");
-    cy.get("#amount-input").type(STAKE_AMOUNT);
     cy.get(".stake-button").click();
     cy.confirmMetamaskPermissionToSpend();
+    cy.get("#amount-input").type(STAKE_AMOUNT);
     // Unstake
     cy.get("#user-balance").then($p => {
       cy.log($p.text());
