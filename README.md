@@ -61,7 +61,7 @@ More options are available, please check: https://github.com/Synthetixio/synpres
 
 There is a Docker image and scripts available for running the e2e tests (using Synpress). This reduces the effort required to get running. Synpress and Cypress have lots of platform-specific dependencies, so this takes the headache out of it.
 
-Note: we force the Docker image to build and run on the `x86_64` platform. Otherwise there are issues running the Docker image on Apple Silicon devices.
+Note: Cypress does not currently build on Apple Silicon, and cannot be run in Docker using qemu due to an error with GPU emulation. As a result, it is suggested to run these tests in continuous integration or on GitPod. 
 
 **Rinkeby faucets for LUSD, FRAX & DAI can be taken from rinkeby etherscan:**
 

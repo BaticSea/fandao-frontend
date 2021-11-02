@@ -1,0 +1,26 @@
+version: '3.2'
+services:
+  web:
+    build: .
+    environment:
+      - PORT=3000
+    volumes:
+      - ./src/:/usr/src/app/src/
+      - ./public/:/usr/src/app/public/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  synpress:
+    build: tests/e2e/
+    depends_on:
+    # Only run Synpress when the frontend has started
+      web:
+        condition: service_healthy
+    entrypoint: npx synpress run --browser chromium
+    environment:
+      # pass base url to test pointing at the web application
+      - CYPRESS_baseUrl=http://web:3000
+    volumes:
+      - ./tests/:/usr/src/app/tests/
