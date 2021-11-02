@@ -7,6 +7,7 @@
     "@synthetixio/synpress": "0.9.14"
   },
   "scripts": {
-    "docker-build": "docker build -t synpress -f Dockerfile ."
+    "docker-build": "docker build -t synpress -f Dockerfile .",
+    "docker-start": "docker run -it --rm -v `pwd`/specs:/usr/src/app/specs synpress"
   }
 }
