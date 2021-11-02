@@ -1,5 +1,7 @@
 FROM node:14
 
+WORKDIR /usr/src/app
+
 # Install the Chromium browser and Cypress dependencies
 RUN apt-get update && \
     apt-get install -y \ 
@@ -15,4 +17,6 @@ RUN apt-get update && \
     chromium
 
 # Install Synpress (which wraps Cypress)
-RUN yarn add @synthetixio/synpress@0.9.14 @interactors/with-cypress@^0.1.3 @testing-library/cypress@^8.0.1 cypress@8.3.0
+COPY package.json .
+COPY yarn.lock .
+RUN yarn

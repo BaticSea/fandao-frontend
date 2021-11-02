@@ -1,0 +1,12 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@synthetixio/synpress": "0.9.14"
+  },
+  "scripts": {
+    "docker-build": "docker build -t synpress -f Dockerfile ."
+  }
+}
