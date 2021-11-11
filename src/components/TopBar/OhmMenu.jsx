@@ -99,7 +99,7 @@ function OhmMenu() {
             color="secondary"
             title="OHM"
           >
-            BACKWARD POINTING ARROW
+            <SvgIcon component={ArrowUpIcon} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
           </Button>
           <Chart
             type="line"
@@ -120,7 +120,7 @@ function OhmMenu() {
           <Accordion expanded={expanded === "sOHM"} onChange={handleChange("sOHM")}>
             <AccordionSummary
               expandIcon={
-                <SvgIcon component={ohmTokenImg} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
+                <SvgIcon component={ArrowUpIcon} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
               }
             >
               <Button variant="contained" style={{ width: "100%", flexDirection: "row" }} color="secondary">
@@ -168,7 +168,7 @@ function OhmMenu() {
           <Accordion expanded={expanded === "wsOHM"} onChange={handleChange("wsOHM")}>
             <AccordionSummary
               expandIcon={
-                <SvgIcon component={ohmTokenImg} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
+                <SvgIcon component={ArrowUpIcon} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
               }
             >
               <Button variant="contained" style={{ width: "100%" }} color="secondary">
@@ -201,7 +201,7 @@ function OhmMenu() {
           <Accordion expanded={expanded === "OHM"} onChange={handleChange("OHM")}>
             <AccordionSummary
               expandIcon={
-                <SvgIcon component={ohmTokenImg} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
+                <SvgIcon component={ArrowUpIcon} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
               }
             >
               <Button variant="contained" style={{ width: "100%" }} color="secondary">
@@ -234,7 +234,7 @@ function OhmMenu() {
           <Accordion expanded={expanded === "3TT"} onChange={handleChange("3TT")}>
             <AccordionSummary
               expandIcon={
-                <SvgIcon component={ohmTokenImg} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
+                <SvgIcon component={ArrowUpIcon} viewBox="0 0 32 32" style={{ height: "25px", width: "25px" }} />
               }
             >
               <Button variant="contained" style={{ width: "100%" }} color="secondary">
