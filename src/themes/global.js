@@ -157,7 +157,7 @@ const commonSettings = {
     },
     MuiBackdrop: {
       root: {
-        backdropFilter: "blur(15px)",
+        // backdropFilter: "blur(15px)",
         zIndex: 0,
       },
     },
