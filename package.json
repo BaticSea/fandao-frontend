@@ -149,6 +149,8 @@
     "theme": "npx gulp less",
     "stats": "yarn build --stats && npx webpack-bundle-analyzer ./build/bundle-stats.json",
     "watch": "node ./scripts/watch.js",
+    "predocker-start": "docker build -t olympus-frontend -f Dockerfile .",
+    "docker-start": "docker run -it --rm -v `pwd`/src:/usr/src/app/src -v `pwd`/public:/usr/src/app/public -p 3000:3000 olympus-frontend",
     "lingui:extract": "lingui extract",
     "lingui:compile": "lingui compile",
     "typechain:build": "yarn run typechain --target ethers-v5 --out-dir src/typechain src/abi/*.json src/abi/**/*.json",
