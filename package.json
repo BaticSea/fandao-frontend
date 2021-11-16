@@ -141,6 +141,7 @@
     "test": "react-scripts test",
     "test:unit": "node tests/unit/launcher.js",
     "test:e2e": "react-scripts test --testPathPattern=\"(\\.|/|-)e2e\\.(test|spec)\\.[jt]sx?$\" --testTimeout=30000 --runInBand --watchAll=false --detectOpenHandles",
+    "test:e2e-stack": "docker-compose -f tests/docker-compose.yml up",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
