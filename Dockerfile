@@ -1,4 +1,9 @@
-FROM --platform=amd64 node:14
+FROM node:14
+
+# Install this separately, so puppeteer does not install it
+# Otherwise puppeteer will complain about it not being available for arm64
+RUN apt-get update && \
+    apt-get install -y chromium
 
 WORKDIR /usr/src/app
 
@@ -18,4 +23,6 @@ COPY index.d.ts .
 RUN yarn --network-timeout 1000000
 
 EXPOSE 3000
-CMD [ "yarn", "start" ]
+
+# Run the frontend by default
+ENTRYPOINT yarn start
