@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ReactComponent as ArrowUpIcon } from "../../assets/icons/x.svg";
 import { ReactComponent as InfoIcon } from "../../assets/icons/info-fill.svg";
 import "./ohmmenu.scss";
-import { useWeb3Context } from "../../hooks/web3Context";
+
 import InitialWalletView from "./OhmMenuViews/walletViews/InitialWalletView";
 import { Drawer, SvgIcon, Button, Typography, Box } from "@material-ui/core";
 
@@ -26,7 +26,7 @@ function OhmMenu() {
         <SvgIcon component={InfoIcon} color="primary" />
         <Typography>OHM</Typography>
       </Button>
-      <Drawer style={{ width: "55%" }} anchor={"right"} open={anchor === "OG"} onClose={toggleDrawer("OG")}>
+      <Drawer style={{ width: "auto" }} anchor={"right"} open={anchor === "OG"} onClose={toggleDrawer("OG")}>
         <Button
           onClick={toggleDrawer("CLOSED")}
           id="ohm-menu-button"
