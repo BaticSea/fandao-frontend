@@ -89,6 +89,9 @@ function Stake() {
   const stakingTVL = useSelector(state => {
     return state.app.stakingTVL;
   });
+  const marketPrice = useSelector(state => {
+    return state.app.marketPrice;
+  });
 
   const pendingTransactions = useSelector(state => {
     return state.pendingTransactions;
@@ -159,6 +162,7 @@ function Stake() {
   const trimmedStakingAPY = trim(stakingAPY * 100, 1);
   const stakingRebasePercentage = trim(stakingRebase * 100, 4);
   const nextRewardValue = trim((stakingRebasePercentage / 100) * trimmedBalance, 4);
+  const earningsPerDay = trim(marketPrice * sohmBalance * ((1 + stakingRebase) ** 3 - 1));
 
   return (
     <div id="stake-view">
@@ -443,6 +447,15 @@ function Stake() {
                       </Typography>
                       <Typography variant="body1">
                         {isAppLoading ? <Skeleton width="80px" /> : <>{nextRewardValue} sOHM</>}
+                      </Typography>
+                    </div>
+
+                    <div className="data-row">
+                      <Typography variant="body1">
+                        <Trans>Daily Earnings</Trans>
+                      </Typography>
+                      <Typography variant="body1">
+                        {isAppLoading ? <Skeleton width="80px" /> : <>${earningsPerDay}</>}
                       </Typography>
                     </div>
 
