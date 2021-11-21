@@ -17,7 +17,7 @@ describe("bonding", () => {
   let page: Page;
 
   beforeEach(async () => {
-    browser = await launch(puppeteer, { metamaskVersion: "v10.1.1" });
+    browser = await launch(puppeteer, { metamaskVersion: "v10.1.1", args: ["--no-sandbox"] });
 
     metamask = await setupMetamask(browser);
 
@@ -51,7 +51,7 @@ describe("bonding", () => {
 
   test("select first bond row and approve", async () => {
     fail("TODO");
-    
+
   });
 
   test("select first bond row and bond", async () => {

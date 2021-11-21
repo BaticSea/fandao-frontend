@@ -104,6 +104,7 @@ export class NodeHelper {
    */
   static getNodesUris = () => {
     let allURIs = EnvHelper.getAPIUris();
+    console.log(allURIs);
     let invalidNodes = NodeHelper.currentRemovedNodesURIs;
     // filter invalidNodes out of allURIs
     // this allows duplicates in allURIs, removes both if invalid, & allows both if valid

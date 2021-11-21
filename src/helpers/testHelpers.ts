@@ -44,7 +44,7 @@ export const setupMetamask = async (
 
 export const connectWallet = async (page: Page, metamask: Dappeteer) => {
   // Connect button
-  await clickElement(page, ".connect-button");
+  await clickElement(page, "#stake-connect-wallet");
   // Metamask/Wallet Connect modal window
   await clickElement(page, ".web3modal-provider-wrapper");
   // Approve connecting the wallet
@@ -78,7 +78,7 @@ export const waitSelectorExists = async (page: Page, selector: string): Promise<
   await page.bringToFront();
 
   try {
-    await page.waitForSelector(selector);
+    await page.waitForSelector(selector, { timeout: 5_000 });
     return true;
   } catch (e) {
     console.info("Encountered error when waiting for selector (" + selector + "): " + e);
@@ -98,8 +98,8 @@ export const dapp = {} as {
 };
 
 export async function launchDApp() {
-  const browser = await launch(puppeteer, { metamaskVersion: "v10.1.1" });
-  const metamask = await setupMetamask(browser, { network: "localhost" });
+  const browser = await launch(puppeteer, { metamaskVersion: "v10.1.1", args: ["--no-sandbox"] });
+  const metamask = await setupMetamask(browser, { network: "rinkeby" });
 
   const page = await browser.newPage();
   await page.goto("http://localhost:3000/#/stake");

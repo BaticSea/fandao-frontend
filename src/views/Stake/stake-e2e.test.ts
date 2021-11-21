@@ -29,6 +29,8 @@ describe("staking", () => {
   test("connects wallet", async () => {
     const { page, metamask } = dapp;
 
+    await page.waitForNavigation();
+
     // Connect button should be available
     expect(await selectorExists(page, "#stake-connect-wallet")).toBeTruthy();
 

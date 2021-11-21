@@ -12,7 +12,7 @@ jest.setTimeout(60000);
 let node;
 
 beforeAll(async () => {
-  node = launchNode();
+  // node = launchNode();
   await launchDApp();
 });
 
