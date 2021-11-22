@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
-const useTheme = (): [string, (e: KeyboardEvent) => void, boolean] => {
+export type ToggleThemeHandler = (e: KeyboardEvent | React.MouseEvent<HTMLElement>) => void;
+
+const useTheme = (): [string, ToggleThemeHandler, boolean] => {
   const [theme, setTheme] = useState("dark");
   const [mounted, setMounted] = useState(false);
 
@@ -9,8 +11,9 @@ const useTheme = (): [string, (e: KeyboardEvent) => void, boolean] => {
     setTheme(mode);
   };
 
-  const toggleTheme = (e: KeyboardEvent) => {
-    if (e.metaKey) {
+  const toggleTheme: ToggleThemeHandler = e => {
+    const pressedKeys = e as KeyboardEvent;
+    if (pressedKeys.metaKey) {
       setMode("girth");
     } else {
       if (theme === "light") {

@@ -19,7 +19,7 @@ import { info } from "./slices/MessagesSlice";
 
 import { Stake, ChooseBond, Bond, Wrap, TreasuryDashboard, PoolTogether } from "./views";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
-import TopBar from "./components/TopBar/TopBar.jsx";
+import TopBar from "./components/TopBar/TopBar";
 import NavDrawer from "./components/Sidebar/NavDrawer.jsx";
 import Messages from "./components/Messages/Messages";
 import NotFound from "./views/404/NotFound";
@@ -79,7 +79,7 @@ function App() {
   useGoogleAnalytics();
   const location = useLocation();
   const dispatch = useDispatch();
-  const [theme, toggleTheme, mounted] = useTheme();
+  const [theme, toggleTheme] = useTheme();
   const currentPath = location.pathname + location.search + location.hash;
   const classes = useStyles();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);

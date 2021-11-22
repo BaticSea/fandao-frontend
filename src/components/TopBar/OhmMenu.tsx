@@ -1,27 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { addresses, TOKEN_DECIMALS } from "../../constants";
 import { NavLink } from "react-router-dom";
-import { Link, SvgIcon, Popper, Button, Paper, Typography, Divider, Box, Fade, Slide } from "@material-ui/core";
-import { ReactComponent as InfoIcon } from "../../assets/icons/info-fill.svg";
-import { ReactComponent as ArrowUpIcon } from "../../assets/icons/arrow-up.svg";
-import { ReactComponent as sOhmTokenImg } from "../../assets/tokens/token_sOHM.svg";
-import { ReactComponent as wsOhmTokenImg } from "../../assets/tokens/token_wsOHM.svg";
-import { ReactComponent as ohmTokenImg } from "../../assets/tokens/token_OHM.svg";
-import { ReactComponent as t33TokenImg } from "../../assets/tokens/token_33T.svg";
+import { Link, SvgIcon, Popper, Button, Paper, Typography, Divider, Box, Fade } from "@material-ui/core";
+import { ReactComponent as InfoIcon } from "src/assets/icons/info-fill.svg";
+import { ReactComponent as ArrowUpIcon } from "src/assets/icons/arrow-up.svg";
+import { ReactComponent as sOhmTokenImg } from "src/assets/tokens/token_sOHM.svg";
+import { ReactComponent as wsOhmTokenImg } from "src/assets/tokens/token_wsOHM.svg";
+import { ReactComponent as ohmTokenImg } from "src/assets/tokens/token_OHM.svg";
+import { ReactComponent as t33TokenImg } from "src/assets/tokens/token_33T.svg";
 
 import "./ohmmenu.scss";
 import { dai, frax } from "src/helpers/AllBonds";
 import { Trans } from "@lingui/macro";
-import { useWeb3Context } from "../../hooks/web3Context";
+import { useWeb3Context } from "src/hooks/web3Context";
 
 import OhmImg from "src/assets/tokens/token_OHM.svg";
 import SOhmImg from "src/assets/tokens/token_sOHM.svg";
 import WsOhmImg from "src/assets/tokens/token_wsOHM.svg";
 import token33tImg from "src/assets/tokens/token_33T.svg";
+import { ReferenceObject } from "popper.js";
 
 import { segmentUA } from "../../helpers/userAnalyticHelpers";
 
-const addTokenToWallet = (tokenSymbol, tokenAddress, address) => async () => {
+const addTokenToWallet = (tokenSymbol: string, tokenAddress: string, address: string) => async () => {
   if (window.ethereum) {
     const host = window.location.origin;
     let tokenPath;
@@ -68,7 +69,7 @@ const addTokenToWallet = (tokenSymbol, tokenAddress, address) => async () => {
 };
 
 function OhmMenu() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<ReferenceObject | null>(null);
   const isEthereumAPIAvailable = window.ethereum;
   const { chainID, address } = useWeb3Context();
 
@@ -78,7 +79,7 @@ function OhmMenu() {
   const OHM_ADDRESS = addresses[networkID].OHM_ADDRESS;
   const PT_TOKEN_ADDRESS = addresses[networkID].PT_TOKEN_ADDRESS;
   const WSOHM_ADDRESS = addresses[networkID].WSOHM_ADDRESS;
-  const handleClick = event => {
+  const handleClick: React.MouseEventHandler<HTMLElement> = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 

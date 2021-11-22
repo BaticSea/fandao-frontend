@@ -4,8 +4,8 @@ import { ReferenceObject } from "popper.js";
 import { useState, MouseEvent } from "react";
 import { Popper, Button, Paper, Typography, Box, Fade } from "@material-ui/core";
 
-import FlagIcon from "../../helpers/flagicon.js";
-import { locales, selectLocale } from "../../locales";
+import FlagIcon from "src/helpers/flagicon.js";
+import { locales, selectLocale } from "src/locales";
 
 import "./localesmenu.scss";
 

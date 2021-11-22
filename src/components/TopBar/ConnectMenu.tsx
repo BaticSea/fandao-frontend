@@ -1,26 +1,31 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useAppSelector } from "src/hooks";
 import { Box, Button, SvgIcon, Typography, Popper, Paper, Divider, Link, Slide, Fade } from "@material-ui/core";
-import { ReactComponent as ArrowUpIcon } from "../../assets/icons/arrow-up.svg";
-import { ReactComponent as CaretDownIcon } from "../../assets/icons/caret-down.svg";
+import { ReferenceObject } from "popper.js";
+import { ReactComponent as ArrowUpIcon } from "src/assets/icons/arrow-up.svg";
+import { ReactComponent as CaretDownIcon } from "src/assets/icons/caret-down.svg";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { Trans } from "@lingui/macro";
 
-function ConnectMenu({ theme }) {
-  const { connect, disconnect, connected, web3, chainID } = useWeb3Context();
-  const [anchorEl, setAnchorEl] = useState(null);
+interface ConnectMenuProps {
+  theme: string;
+}
+
+function ConnectMenu({ theme }: ConnectMenuProps) {
+  const { connect, disconnect, connected, chainID } = useWeb3Context();
+  const [anchorEl, setAnchorEl] = useState<ReferenceObject | null>(null);
   const [isConnected, setConnected] = useState(connected);
   const [isHovering, setIsHovering] = useState(false);
 
-  const pendingTransactions = useSelector(state => {
+  const pendingTransactions = useAppSelector(state => {
     return state.pendingTransactions;
   });
 
   let buttonText = <Trans>Connect Wallet</Trans>;
-  let clickFunc = connect;
+  let clickFunc: React.MouseEventHandler<HTMLElement> = connect;
 
-  const handleClick = event => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  const handleClick: React.MouseEventHandler<HTMLElement> = e => {
+    setAnchorEl(anchorEl ? null : e.currentTarget);
   };
 
   if (isConnected) {
@@ -40,7 +45,7 @@ function ConnectMenu({ theme }) {
   const buttonStyles =
     "pending-txn-container" + (isHovering && pendingTransactions.length > 0 ? " hovered-button" : "");
 
-  const getEtherscanUrl = txnHash => {
+  const getEtherscanUrl = (txnHash: string) => {
     return chainID === 4 ? "https://rinkeby.etherscan.io/tx/" + txnHash : "https://etherscan.io/tx/" + txnHash;
   };
 
@@ -52,7 +57,7 @@ function ConnectMenu({ theme }) {
 
   useEffect(() => {
     setConnected(connected);
-  }, [web3, connected]);
+  }, [connected]);
 
   return (
     <div
@@ -87,7 +92,7 @@ function ConnectMenu({ theme }) {
             <Fade {...TransitionProps} timeout={100}>
               <Paper className="ohm-menu" elevation={1}>
                 {pendingTransactions.map((x, i) => (
-                  <Box key={i} fullWidth>
+                  <Box key={i}>
                     <Link key={x.txnHash} href={getEtherscanUrl(x.txnHash)} target="_blank" rel="noreferrer">
                       <Button size="large" variant="contained" color="secondary" fullWidth>
                         <Typography align="left">
