@@ -2,58 +2,31 @@ import React, { useState, ReactElement, useContext, useEffect, useMemo, useCallb
 import Web3Modal from "web3modal";
 import { StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { IFrameEthereumProvider } from "@ledgerhq/iframe-provider";
+import { EnvHelper } from "../helpers/Environment";
+import { NodeHelper } from "src/helpers/NodeHelper";
 
-// NOTE(zx): Want to move away from infura. Will probably remove these.
-const INFURA_ID_LIST = [
-  "5e3c4a19b5f64c99bf8cd8089c92b44d", // this is main dev node
-  "d9836dbf00c2440d862ab571b462e4a3", // this is current prod node
-  "31e6d348d16b4a4dacde5f8a47da1971", // this is primary fallback
-  "76cc9de4a72c4f5a8432074935d670a3", // Adding Zayen's to the mix
-];
-
-function getInfuraURI() {
-  const randomIndex = Math.floor(Math.random() * INFURA_ID_LIST.length);
-  const randomInfuraID = INFURA_ID_LIST[randomIndex];
-  return `https://mainnet.infura.io/v3/${randomInfuraID}`;
-}
-
+/**
+ * kept as function to mimic `getMainnetURI()`
+ * @returns string
+ */
 function getTestnetURI() {
-  // return "https://rinkeby.infura.io/v3/d9836dbf00c2440d862ab571b462e4a3";
-  return "https://eth-rinkeby.alchemyapi.io/v2/aF5TH9E9RGZwaAUdUd90BNsrVkDDoeaO";
+  return EnvHelper.alchemyTestnetURI;
 }
 
-const ALCHEMY_ID_LIST = [
-  "R3yNR4xHH6R0PXAG8M1ODfIq-OHd-d3o", // this is Zayen's
-  "DNj81sBwBcgdjHHBUse4naHaW82XSKtE", // this is Girth's
-  "rZD4Q_qiIlewksdYFDfM3Y0mzZy-8Naf", // this is appleseed's
-];
-
-// this is the ethers common api key, it is rate limited somewhat
-const defaultApiKey = "https://eth-mainnet.alchemyapi.io/v2/_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC";
-
-const TEMP_ALCHEMY_IDS = [
-  // "rZD4Q_qiIlewksdYFDfM3Y0mzZy-8Naf", // appleseed-temp1
-  // "9GOp6SIgE0en92i3r0JSvxccZ0N2idmO", // appleseed-temp2
-  "j0QUyceqxu31tQrAQSotL2YMqmuzoGPh", // appleseed-temp3
-];
-function getAlchemyAPI(chainID: Number) {
-  const randomIndex = Math.floor(Math.random() * ALCHEMY_ID_LIST.length);
-  const randomAlchemyID = ALCHEMY_ID_LIST[randomIndex];
-  if (chainID === 1) return `https://eth-mainnet.alchemyapi.io/v2/${randomAlchemyID}`;
-  else if (chainID === 4) return `https://eth-rinkeby.alchemyapi.io/v2/aF5TH9E9RGZwaAUdUd90BNsrVkDDoeaO`; // unbanksy's
+/**
+ * determine if in IFrame for Ledger Live
+ */
+function isIframe() {
+  return window.location !== window.parent.location;
 }
 
-const _infuraURIs = INFURA_ID_LIST.map(infuraID => `https://mainnet.infura.io/v3/${infuraID}`);
-const _alchemyURIs = ALCHEMY_ID_LIST.map(alchemyID => `https://eth-mainnet.alchemyapi.io/v2/${alchemyID}`);
+const ALL_URIs = NodeHelper.getNodesUris();
 
-// TODO(zx): Remove this out post 8/25/2021 when we use our prod alchemyAPI key
-// temp force into TEMP_ALCHEMY_IDS
-// const _tempAlchemyURIs = TEMP_ALCHEMY_IDS.map(alchemyID => `https://eth-mainnet.alchemyapi.io/v2/${alchemyID}`);
-// const ALL_URIs = [..._tempAlchemyURIs];
-const ALL_URIs = [..._alchemyURIs];
-// temp change ALL_URIs into TEMP_ALCHEMY_IDS
-// const ALL_URIs = [..._infuraURIs, ..._alchemyURIs];
-
+/**
+ * "intelligently" loadbalances production API Keys
+ * @returns string
+ */
 function getMainnetURI(): string {
   // Shuffles the URIs for "intelligent" loadbalancing
   const allURIs = ALL_URIs.sort(() => Math.random() - 0.5);
@@ -68,11 +41,14 @@ function getMainnetURI(): string {
   Types
 */
 type onChainProvider = {
-  connect: () => void;
+  connect: () => Promise<Web3Provider | undefined>;
   disconnect: () => void;
-  provider: JsonRpcProvider;
+  hasCachedProvider: () => boolean;
   address: string;
-  connected: Boolean;
+  chainID: number;
+  connected: boolean;
+  provider: JsonRpcProvider;
+  uri: string;
   web3Modal: Web3Modal;
 };
 
@@ -90,7 +66,7 @@ export const useWeb3Context = () => {
     );
   }
   const { onChainProvider } = web3Context;
-  return useMemo(() => {
+  return useMemo<onChainProvider>(() => {
     return { ...onChainProvider };
   }, [web3Context]);
 };
@@ -102,10 +78,13 @@ export const useAddress = () => {
 
 export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ children }) => {
   const [connected, setConnected] = useState(false);
+  // NOTE (appleseed): if you are testing on rinkeby you need to set chainId === 4 as the default for non-connected wallet testing...
+  // ... you also need to set getTestnetURI() as the default uri state below
   const [chainID, setChainID] = useState(1);
   const [address, setAddress] = useState("");
 
   const [uri, setUri] = useState(getMainnetURI());
+
   const [provider, setProvider] = useState<JsonRpcProvider>(new StaticJsonRpcProvider(uri));
 
   const [web3Modal, setWeb3Modal] = useState<Web3Modal>(
@@ -126,7 +105,7 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     }),
   );
 
-  const hasCachedProvider = (): Boolean => {
+  const hasCachedProvider = (): boolean => {
     if (!web3Modal) return false;
     if (!web3Modal.cachedProvider) return false;
     return true;
@@ -157,8 +136,10 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     [provider],
   );
 
-  // Eventually we will not need this method.
-  const _checkNetwork = (otherChainID: number): Boolean => {
+  /**
+   * throws an error if networkID is not 1 (mainnet) or 4 (rinkeby)
+   */
+  const _checkNetwork = (otherChainID: number): boolean => {
     if (chainID !== otherChainID) {
       console.warn("You are switching networks");
       if (otherChainID === 1 || otherChainID === 4) {
@@ -173,17 +154,20 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
 
   // connect - only runs for WalletProviders
   const connect = useCallback(async () => {
-    const rawProvider = await web3Modal.connect();
+    // handling Ledger Live;
+    let rawProvider;
+    if (isIframe()) {
+      rawProvider = new IFrameEthereumProvider();
+    } else {
+      rawProvider = await web3Modal.connect();
+    }
 
     // new _initListeners implementation matches Web3Modal Docs
     // ... see here: https://github.com/Web3Modal/web3modal/blob/2ff929d0e99df5edf6bb9e88cff338ba6d8a3991/example/src/App.tsx#L185
     _initListeners(rawProvider);
-
     const connectedProvider = new Web3Provider(rawProvider, "any");
-
     const chainId = await connectedProvider.getNetwork().then(network => network.chainId);
     const connectedAddress = await connectedProvider.getSigner().getAddress();
-
     const validNetwork = _checkNetwork(chainId);
     if (!validNetwork) {
       console.error("Wrong network, please switch to mainnet");
@@ -210,23 +194,23 @@ export const Web3ContextProvider: React.FC<{ children: ReactElement }> = ({ chil
     }, 1);
   }, [provider, web3Modal, connected]);
 
-  const onChainProvider = useMemo(
-    () => ({ connect, disconnect, hasCachedProvider, provider, connected, address, chainID, web3Modal }),
-    [connect, disconnect, hasCachedProvider, provider, connected, address, chainID, web3Modal],
+  const onChainProvider = useMemo<onChainProvider>(
+    () => ({ connect, disconnect, hasCachedProvider, provider, connected, address, chainID, web3Modal, uri }),
+    [connect, disconnect, hasCachedProvider, provider, connected, address, chainID, web3Modal, uri],
   );
 
   useEffect(() => {
-    // Don't try to connect here. Do it in App.jsx
-    // console.log(hasCachedProvider());
-    // if (hasCachedProvider()) {
-    //   connect();
-    // }
+    // logs non-functioning nodes && returns an array of working mainnet nodes
+    NodeHelper.checkAllNodesStatus().then((validNodes: any) => {
+      validNodes = validNodes.filter((url: boolean | string) => url !== false);
+      if (!validNodes.includes(uri) && NodeHelper.retryOnInvalid()) {
+        // force new provider...
+        setTimeout(() => {
+          window.location.reload();
+        }, 1);
+      }
+    });
   }, []);
-
-  // initListeners needs to be run on rawProvider... see connect()
-  // useEffect(() => {
-  //   _initListeners();
-  // }, [connected]);
 
   return <Web3Context.Provider value={{ onChainProvider }}>{children}</Web3Context.Provider>;
 };
