@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import { Skeleton } from "@material-ui/lab";
 import { Typography, Box } from "@material-ui/core";
 import { trim, formatCurrency } from "../../../../helpers";
-import InfoTooltip from "src/components/InfoTooltip/InfoTooltip.jsx";
+import InfoTooltip from "src/components/InfoTooltip/InfoTooltip";
 
 export const Metric = props => <Box className={`metric ${props.className}`}>{props.children}</Box>;
 
