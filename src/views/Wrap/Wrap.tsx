@@ -18,7 +18,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import TabPanel from "../../components/TabPanel";
-import InfoTooltip from "../../components/InfoTooltip/InfoTooltip.jsx";
+import InfoTooltip from "../../components/InfoTooltip/InfoTooltip";
 import { ReactComponent as InfoIcon } from "../../assets/icons/info-fill.svg";
 import { trim, formatCurrency } from "../../helpers";
 import { changeApproval, changeWrap } from "../../slices/WrapThunk";
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 function Wrap() {
   const dispatch = useDispatch();
-  const { provider, address, connected, connect, chainID } = useWeb3Context();
+  const { provider, address, connect, chainID } = useWeb3Context();
 
   const [zoomed, setZoomed] = useState(false);
   const [view, setView] = useState(0);
