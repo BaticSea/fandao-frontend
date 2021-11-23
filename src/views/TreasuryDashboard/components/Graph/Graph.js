@@ -1,4 +1,4 @@
-import Chart from "src/components/Chart/Chart.jsx";
+import Chart from "../../../../components/Chart/Chart";
 import { useTheme } from "@material-ui/core/styles";
 import { trim, formatCurrency } from "../../../../helpers";
 import { useTreasuryMetrics } from "../../hooks/useTreasuryMetrics";

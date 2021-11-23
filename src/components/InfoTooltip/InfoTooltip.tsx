@@ -4,11 +4,11 @@ import { ReactComponent as Info } from "../../assets/icons/info.svg";
 import { SvgIcon, Paper, Typography, Box, Popper } from "@material-ui/core";
 import "./infotooltip.scss";
 
-interface Props {
+interface IInfoTooltip {
   message: string;
 }
 
-function InfoTooltip({ message }: Props) {
+function InfoTooltip({ message }: IInfoTooltip) {
   const [anchorEl, setAnchorEl] = useState<ReferenceObject | null>(null);
 
   const handleHover: React.MouseEventHandler<SVGSVGElement> = e => {

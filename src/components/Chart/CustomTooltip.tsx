@@ -1,20 +1,31 @@
 import { Paper, Box, Typography } from "@material-ui/core";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import "./customtooltip.scss";
 
-const renderDate = (index, payload, item) => {
+interface ITooltip {
+  active?: boolean;
+  payload?: Array<{ value: number }>;
+  bulletpointColors: Array<CSSProperties | undefined>;
+  itemNames: Array<string>;
+  itemType: string;
+  isStaked?: boolean;
+  isPOL?: boolean;
+}
+
+const renderDate = (index: number, payload: Array<{ value: number }>, item: any) => {
   return index === payload.length - 1 ? (
     <div className="tooltip-date">
-      {new Date(item.payload.timestamp * 1000).toLocaleString("default", { month: "long" }).charAt(0).toUpperCase()}
-      {new Date(item.payload.timestamp * 1000).toLocaleString("default", { month: "long" }).slice(1)}
+      {new Date(item.payload?.timestamp * 1000).toLocaleString("default", { month: "long" }).charAt(0).toUpperCase()}
+      {new Date(item.payload?.timestamp * 1000).toLocaleString("default", { month: "long" }).slice(1)}
       &nbsp;
-      {new Date(item.payload.timestamp * 1000).getDate()}, {new Date(item.payload.timestamp * 1000).getFullYear()}
+      {new Date(item.payload?.timestamp * 1000).getDate()}, {new Date(item.payload?.timestamp * 1000).getFullYear()}
     </div>
   ) : (
     ""
   );
 };
 
-const renderItem = (type, item) => {
+const renderItem = (type: string, item: number) => {
   return type === "$" ? (
     <Typography variant="body2">{`${type}${Math.round(item).toLocaleString("en-US")}`}</Typography>
   ) : (
@@ -22,7 +33,14 @@ const renderItem = (type, item) => {
   );
 };
 
-const renderTooltipItems = (payload, bulletpointColors, itemNames, itemType, isStaked = false, isPOL = false) => {
+const renderTooltipItems = ({
+  payload,
+  bulletpointColors,
+  itemNames,
+  itemType,
+  isStaked = false,
+  isPOL = false,
+}: any) => {
   return isStaked ? (
     <Box>
       <Box className="item" display="flex" justifyContent="space-between">
@@ -30,14 +48,14 @@ const renderTooltipItems = (payload, bulletpointColors, itemNames, itemType, isS
           <span className="tooltip-bulletpoint" style={bulletpointColors[0]}></span>
           Staked
         </Typography>
-        <Typography>{`${Math.round(payload[0].value)}%`}</Typography>
+        <Typography>{Math.round(payload[0]?.value)}%</Typography>
       </Box>
       <Box className="item" display="flex" justifyContent="space-between">
         <Typography variant="body2">
           <span className="tooltip-bulletpoint" style={bulletpointColors[1]}></span>
           Not staked
         </Typography>
-        <Typography>{`${Math.round(100 - payload[0].value)}%`}</Typography>
+        <Typography>{Math.round(100 - payload[0]?.value)}%</Typography>
       </Box>
       <Box>{renderDate(0, payload, payload[0])}</Box>
     </Box>
@@ -48,25 +66,25 @@ const renderTooltipItems = (payload, bulletpointColors, itemNames, itemType, isS
           <span className="tooltip-bulletpoint" style={bulletpointColors[0]}></span>
           {itemNames[0]}
         </Typography>
-        <Typography>{`${Math.round(payload[0].value)}%`}</Typography>
+        <Typography>{Math.round(payload[0]?.value)}%</Typography>
       </Box>
       <Box className="item" display="flex" justifyContent="space-between">
         <Typography variant="body2">
           <span className="tooltip-bulletpoint" style={bulletpointColors[1]}></span>
           {itemNames[1]}
         </Typography>
-        <Typography>{`${Math.round(100 - payload[0].value)}%`}</Typography>
+        <Typography>{Math.round(100 - payload[0]?.value)}%</Typography>
       </Box>
       <Box>{renderDate(0, payload, payload[0])}</Box>
     </Box>
   ) : (
-    payload.map((item, index) => (
+    payload.map((item: { value: number }, index: number) => (
       <Box key={index}>
         <Box className="item" display="flex">
           <Box display="flex" justifyContent="space-between">
             <Typography variant="body2">
               <span className="tooltip-bulletpoint" style={bulletpointColors[index]}></span>
-              {`${itemNames[index]}`}
+              {itemNames[index]}
             </Typography>
           </Box>
           {renderItem(itemType, item.value)}
@@ -77,11 +95,11 @@ const renderTooltipItems = (payload, bulletpointColors, itemNames, itemType, isS
   );
 };
 
-function CustomTooltip({ active, payload, bulletpointColors, itemNames, itemType, isStaked, isPOL }) {
+function CustomTooltip({ active, payload, bulletpointColors, itemNames, itemType, isStaked, isPOL }: ITooltip) {
   if (active && payload && payload.length) {
     return (
-      <Paper className={`ohm-card tooltip-container`}>
-        {renderTooltipItems(payload, bulletpointColors, itemNames, itemType, isStaked, isPOL)}
+      <Paper className="ohm-card tooltip-container">
+        {renderTooltipItems({ payload, bulletpointColors, itemNames, itemType, isStaked, isPOL })}
       </Paper>
     );
   }

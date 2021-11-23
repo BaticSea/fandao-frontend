@@ -1,6 +1,7 @@
 import CustomTooltip from "./CustomTooltip";
 import InfoTooltip from "../InfoTooltip/InfoTooltip";
 import ExpandedChart from "./ExpandedChart";
+import { CSSProperties } from "@material-ui/core/styles/withStyles";
 import { useEffect, useState } from "react";
 import { ReactComponent as Fullscreen } from "../../assets/icons/fullscreen.svg";
 import {
@@ -18,31 +19,79 @@ import {
 } from "recharts";
 import { Typography, Box, SvgIcon, CircularProgress } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
-import { trim } from "../../helpers";
+import { trim, formatCurrency } from "../../helpers";
+import { ScaleType } from "recharts/types/util/types";
 import { format } from "date-fns";
 import "./chart.scss";
-
-const formatCurrency = c => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-    minimumFractionDigits: 0,
-  }).format(c);
-};
 
 const tickCount = 3;
 const expandedTickCount = 5;
 
-const renderExpandedChartStroke = (isExpanded, color) => {
-  return isExpanded ? <CartesianGrid vertical={false} stroke={color} /> : "";
+const renderExpandedChartStroke = (isExpanded: boolean, color: string) =>
+  isExpanded ? <CartesianGrid vertical={false} stroke={color} /> : "";
+
+export interface ITreasuryData {
+  currentAPY: number;
+  holders: number;
+  id: number;
+  marketCap: number;
+  nextDistributedOhm: number;
+  nextEpochRebase: number;
+  ohmCirculatingSupply: number;
+  ohmPrice: number;
+  runway2dot5k: number;
+  runway5k: number;
+  runway7dot5k: number;
+  runway10k: number;
+  runway20k: number;
+  runway50k: number;
+  runwayCurrent: number;
+  sOhmCirculatingSupply: number;
+  timestamp: number;
+  totalSupply: number;
+  totalValueLocked: number;
+  treasuryDaiMarketValue: number;
+  treasuryDaiRiskFreeValue: number;
+  treasuryFraxMarketValue: number;
+  treasuryFraxRiskFreeValue: number;
+  treasuryLusdMarketValue: number;
+  treasuryLusdRiskFreeValue: number;
+  treasuryMarketValue: number;
+  treasuryOhmDaiPOL: number;
+  treasuryOhmFraxPOL: number;
+  treasuryRiskFreeValue: number;
+  treasuryWETHMarketValue: number;
+  treasuryXsushiMarketValue: number;
+}
+
+interface IChartProps {
+  data: Array<ITreasuryData>;
+  dataKey: string;
+  stopColor?: string[][];
+  color?: string;
+  stroke: string;
+  dataFormat: string;
+  bulletpointColors: Array<CSSProperties | undefined>;
+  itemNames: Array<string>;
+  itemType: string;
+  isStaked?: boolean;
+  isExpanded: boolean;
+  expandedGraphStrokeColor: string;
+  isPOL?: boolean;
+  scale?: Function | ScaleType;
+}
+
+type IChart = IChartProps & {
+  type: string;
+  headerText: string;
+  headerSubText: string;
+  infoTooltipMessage: string;
 };
 
-const renderAreaChart = (
+const renderAreaChart = ({
   data,
   dataKey,
   stopColor,
-  stroke,
   dataFormat,
   bulletpointColors,
   itemNames,
@@ -51,12 +100,12 @@ const renderAreaChart = (
   isExpanded,
   expandedGraphStrokeColor,
   isPOL,
-) => (
+}: IChartProps) => (
   <AreaChart data={data}>
     <defs>
       <linearGradient id={`color-${dataKey[0]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[0][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[0][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[0][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[0][1]} stopOpacity={0.9} />
       </linearGradient>
     </defs>
     <XAxis
@@ -66,7 +115,6 @@ const renderAreaChart = (
       tickLine={false}
       tickFormatter={str => format(new Date(str * 1000), "MMM dd")}
       reversed={true}
-      connectNulls={true}
       padding={{ right: 20 }}
     />
     <YAxis
@@ -83,7 +131,6 @@ const renderAreaChart = (
       }
       domain={[0, "auto"]}
       dx={3}
-      connectNulls={true}
       allowDataOverflow={false}
     />
     <Tooltip
@@ -102,7 +149,7 @@ const renderAreaChart = (
   </AreaChart>
 );
 
-const renderStackedAreaChart = (
+const renderStackedAreaChart = ({
   data,
   dataKey,
   stopColor,
@@ -113,28 +160,28 @@ const renderStackedAreaChart = (
   itemType,
   isExpanded,
   expandedGraphStrokeColor,
-) => (
+}: IChartProps) => (
   <AreaChart data={data}>
     <defs>
       <linearGradient id={`color-${dataKey[0]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[0][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[0][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[0][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[0][1]} stopOpacity={0.9} />
       </linearGradient>
       <linearGradient id={`color-${dataKey[1]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[1][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[1][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[1][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[1][1]} stopOpacity={0.9} />
       </linearGradient>
       <linearGradient id={`color-${dataKey[2]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[2][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[2][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[2][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[2][1]} stopOpacity={0.9} />
       </linearGradient>
       <linearGradient id={`color-${dataKey[3]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[3][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[3][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[3][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[3][1]} stopOpacity={0.9} />
       </linearGradient>
       <linearGradient id={`color-${dataKey[4]}`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stopColor={stopColor[4][0]} stopOpacity={1} />
-        <stop offset="90%" stopColor={stopColor[4][1]} stopOpacity={0.9} />
+        <stop offset="0%" stopColor={stopColor?.[4][0]} stopOpacity={1} />
+        <stop offset="90%" stopColor={stopColor?.[4][1]} stopOpacity={0.9} />
       </linearGradient>
     </defs>
     <XAxis
@@ -144,7 +191,6 @@ const renderStackedAreaChart = (
       tickLine={false}
       tickFormatter={str => format(new Date(str * 1000), "MMM dd")}
       reversed={true}
-      connectNulls={true}
       padding={{ right: 20 }}
     />
     <YAxis
@@ -162,11 +208,10 @@ const renderStackedAreaChart = (
         return "";
       }}
       domain={[0, "auto"]}
-      connectNulls={true}
       allowDataOverflow={false}
     />
     <Tooltip
-      formatter={value => trim(parseFloat(value), 2)}
+      formatter={(value: string) => trim(parseFloat(value), 2)}
       content={<CustomTooltip bulletpointColors={bulletpointColors} itemNames={itemNames} itemType={itemType} />}
     />
     <Area
@@ -208,7 +253,7 @@ const renderStackedAreaChart = (
   </AreaChart>
 );
 
-const renderLineChart = (
+const renderLineChart = ({
   data,
   dataKey,
   stroke,
@@ -220,7 +265,7 @@ const renderLineChart = (
   isExpanded,
   expandedGraphStrokeColor,
   scale,
-) => (
+}: IChartProps) => (
   <LineChart data={data}>
     <XAxis
       dataKey="timestamp"
@@ -229,7 +274,6 @@ const renderLineChart = (
       tickCount={3}
       tickLine={false}
       reversed={true}
-      connectNulls={true}
       tickFormatter={str => format(new Date(str * 1000), "MMM dd")}
       padding={{ right: 20 }}
     />
@@ -243,7 +287,6 @@ const renderLineChart = (
         number !== 0 ? (dataFormat !== "percent" ? `${number}` : `${parseFloat(number) / 1000}k`) : ""
       }
       domain={[scale == "log" ? "dataMin" : 0, "auto"]}
-      connectNulls={true}
       allowDataOverflow={false}
     />
     <Tooltip
@@ -254,18 +297,16 @@ const renderLineChart = (
   </LineChart>
 );
 
-const renderMultiLineChart = (
+const renderMultiLineChart = ({
   data,
   dataKey,
-  color,
   stroke,
-  dataFormat,
   bulletpointColors,
   itemNames,
   itemType,
   isExpanded,
   expandedGraphStrokeColor,
-) => (
+}: IChartProps) => (
   <LineChart data={data}>
     <XAxis
       dataKey="timestamp"
@@ -274,7 +315,6 @@ const renderMultiLineChart = (
       tickCount={3}
       tickLine={false}
       reversed={true}
-      connectNulls={true}
       tickFormatter={str => format(new Date(str * 1000), "MMM dd")}
       padding={{ right: 20 }}
     />
@@ -285,7 +325,6 @@ const renderMultiLineChart = (
       width={25}
       tickFormatter={number => (number !== 0 ? `${trim(parseFloat(number), 2)}` : "")}
       domain={[0, "auto"]}
-      connectNulls={true}
       allowDataOverflow={false}
     />
     <Tooltip
@@ -300,17 +339,16 @@ const renderMultiLineChart = (
 );
 
 // JTBD: Bar chart for Holders
-const renderBarChart = (
+const renderBarChart = ({
   data,
   dataKey,
   stroke,
-  dataFormat,
   bulletpointColors,
   itemNames,
   itemType,
   isExpanded,
   expandedGraphStrokeColor,
-) => (
+}: IChartProps) => (
   <BarChart data={data}>
     <XAxis
       dataKey="timestamp"
@@ -357,7 +395,7 @@ function Chart({
   infoTooltipMessage,
   expandedGraphStrokeColor,
   isPOL,
-}) {
+}: IChart) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -369,9 +407,9 @@ function Chart({
     setOpen(false);
   };
 
-  const renderChart = (type, isExpanded) => {
+  const renderChart = (type: string, isExpanded: boolean) => {
     if (type === "line")
-      return renderLineChart(
+      return renderLineChart({
         data,
         dataKey,
         color,
@@ -383,9 +421,9 @@ function Chart({
         isExpanded,
         expandedGraphStrokeColor,
         scale,
-      );
+      });
     if (type === "area")
-      return renderAreaChart(
+      return renderAreaChart({
         data,
         dataKey,
         stopColor,
@@ -398,9 +436,9 @@ function Chart({
         isExpanded,
         expandedGraphStrokeColor,
         isPOL,
-      );
+      });
     if (type === "stack")
-      return renderStackedAreaChart(
+      return renderStackedAreaChart({
         data,
         dataKey,
         stopColor,
@@ -411,9 +449,9 @@ function Chart({
         itemType,
         isExpanded,
         expandedGraphStrokeColor,
-      );
+      });
     if (type === "multi")
-      return renderMultiLineChart(
+      return renderMultiLineChart({
         data,
         dataKey,
         color,
@@ -424,10 +462,10 @@ function Chart({
         itemType,
         isExpanded,
         expandedGraphStrokeColor,
-      );
+      });
 
     if (type === "bar")
-      return renderBarChart(
+      return renderBarChart({
         data,
         dataKey,
         stroke,
@@ -437,7 +475,7 @@ function Chart({
         itemType,
         isExpanded,
         expandedGraphStrokeColor,
-      );
+      });
   };
 
   useEffect(() => {
@@ -505,7 +543,7 @@ function Chart({
       <Box width="100%" minHeight={260} minWidth={310} className="ohm-chart">
         {loading || (data && data.length > 0) ? (
           <ResponsiveContainer minHeight={260} width="100%">
-            {renderChart(type, false)}
+            {renderChart(type, false) as any}
           </ResponsiveContainer>
         ) : (
           <Skeleton variant="rect" width="100%" height={260} />

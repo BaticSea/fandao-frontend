@@ -4,7 +4,7 @@ import { ReactComponent as Info } from "../../assets/icons/info.svg";
 import { SvgIcon, Paper, Typography, Box, Popper } from "@material-ui/core";
 import "./infotooltip.scss";
 
-interface Props {
+interface IInfoTooltipMulti {
   messagesArray: Array<string>;
 }
 
@@ -13,7 +13,7 @@ interface Props {
  * @param {*} messagesArray = Array of Message Strings
  * @returns MUI Popover on document.body
  */
-function InfoTooltipMulti({ messagesArray }: Props) {
+function InfoTooltipMulti({ messagesArray }: IInfoTooltipMulti) {
   const [anchorEl, setAnchorEl] = useState<ReferenceObject | null>(null);
 
   const handleHover: React.MouseEventHandler<SVGSVGElement> = e => {
