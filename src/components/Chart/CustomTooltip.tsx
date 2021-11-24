@@ -40,7 +40,9 @@ const renderTooltipItems = ({
   itemType,
   isStaked = false,
   isPOL = false,
-}: any) => {
+}: ITooltip) => {
+  if (!payload) return null;
+
   return isStaked ? (
     <Box>
       <Box className="item" display="flex" justifyContent="space-between">

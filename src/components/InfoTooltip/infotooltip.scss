@@ -3,6 +3,7 @@
 }
 
 .tooltip {
+  z-index: 2000;
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border-radius: 10px;
