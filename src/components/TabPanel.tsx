@@ -1,12 +1,12 @@
 import Box from "@material-ui/core/Box";
 
-interface Props {
+interface ITabPanel {
   value: number;
   index: number;
   className?: string;
 }
 
-const TabPanel: React.FC<Props> = ({ value, index, children, className, ...other }) => (
+const TabPanel: React.FC<ITabPanel> = ({ value, index, children, className, ...other }) => (
   <div
     role="tabpanel"
     hidden={value !== index}

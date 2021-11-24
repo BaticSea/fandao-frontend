@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Social from "./Social";
 import externalUrls from "./externalUrls";
 import { ReactComponent as StakeIcon } from "../../assets/icons/stake.svg";
@@ -9,13 +9,12 @@ import { ReactComponent as OlympusIcon } from "../../assets/icons/olympus-nav-he
 import { ReactComponent as PoolTogetherIcon } from "../../assets/icons/33-together.svg";
 import { Trans } from "@lingui/macro";
 import { trim, shorten } from "../../helpers";
-import { useAddress, useWeb3Context } from "src/hooks/web3Context";
-import useBonds from "../../hooks/Bonds";
+import { useAddress, useWeb3Context } from "../../hooks/web3Context";
+import useBonds, { IAllBondData } from "../../hooks/Bonds";
 import { Paper, Link, Box, Typography, SvgIcon } from "@material-ui/core";
+import { NetworkID } from "../../lib/Bond";
 import { Skeleton } from "@material-ui/lab";
 import "./sidebar.scss";
-import { NetworkID } from "src/lib/Bond";
-import { IAllBondData } from "src/hooks/Bonds";
 import { Bond } from "src/lib/Bond";
 
 function NavContent() {
@@ -23,23 +22,27 @@ function NavContent() {
   const address = useAddress();
   const { chainID }: { chainID: NetworkID } = useWeb3Context();
   const { bonds }: { bonds: IAllBondData[] | Bond[] } = useBonds(chainID);
+  const { pathname } = useLocation();
 
-  const checkPage = useCallback((location, page): boolean => {
-    const currentPath = window.location.pathname.replace("/", "");
-    if (currentPath.indexOf("dashboard") >= 0 && page === "dashboard") {
-      return true;
-    }
-    if (currentPath.indexOf("stake") >= 0 && page === "stake") {
-      return true;
-    }
-    if ((currentPath.indexOf("bonds") >= 0 || currentPath.indexOf("choose_bond") >= 0) && page === "bonds") {
-      return true;
-    }
-    if (currentPath.indexOf("33-together") >= 0 && page === "33-together") {
-      return true;
-    }
-    return false;
-  }, []);
+  const checkPage = useCallback(
+    page => {
+      const currentPath = pathname.replace("/", "");
+      if (currentPath.indexOf("dashboard") >= 0 && page === "dashboard") {
+        return true;
+      }
+      if (currentPath.indexOf("stake") >= 0 && page === "stake") {
+        return true;
+      }
+      if ((currentPath.indexOf("bonds") >= 0 || currentPath.indexOf("choose_bond") >= 0) && page === "bonds") {
+        return true;
+      }
+      if (currentPath.indexOf("33-together") >= 0 && page === "33-together") {
+        return true;
+      }
+      return false;
+    },
+    [pathname],
+  );
 
   const mapBondDiscount = () => {
     const newBonds: IAllBondData[] = bonds as IAllBondData[];
@@ -91,9 +94,7 @@ function NavContent() {
                 component={NavLink}
                 id="dash-nav"
                 to="/dashboard"
-                isActive={(location: unknown) => {
-                  return checkPage(location, "dashboard");
-                }}
+                isActive={() => checkPage("dashboard")}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
                 <Typography variant="h6">
@@ -106,9 +107,7 @@ function NavContent() {
                 component={NavLink}
                 id="stake-nav"
                 to="/"
-                isActive={(location: unknown) => {
-                  return checkPage(location, "stake");
-                }}
+                isActive={() => checkPage("stake")}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
                 <Typography variant="h6">
@@ -121,9 +120,7 @@ function NavContent() {
                 component={NavLink}
                 id="33-together-nav"
                 to="/33-together"
-                isActive={(location: unknown) => {
-                  return checkPage(location, "33-together");
-                }}
+                isActive={() => checkPage("33-together")}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
                 <Typography variant="h6">
@@ -136,9 +133,7 @@ function NavContent() {
                 component={NavLink}
                 id="bond-nav"
                 to="/bonds"
-                isActive={(location: unknown) => {
-                  return checkPage(location, "bonds");
-                }}
+                isActive={() => checkPage("bonds")}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
                 <Typography variant="h6">
@@ -160,14 +155,12 @@ function NavContent() {
         </div>
         <Box className="dapp-menu-bottom" display="flex" justifyContent="space-between" flexDirection="column">
           <div className="dapp-menu-external-links">
-            {Object.keys(externalUrls).map((link: string, index) => {
-              return (
-                <Link key={link} href={`${externalUrls[index].url}`} target="_blank">
-                  <Typography variant="h6">{externalUrls[index].icon}</Typography>
-                  <Typography variant="h6">{externalUrls[index].title}</Typography>
-                </Link>
-              );
-            })}
+            {Object.keys(externalUrls).map((link: any, i: number) => (
+              <Link key={i} href={`${externalUrls[link].url}`} target="_blank">
+                <Typography variant="h6">{externalUrls[link].icon}</Typography>
+                <Typography variant="h6">{externalUrls[link].title}</Typography>
+              </Link>
+            ))}
           </div>
           <div className="dapp-menu-social">
             <Social />
