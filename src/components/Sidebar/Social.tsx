@@ -4,7 +4,7 @@ import { ReactComponent as Medium } from "../../assets/icons/medium.svg";
 import { ReactComponent as Twitter } from "../../assets/icons/twitter.svg";
 import { ReactComponent as Discord } from "../../assets/icons/discord.svg";
 
-export default function Social() {
+function Social() {
   return (
     <div className="social-row">
       <Link href="https://github.com/OlympusDAO" target="_blank">
@@ -25,3 +25,5 @@ export default function Social() {
     </div>
   );
 }
+
+export default Social;
