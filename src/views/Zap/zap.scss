@@ -1,9 +1,19 @@
+$breakpoint-tablet: 768px;
+
 #zap-view {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+
+  #zap-stake-header {
+    width: 100%;
+    @media (min-width: $breakpoint-tablet) {
+      padding-left: 64px;
+      padding-right: 64px;
+    }
+  }
 }
 
 #zap-select-token-modal {

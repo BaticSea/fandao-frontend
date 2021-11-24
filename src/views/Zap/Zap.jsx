@@ -26,6 +26,10 @@ function Zap() {
       <Zoom in={true}>
         <Paper className="ohm-card">
           <div className="staking-area">
+            <div className="card-header">
+              <Typography variant="h5">OlyZaps</Typography>
+            </div>
+
             {!address ? (
               <div className="stake-wallet-notification">
                 <div className="wallet-menu" id="wallet-menu">

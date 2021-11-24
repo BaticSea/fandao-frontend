@@ -191,10 +191,6 @@ function ZapStakeAction(props) {
 
   return (
     <>
-      <div className="card-header">
-        <Typography variant="h5">OlyZaps</Typography>
-      </div>
-
       <ZapStakeHeader images={inputTokenImages} />
 
       <Typography>
