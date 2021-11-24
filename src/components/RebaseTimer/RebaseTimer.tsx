@@ -1,32 +1,36 @@
-import { useSelector, useDispatch } from "react-redux";
-import { getRebaseBlock, secondsUntilBlock, prettifySeconds } from "../../helpers";
-import { Box, Typography } from "@material-ui/core";
-import "./rebasetimer.scss";
 import { Skeleton } from "@material-ui/lab";
+import { useDispatch } from "react-redux";
+import { Box, Typography } from "@material-ui/core";
+import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
+import { getRebaseBlock, secondsUntilBlock, prettifySeconds } from "../../helpers";
+
+import { useAppSelector } from "../../hooks";
 import { loadAppDetails } from "../../slices/AppSlice";
 import { useWeb3Context } from "../../hooks/web3Context";
-import { Trans } from "@lingui/macro";
+
+import "./rebasetimer.scss";
+
+const SECONDS_TO_REFRESH = 60;
 
 function RebaseTimer() {
   const dispatch = useDispatch();
   const { provider, chainID } = useWeb3Context();
 
-  const SECONDS_TO_REFRESH = 60;
-  const [secondsToRebase, setSecondsToRebase] = useState(0);
-  const [rebaseString, setRebaseString] = useState("");
-  const [secondsToRefresh, setSecondsToRefresh] = useState(SECONDS_TO_REFRESH);
+  const [rebaseString, setRebaseString] = useState<unknown>("");
+  const [secondsToRebase, setSecondsToRebase] = useState<number>(0);
+  const [secondsToRefresh, setSecondsToRefresh] = useState<number>(SECONDS_TO_REFRESH);
 
-  const currentBlock = useSelector(state => {
-    return state.app.currentBlock;
-  });
+  const currentBlock = useAppSelector(state => state.app.currentBlock);
 
   function initializeTimer() {
-    const rebaseBlock = getRebaseBlock(currentBlock);
-    const seconds = secondsUntilBlock(currentBlock, rebaseBlock);
-    setSecondsToRebase(seconds);
-    const prettified = prettifySeconds(seconds);
-    setRebaseString(prettified !== "" ? prettified : <Trans>Less than a minute</Trans>);
+    if (currentBlock) {
+      const rebaseBlock = getRebaseBlock(currentBlock);
+      const seconds = secondsUntilBlock(currentBlock, rebaseBlock);
+      setSecondsToRebase(seconds);
+      const prettified = prettifySeconds(seconds);
+      setRebaseString(prettified !== "" ? prettified : <Trans>Less than a minute</Trans>);
+    }
   }
 
   // This initializes secondsToRebase as soon as currentBlock becomes available
@@ -39,9 +43,9 @@ function RebaseTimer() {
   // After every period SECONDS_TO_REFRESH, decrement secondsToRebase by SECONDS_TO_REFRESH,
   // keeping the display up to date without requiring an on chain request to update currentBlock.
   useEffect(() => {
-    let interval = null;
+    let interval: number = 0;
     if (secondsToRefresh > 0) {
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setSecondsToRefresh(secondsToRefresh => secondsToRefresh - 1);
       }, 1000);
     } else {
@@ -53,14 +57,14 @@ function RebaseTimer() {
         reload();
         setRebaseString("");
       } else {
-        clearInterval(interval);
+        window.clearInterval(interval);
         setSecondsToRebase(secondsToRebase => secondsToRebase - SECONDS_TO_REFRESH);
         setSecondsToRefresh(SECONDS_TO_REFRESH);
         const prettified = prettifySeconds(secondsToRebase);
         setRebaseString(prettified !== "" ? prettified : <Trans>Less than a minute</Trans>);
       }
     }
-    return () => clearInterval(interval);
+    return () => window.clearInterval(interval);
   }, [secondsToRebase, secondsToRefresh]);
 
   return (
