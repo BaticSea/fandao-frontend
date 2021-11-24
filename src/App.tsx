@@ -18,9 +18,9 @@ import { loadAccountDetails, calculateUserBondDetails } from "./slices/AccountSl
 import { info } from "./slices/MessagesSlice";
 
 import { Stake, ChooseBond, Bond, Wrap, TreasuryDashboard, PoolTogether } from "./views";
-import Sidebar from "./components/Sidebar/Sidebar.jsx";
+import Sidebar from "./components/Sidebar/Sidebar";
 import TopBar from "./components/TopBar/TopBar";
-import NavDrawer from "./components/Sidebar/NavDrawer.jsx";
+import NavDrawer from "./components/Sidebar/NavDrawer";
 import Messages from "./components/Messages/Messages";
 import NotFound from "./views/404/NotFound";
 

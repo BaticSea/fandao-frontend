@@ -14,15 +14,18 @@ import useBonds from "../../hooks/Bonds";
 import { Paper, Link, Box, Typography, SvgIcon } from "@material-ui/core";
 import { Skeleton } from "@material-ui/lab";
 import "./sidebar.scss";
+import { NetworkID } from "src/lib/Bond";
+import { IAllBondData } from "src/hooks/Bonds";
+import { Bond } from "src/lib/Bond";
 
 function NavContent() {
   const [isActive] = useState();
   const address = useAddress();
-  const { chainID } = useWeb3Context();
-  const { bonds } = useBonds(chainID);
+  const { chainID }: { chainID: NetworkID } = useWeb3Context();
+  const { bonds }: { bonds: IAllBondData[] | Bond[] } = useBonds(chainID);
 
-  const checkPage = useCallback((match, location, page) => {
-    const currentPath = location.pathname.replace("/", "");
+  const checkPage = useCallback((location, page): boolean => {
+    const currentPath = window.location.pathname.replace("/", "");
     if (currentPath.indexOf("dashboard") >= 0 && page === "dashboard") {
       return true;
     }
@@ -38,6 +41,27 @@ function NavContent() {
     return false;
   }, []);
 
+  const mapBondDiscount = () => {
+    const newBonds: IAllBondData[] = bonds as IAllBondData[];
+    return newBonds.forEach((bond, index) => {
+      return (
+        <Link component={NavLink} to={`/bonds/${bond.name}`} key={index} className={"bond"}>
+          {!bond.bondDiscount ? (
+            <Skeleton variant="text" width={"150px"} />
+          ) : (
+            <Typography variant="body2">
+              {bond.displayName}
+
+              <span className="bond-pair-roi">
+                {!bond.isAvailable[chainID] ? "Sold Out" : `${bond.bondDiscount && trim(bond.bondDiscount * 100, 2)}%`}
+              </span>
+            </Typography>
+          )}
+        </Link>
+      );
+    });
+  };
+
   return (
     <Paper className="dapp-sidebar">
       <Box className="dapp-sidebar-inner" display="flex" justifyContent="space-between" flexDirection="column">
@@ -48,7 +72,7 @@ function NavContent() {
                 color="primary"
                 component={OlympusIcon}
                 viewBox="0 0 151 100"
-                style={{ minWdth: "151px", minHeight: "98px", width: "151px" }}
+                style={{ minWidth: "151px", minHeight: "98px", width: "151px" }}
               />
             </Link>
 
@@ -67,8 +91,8 @@ function NavContent() {
                 component={NavLink}
                 id="dash-nav"
                 to="/dashboard"
-                isActive={(match, location) => {
-                  return checkPage(match, location, "dashboard");
+                isActive={(location: unknown) => {
+                  return checkPage(location, "dashboard");
                 }}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
@@ -82,8 +106,8 @@ function NavContent() {
                 component={NavLink}
                 id="stake-nav"
                 to="/"
-                isActive={(match, location) => {
-                  return checkPage(match, location, "stake");
+                isActive={(location: unknown) => {
+                  return checkPage(location, "stake");
                 }}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
@@ -97,8 +121,8 @@ function NavContent() {
                 component={NavLink}
                 id="33-together-nav"
                 to="/33-together"
-                isActive={(match, location) => {
-                  return checkPage(match, location, "33-together");
+                isActive={(location: unknown) => {
+                  return checkPage(location, "33-together");
                 }}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
@@ -112,8 +136,8 @@ function NavContent() {
                 component={NavLink}
                 id="bond-nav"
                 to="/bonds"
-                isActive={(match, location) => {
-                  return checkPage(match, location, "bonds");
+                isActive={(location: unknown) => {
+                  return checkPage(location, "bonds");
                 }}
                 className={`button-dapp-menu ${isActive ? "active" : ""}`}
               >
@@ -128,23 +152,7 @@ function NavContent() {
                   <Typography variant="body2">
                     <Trans>Bond discounts</Trans>
                   </Typography>
-                  {bonds.map((bond, i) => (
-                    <Link component={NavLink} to={`/bonds/${bond.name}`} key={i} className={"bond"}>
-                      {!bond.bondDiscount ? (
-                        <Skeleton variant="text" width={"150px"} />
-                      ) : (
-                        <Typography variant="body2">
-                          {bond.displayName}
-
-                          <span className="bond-pair-roi">
-                            {!bond.isAvailable[chainID]
-                              ? "Sold Out"
-                              : `${bond.bondDiscount && trim(bond.bondDiscount * 100, 2)}%`}
-                          </span>
-                        </Typography>
-                      )}
-                    </Link>
-                  ))}
+                  {mapBondDiscount}
                 </div>
               </div>
             </div>
@@ -152,11 +160,11 @@ function NavContent() {
         </div>
         <Box className="dapp-menu-bottom" display="flex" justifyContent="space-between" flexDirection="column">
           <div className="dapp-menu-external-links">
-            {Object.keys(externalUrls).map((link, i) => {
+            {Object.keys(externalUrls).map((link: string, index) => {
               return (
-                <Link key={i} href={`${externalUrls[link].url}`} target="_blank">
-                  <Typography variant="h6">{externalUrls[link].icon}</Typography>
-                  <Typography variant="h6">{externalUrls[link].title}</Typography>
+                <Link key={link} href={`${externalUrls[index].url}`} target="_blank">
+                  <Typography variant="h6">{externalUrls[index].icon}</Typography>
+                  <Typography variant="h6">{externalUrls[index].title}</Typography>
                 </Link>
               );
             })}
