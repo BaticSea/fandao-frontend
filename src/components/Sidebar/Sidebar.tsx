@@ -4,7 +4,7 @@ import "./sidebar.scss";
 
 function Sidebar() {
   return (
-    <div className={`sidebar`} id="sidebarContent">
+    <div className="sidebar" id="sidebarContent">
       <Drawer variant="permanent" anchor="left">
         <NavContent />
       </Drawer>

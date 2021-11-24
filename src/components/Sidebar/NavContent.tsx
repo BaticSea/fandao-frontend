@@ -13,9 +13,9 @@ import { useAddress, useWeb3Context } from "../../hooks/web3Context";
 import useBonds, { IAllBondData } from "../../hooks/Bonds";
 import { Paper, Link, Box, Typography, SvgIcon } from "@material-ui/core";
 import { NetworkID } from "../../lib/Bond";
+import { Bond } from "src/lib/Bond";
 import { Skeleton } from "@material-ui/lab";
 import "./sidebar.scss";
-import { Bond } from "src/lib/Bond";
 
 function NavContent() {
   const [isActive] = useState();
@@ -43,27 +43,6 @@ function NavContent() {
     },
     [pathname],
   );
-
-  const mapBondDiscount = () => {
-    const newBonds: IAllBondData[] = bonds as IAllBondData[];
-    return newBonds.forEach((bond, index) => {
-      return (
-        <Link component={NavLink} to={`/bonds/${bond.name}`} key={index} className={"bond"}>
-          {!bond.bondDiscount ? (
-            <Skeleton variant="text" width={"150px"} />
-          ) : (
-            <Typography variant="body2">
-              {bond.displayName}
-
-              <span className="bond-pair-roi">
-                {!bond.isAvailable[chainID] ? "Sold Out" : `${bond.bondDiscount && trim(bond.bondDiscount * 100, 2)}%`}
-              </span>
-            </Typography>
-          )}
-        </Link>
-      );
-    });
-  };
 
   return (
     <Paper className="dapp-sidebar">
@@ -147,7 +126,23 @@ function NavContent() {
                   <Typography variant="body2">
                     <Trans>Bond discounts</Trans>
                   </Typography>
-                  {mapBondDiscount}
+                  {bonds.map((bond: Partial<IAllBondData>, i: number) => (
+                    <Link component={NavLink} to={`/bonds/${bond.name}`} key={i} className={"bond"}>
+                      {!bond.bondDiscount ? (
+                        <Skeleton variant="text" width={"150px"} />
+                      ) : (
+                        <Typography variant="body2">
+                          {bond.displayName}
+
+                          <span className="bond-pair-roi">
+                            {!bond.isAvailable?.[chainID as NetworkID]
+                              ? "Sold Out"
+                              : `${bond.bondDiscount && trim(bond.bondDiscount * 100, 2)}%`}
+                          </span>
+                        </Typography>
+                      )}
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
