@@ -23,20 +23,14 @@ function RebaseTimer() {
 
   const currentBlock = useAppSelector(state => state.app.currentBlock);
 
-  function initializeTimer() {
+  // This initializes secondsToRebase as soon as currentBlock becomes available
+  useMemo(() => {
     if (currentBlock) {
       const rebaseBlock = getRebaseBlock(currentBlock);
       const seconds = secondsUntilBlock(currentBlock, rebaseBlock);
       setSecondsToRebase(seconds);
       const prettified = prettifySeconds(seconds);
       setRebaseString(prettified !== "" ? prettified : <Trans>Less than a minute</Trans>);
-    }
-  }
-
-  // This initializes secondsToRebase as soon as currentBlock becomes available
-  useMemo(() => {
-    if (currentBlock) {
-      initializeTimer();
     }
   }, [currentBlock]);
 
