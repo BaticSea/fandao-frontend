@@ -7,6 +7,8 @@ import { ReactComponent as BondIcon } from "../../assets/icons/bond.svg";
 import { ReactComponent as DashboardIcon } from "../../assets/icons/dashboard.svg";
 import { ReactComponent as OlympusIcon } from "../../assets/icons/olympus-nav-header.svg";
 import { ReactComponent as PoolTogetherIcon } from "../../assets/icons/33-together.svg";
+import { ReactComponent as ZapIcon } from "../../assets/icons/zap.svg";
+import { ReactComponent as NewIcon } from "../../assets/icons/new-icon.svg";
 import { Trans } from "@lingui/macro";
 import { trim, shorten } from "../../helpers";
 import { useAddress, useWeb3Context } from "../../hooks/web3Context";
@@ -24,25 +26,25 @@ function NavContent() {
   const { bonds }: { bonds: IAllBondData[] | Bond[] } = useBonds(chainID);
   const { pathname } = useLocation();
 
-  const checkPage = useCallback(
-    page => {
-      const currentPath = pathname.replace("/", "");
-      if (currentPath.indexOf("dashboard") >= 0 && page === "dashboard") {
-        return true;
-      }
-      if (currentPath.indexOf("stake") >= 0 && page === "stake") {
-        return true;
-      }
-      if ((currentPath.indexOf("bonds") >= 0 || currentPath.indexOf("choose_bond") >= 0) && page === "bonds") {
-        return true;
-      }
-      if (currentPath.indexOf("33-together") >= 0 && page === "33-together") {
-        return true;
-      }
-      return false;
-    },
-    [pathname],
-  );
+  const checkPage = useCallback((page: string, location?: any) => {
+    const currentPath = pathname.replace("/", "");
+    if (currentPath.indexOf("dashboard") >= 0 && page === "dashboard") {
+      return true;
+    }
+    if (currentPath.indexOf("zap") >= 0 && page === "zap") {
+      return true;
+    }
+    if (currentPath.indexOf("stake") >= 0 && page === "stake") {
+      return true;
+    }
+    if ((currentPath.indexOf("bonds") >= 0 || currentPath.indexOf("choose_bond") >= 0) && page === "bonds") {
+      return true;
+    }
+    if (currentPath.indexOf("33-together") >= 0 && page === "33-together") {
+      return true;
+    }
+    return false;
+  }, []);
 
   return (
     <Paper className="dapp-sidebar">
@@ -93,6 +95,22 @@ function NavContent() {
                   <SvgIcon color="primary" component={StakeIcon} />
                   <Trans>Stake</Trans>
                 </Typography>
+              </Link>
+
+              <Link
+                component={NavLink}
+                id="zap-nav"
+                to="/zap"
+                isActive={(_match: any, location: any) => {
+                  return checkPage("zap", location);
+                }}
+                className={`button-dapp-menu ${isActive ? "active" : ""}`}
+              >
+                <Box display="flex" alignItems="center">
+                  <SvgIcon component={ZapIcon} color="primary" />
+                  <Typography variant="h6">OlyZaps</Typography>
+                  <SvgIcon component={NewIcon} viewBox="21 -2 20 20" style={{ width: "80px" }} />
+                </Box>
               </Link>
 
               <Link

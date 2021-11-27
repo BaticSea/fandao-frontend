@@ -198,7 +198,9 @@ function Wrap() {
                           message={
                             "wsOHM = sOHM * index\n\nThe price of wsOHM is equal to the price of OHM multiplied by the current index"
                           }
-                        />
+                        >
+                          <></>
+                        </InfoTooltip>
                       </Typography>
                       <Typography variant="h4">
                         {wsOhmPrice ? formatCurrency(wsOhmPrice, 2) : <Skeleton width="150px" />}
@@ -208,7 +210,6 @@ function Wrap() {
                 </Grid>
               </div>
             </Grid>
-
             <div className="staking-area">
               {!address ? (
                 <div className="stake-wallet-notification">
