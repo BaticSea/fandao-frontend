@@ -46,7 +46,9 @@ function ExpandedChart({
                   style={{ width: "100%", marginLeft: "5px" }}
                 >
                   <Typography variant="h6" style={{ cursor: "pointer" }}>
-                    <InfoTooltip message={infoTooltipMessage} />
+                    <InfoTooltip message={infoTooltipMessage}>
+                      <></>
+                    </InfoTooltip>
                   </Typography>
                   <Typography variant="h6" style={{ cursor: "pointer" }}>
                     <SvgIcon component={XIcon} color="primary" onClick={handleClose} />
