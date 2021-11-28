@@ -5,9 +5,8 @@ import { ReactComponent as MenuIcon } from "../../assets/icons/hamburger.svg";
 // import OhmMenu from "./OhmMenu.jsx";
 import ThemeSwitcher from "./ThemeSwitch.jsx";
 import LocaleSwitcher from "./LocaleSwitch.tsx";
-import ConnectMenu from "./ConnectMenu.jsx";
 import "./topbar.scss";
-import { Wallet } from "src/components/Wallet";
+import Wallet from "./Wallet";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
