@@ -1,5 +1,5 @@
 import { useCallback, useState, useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -44,7 +44,8 @@ const ohmImg = getOhmTokenImage(16, 16);
 
 function Stake() {
   const dispatch = useDispatch();
-  const { provider, address, connected, connect, chainID } = useWeb3Context();
+  const { provider, address, connect } = useWeb3Context();
+  const networkId = useAppSelector(state => state.network.networkId);
 
   const [zoomed, setZoomed] = useState(false);
   const [view, setView] = useState(0);
@@ -73,6 +74,14 @@ function Stake() {
   const wsohmBalance = useAppSelector(state => {
     return state.account.balances && state.account.balances.wsohm;
   });
+  const fiatDaowsohmBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fiatDaowsohm;
+  });
+  const fiatDaoAsSohm = Number(fiatDaowsohmBalance) * Number(currentIndex);
+  const gOhmBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.gohm;
+  });
+  const gOhmAsSohm = Number(gOhmBalance) * Number(currentIndex);
   const wsohmAsSohm = useAppSelector(state => {
     return state.account.balances && state.account.balances.wsohmAsSohm;
   });
@@ -114,7 +123,7 @@ function Stake() {
   };
 
   const onSeekApproval = async (token: string) => {
-    await dispatch(changeApproval({ address, token, provider, networkID: chainID }));
+    await dispatch(changeApproval({ address, token, provider, networkID: networkId }));
   };
 
   const onChangeStake = async (action: string) => {
@@ -134,7 +143,7 @@ function Stake() {
       return dispatch(error(t`You cannot unstake more than your sOHM balance.`));
     }
 
-    await dispatch(changeStake({ address, action, value: quantity.toString(), provider, networkID: chainID }));
+    await dispatch(changeStake({ address, action, value: quantity.toString(), provider, networkID: networkId }));
   };
 
   const hasAllowance = useCallback(
@@ -161,13 +170,14 @@ function Stake() {
   };
 
   const trimmedBalance = Number(
-    [sohmBalance, fsohmBalance, wsohmAsSohm]
+    [sohmBalance, fsohmBalance, wsohmAsSohm, gOhmAsSohm, fiatDaoAsSohm]
       .filter(Boolean)
       .map(balance => Number(balance))
       .reduce((a, b) => a + b, 0)
       .toFixed(4),
   );
   const trimmedStakingAPY = trim(stakingAPY * 100, 1);
+
   const stakingRebasePercentage = trim(stakingRebase * 100, 4);
   const nextRewardValue = trim((Number(stakingRebasePercentage) / 100) * trimmedBalance, 4);
 
@@ -451,6 +461,22 @@ function Stake() {
                       </Typography>
                       <Typography variant="body2" color="textSecondary">
                         {isAppLoading ? <Skeleton width="80px" /> : <>{trim(Number(wsohmBalance), 4)} wsOHM</>}
+                      </Typography>
+                    </div>
+                    <div className="data-row" style={{ paddingLeft: "10px" }}>
+                      <Typography variant="body2" color="textSecondary">
+                        <Trans>Wrapped Balance in FiatDAO</Trans>
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(Number(fiatDaowsohmBalance), 4)} wsOHM</>}
+                      </Typography>
+                    </div>
+                    <div className="data-row" style={{ paddingLeft: "10px" }}>
+                      <Typography variant="body2" color="textSecondary">
+                        <Trans>Wrapped Balance</Trans> (v2)
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(Number(gOhmBalance), 4)} gOHM</>}
                       </Typography>
                     </div>
 
