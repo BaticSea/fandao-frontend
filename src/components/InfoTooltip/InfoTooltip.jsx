@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ReactComponent as Info } from "../../assets/icons/info.svg";
-import { Box, Paper, Popper, SvgIcon, Typography } from "@material-ui/core";
+import { SvgIcon, Paper, Typography, Box, Popper } from "@material-ui/core";
 import "./infotooltip.scss";
 
 function InfoTooltip({ message, children }) {

@@ -24,8 +24,7 @@ import ConnectButton from "../../components/ConnectButton";
 function BondPurchase({ bond, slippage, recipientAddress }) {
   const SECONDS_TO_REFRESH = 60;
   const dispatch = useDispatch();
-  const { provider, address } = useWeb3Context();
-  const networkId = useSelector(state => state.network.networkId);
+  const { provider, address, chainID } = useWeb3Context();
 
   const [quantity, setQuantity] = useState("");
   const [secondsToRefresh, setSecondsToRefresh] = useState(SECONDS_TO_REFRESH);
@@ -61,7 +60,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
             value: quantity,
             slippage,
             bond,
-            networkID: networkId,
+            networkID: chainID,
             provider,
             address: recipientAddress || address,
           }),
@@ -73,7 +72,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
           value: quantity,
           slippage,
           bond,
-          networkID: networkId,
+          networkID: chainID,
           provider,
           address: recipientAddress || address,
         }),
@@ -104,7 +103,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
   const bondDetailsDebounce = useDebounce(quantity, 1000);
 
   useEffect(() => {
-    dispatch(calcBondDetails({ bond, value: quantity, provider, networkID: networkId }));
+    dispatch(calcBondDetails({ bond, value: quantity, provider, networkID: chainID }));
   }, [bondDetailsDebounce]);
 
   useEffect(() => {
@@ -114,17 +113,15 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
         setSecondsToRefresh(secondsToRefresh => secondsToRefresh - 1);
       }, 1000);
     } else {
-      if (bond.getAvailability(networkId)) {
-        clearInterval(interval);
-        dispatch(calcBondDetails({ bond, value: quantity, provider, networkID: networkId }));
-        setSecondsToRefresh(SECONDS_TO_REFRESH);
-      }
+      clearInterval(interval);
+      dispatch(calcBondDetails({ bond, value: quantity, provider, networkID: chainID }));
+      setSecondsToRefresh(SECONDS_TO_REFRESH);
     }
     return () => clearInterval(interval);
   }, [secondsToRefresh, quantity]);
 
   const onSeekApproval = async () => {
-    dispatch(changeApproval({ address, bond, provider, networkID: networkId }));
+    dispatch(changeApproval({ address, bond, provider, networkID: chainID }));
   };
 
   const displayUnits = bond.displayUnits;
@@ -174,7 +171,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
                     />
                   </FormControl>
                 )}
-                {!bond.isAvailable[networkId] ? (
+                {!bond.isAvailable[chainID] ? (
                   <Button
                     variant="contained"
                     color="primary"
@@ -235,11 +232,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
               <Trans>You Will Get</Trans>
             </Typography>
             <Typography id="bond-value-id" className="price-data">
-              {isBondLoading ? (
-                <Skeleton width="100px" />
-              ) : (
-                `${trim(bond.bondQuote, 4) || "0"} ` + `${bond.payoutToken}`
-              )}
+              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.bondQuote, 4) || "0"} OHM`}
             </Typography>
           </div>
 
@@ -248,11 +241,7 @@ function BondPurchase({ bond, slippage, recipientAddress }) {
               <Trans>Max You Can Buy</Trans>
             </Typography>
             <Typography id="bond-value-id" className="price-data">
-              {isBondLoading ? (
-                <Skeleton width="100px" />
-              ) : (
-                `${trim(bond.maxBondPrice, 4) || "0"} ` + `${bond.payoutToken}`
-              )}
+              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.maxBondPrice, 4) || "0"} OHM`}
             </Typography>
           </div>
 

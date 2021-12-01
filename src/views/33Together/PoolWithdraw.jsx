@@ -29,8 +29,7 @@ const sohmImg = getTokenImage("sohm");
 
 export const PoolWithdraw = props => {
   const dispatch = useDispatch();
-  const { provider, address } = useWeb3Context();
-  const networkId = useSelector(state => state.network.networkId);
+  const { provider, address, chainID } = useWeb3Context();
   const [quantity, setQuantity] = useState(0);
   const [exitFee, setExitFee] = useState(0);
   const [newOdds, setNewOdds] = useState(0);
@@ -59,14 +58,14 @@ export const PoolWithdraw = props => {
       // eslint-disable-next-line no-alert
       dispatch(error(t`Please enter a value!`));
     } else {
-      await dispatch(poolWithdraw({ action, value: quantity.toString(), provider, address, networkID: networkId }));
+      await dispatch(poolWithdraw({ action, value: quantity.toString(), provider, address, networkID: chainID }));
     }
   };
 
   // go fetch the Exit Fee from the contract
   const calcEarlyExitFee = async () => {
     const result = await dispatch(
-      getEarlyExitFee({ value: quantity.toString(), provider, address, networkID: networkId }),
+      getEarlyExitFee({ value: quantity.toString(), provider, address, networkID: chainID }),
     );
     if (result.payload) {
       let userBalanceAfterWithdraw = poolBalance - quantity;

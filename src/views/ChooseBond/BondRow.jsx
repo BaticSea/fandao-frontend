@@ -7,11 +7,11 @@ import "./choosebond.scss";
 import { t, Trans } from "@lingui/macro";
 import { Skeleton } from "@material-ui/lab";
 import useBonds from "src/hooks/Bonds";
-import { useSelector } from "react-redux";
+import { useWeb3Context } from "../../hooks/web3Context";
 
 export function BondDataCard({ bond }) {
-  const networkId = useSelector(state => state.network.networkId);
-  const { loading } = useBonds(networkId);
+  const { chainID } = useWeb3Context();
+  const { loading } = useBonds(chainID);
   const isBondLoading = !bond.bondPrice ?? true;
 
   return (
@@ -70,7 +70,7 @@ export function BondDataCard({ bond }) {
         <Link component={NavLink} to={`/bonds/${bond.name}`}>
           <Button variant="outlined" color="primary" fullWidth disabled={!bond.isAvailable[chainID]}>
             <Typography variant="h5">
-              {!bond.isAvailable[networkId] ? t`Sold Out` : t`Bond ${bond.displayName}`}
+              {!bond.isAvailable[chainID] ? t`Sold Out` : t`Bond ${bond.displayName}`}
             </Typography>
           </Button>
         </Link>
@@ -80,7 +80,7 @@ export function BondDataCard({ bond }) {
 }
 
 export function BondTableData({ bond }) {
-  const networkId = useSelector(state => state.network.networkId);
+  const { chainID } = useWeb3Context();
   // Use BondPrice as indicator of loading.
   const isBondLoading = !bond.bondPrice ?? true;
   // const isBondLoading = useSelector(state => !state.bonding[bond]?.bondPrice ?? true);
@@ -124,8 +124,8 @@ export function BondTableData({ bond }) {
       </TableCell>
       <TableCell>
         <Link component={NavLink} to={`/bonds/${bond.name}`}>
-          <Button variant="outlined" color="primary" disabled={!bond.isAvailable[networkId]}>
-            <Typography variant="h6">{!bond.isAvailable[networkId] ? t`Sold Out` : t`do_bond`}</Typography>
+          <Button variant="outlined" color="primary" disabled={!bond.isAvailable[chainID]}>
+            <Typography variant="h6">{!bond.isAvailable[chainID] ? t`Sold Out` : t`do_bond`}</Typography>
           </Button>
         </Link>
       </TableCell>

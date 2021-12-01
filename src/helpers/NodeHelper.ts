@@ -1,7 +1,6 @@
 import { minutesAgo } from "./index";
 import { EnvHelper } from "./Environment";
 import { ethers } from "ethers";
-import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
 interface ICurrentStats {
   failedConnectionCount: number;
@@ -33,11 +32,11 @@ export class NodeHelper {
    * remove the invalidNodes list entirely
    * should be used as a failsafe IF we have invalidated ALL nodes AND we have no fallbacks
    */
-  static _emptyInvalidNodesList(networkId: number) {
+  static _emptyInvalidNodesList() {
     // if all nodes are removed && there are no fallbacks, then empty the list
     if (
-      EnvHelper.getFallbackURIs(networkId).length === 0 &&
-      Object.keys(NodeHelper.currentRemovedNodes).length === EnvHelper.getAPIUris(networkId).length
+      EnvHelper.getFallbackURIs().length === 0 &&
+      Object.keys(NodeHelper.currentRemovedNodes).length === EnvHelper.getAPIUris().length
     ) {
       NodeHelper._storage.removeItem(NodeHelper._invalidNodesKey);
     }
@@ -64,7 +63,7 @@ export class NodeHelper {
     return currentStats;
   }
 
-  static _removeNodeFromProviders(providerKey: string, providerUrl: string, networkId: number) {
+  static _removeNodeFromProviders(providerKey: string, providerUrl: string) {
     // get Object of current removed Nodes
     // key = providerUrl, value = removedAt Timestamp
     let currentRemovedNodesObj = NodeHelper.currentRemovedNodes;
@@ -77,10 +76,9 @@ export class NodeHelper {
       // remove connection stats for this Node
       NodeHelper._storage.removeItem(providerKey);
     }
-    // if all nodes are removed, then empty the list
-    if (Object.keys(currentRemovedNodesObj).length === EnvHelper.getAPIUris(networkId).length) {
-      NodeHelper._emptyInvalidNodesList(networkId);
-    }
+
+    // will only empty if no Fallbacks are provided
+    NodeHelper._emptyInvalidNodesList();
   }
 
   /**
@@ -88,50 +86,24 @@ export class NodeHelper {
    * if greater than `_maxFailedConnections` previous failures in last `_failedConnectionsMinuteLimit` minutes will remove node from list
    * @param provider an Ethers provider
    */
-  static logBadConnectionWithTimer(providerUrl: string, networkId: number) {
+  static logBadConnectionWithTimer(providerUrl: string) {
     const providerKey: string = "-nodeHelper:" + providerUrl;
 
     let currentConnectionStats = JSON.parse(NodeHelper._storage.getItem(providerKey) || "{}");
     currentConnectionStats = NodeHelper._updateConnectionStatsForProvider(currentConnectionStats);
-
-    if (networkId && currentConnectionStats.failedConnectionCount >= NodeHelper._maxFailedConnections) {
+    if (currentConnectionStats.failedConnectionCount >= NodeHelper._maxFailedConnections) {
       // then remove this node from our provider list for 24 hours
-      NodeHelper._removeNodeFromProviders(providerKey, providerUrl, networkId);
+      NodeHelper._removeNodeFromProviders(providerKey, providerUrl);
     } else {
       NodeHelper._storage.setItem(providerKey, JSON.stringify(currentConnectionStats));
     }
   }
 
   /**
-   * **no longer just MAINNET** =>
-   * "intelligently" loadbalances production API Keys
-   * @returns string
-   */
-  static getMainnetURI = (networkId: number): string => {
-    // Shuffles the URIs for "intelligent" loadbalancing
-    const allURIs = NodeHelper.getNodesUris(networkId);
-
-    // There is no lightweight way to test each URL. so just return a random one.
-    // if (workingURI !== undefined || workingURI !== "") return workingURI as string;
-    const randomIndex = Math.floor(Math.random() * allURIs.length);
-    return allURIs[randomIndex];
-  };
-
-  /**
-   * this is a static mainnet only RPC Provider
-   * should be used when querying AppSlice from other chains
-   * because we don't need tvl, apy, marketcap, supply, treasuryMarketVal for anything but mainnet
-   * @returns StaticJsonRpcProvider for querying
-   */
-  static getMainnetStaticProvider = () => {
-    return new StaticJsonRpcProvider(NodeHelper.getMainnetURI(1));
-  };
-
-  /**
    * returns Array of APIURIs where NOT on invalidNodes list
    */
-  static getNodesUris = (networkId: number) => {
-    let allURIs = EnvHelper.getAPIUris(networkId);
+  static getNodesUris = () => {
+    let allURIs = EnvHelper.getAPIUris();
     let invalidNodes = NodeHelper.currentRemovedNodesURIs;
     // filter invalidNodes out of allURIs
     // this allows duplicates in allURIs, removes both if invalid, & allows both if valid
@@ -139,10 +111,9 @@ export class NodeHelper {
 
     // return the remaining elements
     if (allURIs.length === 0) {
-      // NodeHelper._emptyInvalidNodesList(networkId);
-      // allURIs = EnvHelper.getAPIUris(networkId);
+      // the invalidNodes list will be emptied when the user starts a new session
       // In the meantime use the fallbacks
-      allURIs = EnvHelper.getFallbackURIs(networkId);
+      allURIs = EnvHelper.getFallbackURIs();
     }
     return allURIs;
   };
@@ -163,15 +134,15 @@ export class NodeHelper {
   };
 
   /**
-   * iterate through all the nodes we have with a networkId check.
+   * iterate through all the nodes we have with a chainId check.
    * - log the failing nodes
    * - _maxFailedConnections fails in < _failedConnectionsMinutesLimit sends the node to the invalidNodes list
    * returns an Array of working mainnet nodes
    */
-  static checkAllNodesStatus = async (networkId: number) => {
+  static checkAllNodesStatus = async () => {
     return await Promise.all(
-      NodeHelper.getNodesUris(networkId).map(async URI => {
-        let workingUrl = await NodeHelper.checkNodeStatus(URI, networkId);
+      NodeHelper.getNodesUris().map(async URI => {
+        let workingUrl = await NodeHelper.checkNodeStatus(URI);
         return workingUrl;
       }),
     );
@@ -181,14 +152,13 @@ export class NodeHelper {
    * 403 errors are not caught by fetch so we check response.status, too
    * this func returns a workingURL string or false;
    */
-  static checkNodeStatus = async (url: string, networkId: number) => {
+  static checkNodeStatus = async (url: string) => {
     // 1. confirm peerCount > 0 (as a HexValue)
     let liveURL;
     liveURL = await NodeHelper.queryNodeStatus({
       url: url,
       body: JSON.stringify({ method: "net_peerCount", params: [], id: 74, jsonrpc: "2.0" }),
       nodeMethod: "net_peerCount",
-      networkId,
     });
     // 2. confirm eth_syncing === false
     if (liveURL) {
@@ -196,23 +166,12 @@ export class NodeHelper {
         url: url,
         body: JSON.stringify({ method: "eth_syncing", params: [], id: 67, jsonrpc: "2.0" }),
         nodeMethod: "eth_syncing",
-        networkId,
       });
     }
     return liveURL;
   };
 
-  static queryNodeStatus = async ({
-    url,
-    body,
-    nodeMethod,
-    networkId,
-  }: {
-    url: string;
-    body: string;
-    nodeMethod: string;
-    networkId: number;
-  }) => {
+  static queryNodeStatus = async ({ url, body, nodeMethod }: { url: string; body: string; nodeMethod: string }) => {
     let liveURL: boolean | string;
     try {
       let resp = await fetch(url, {
@@ -236,7 +195,7 @@ export class NodeHelper {
       }
     } catch {
       // some other type of issue
-      NodeHelper.logBadConnectionWithTimer(url, networkId);
+      NodeHelper.logBadConnectionWithTimer(url);
       liveURL = false;
     }
     return liveURL;

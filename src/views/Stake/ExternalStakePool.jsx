@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
 import {
   Box,
-  Button,
   Paper,
-  SvgIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
+  Button,
+  SvgIcon,
+  TableHead,
+  TableCell,
+  TableBody,
+  Table,
+  TableRow,
+  TableContainer,
   Zoom,
 } from "@material-ui/core";
 import { t, Trans } from "@lingui/macro";
@@ -28,8 +29,7 @@ import InfoTooltip from "src/components/InfoTooltip/InfoTooltip";
 
 export default function ExternalStakePool() {
   const dispatch = useDispatch();
-  const { provider, hasCachedProvider, address, connect } = useWeb3Context();
-  const networkId = useSelector(state => state.network.networkId);
+  const { provider, hasCachedProvider, address, connected, connect, chainID } = useWeb3Context();
   const [walletChecked, setWalletChecked] = useState(false);
   const isSmallScreen = useMediaQuery("(max-width: 705px)");
   const isMobileScreen = useMediaQuery("(max-width: 513px)");
@@ -44,7 +44,7 @@ export default function ExternalStakePool() {
   });
 
   const loadLusdData = async () => {
-    await dispatch(getLusdData({ address: address, provider: provider, networkID: networkId }));
+    await dispatch(getLusdData({ address: address, provider: provider, networkID: chainID }));
   };
 
   useEffect(() => {

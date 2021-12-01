@@ -32,8 +32,6 @@ const lightTheme = {
   outlinedSecondaryButtonHoverColor: "#333333",
   containedSecondaryButtonHoverBG: "#33333333",
   graphStrokeColor: "rgba(37, 52, 73, .2)",
-  gridButtonHoverBackground: "rgba(118, 130, 153, 0.2)",
-  gridButtonActiveBackground: "rgba(118, 130, 153, 0.7)",
 };
 
 export const light = responsiveFontSizes(
@@ -202,11 +200,6 @@ export const light = responsiveFontSizes(
             },
           },
         },
-        MuiSelect: {
-          select: {
-            color: "#93AEBC",
-          },
-        },
         MuiButton: {
           containedPrimary: {
             color: "#FCFCFC",
@@ -280,35 +273,6 @@ export const light = responsiveFontSizes(
             color: lightTheme.color,
             "&:hover": {
               color: lightTheme.textHighlightColor,
-            },
-          },
-          "&.grid-button-text": {
-            color: "#FFFFFF",
-          },
-        },
-        MuiTypography: {
-          root: {
-            "&.grid-message-typography": {
-              color: lightTheme.blueish_gray,
-            },
-            "&.chain-highlight": {
-              color: lightTheme.color,
-            },
-          },
-        },
-        MuiGrid: {
-          root: {
-            "&.grid-button": {
-              borderColor: `${lightTheme.gridButtonActiveBackground} !important`,
-              "&:hover": {
-                backgroundColor: lightTheme.gridButtonHoverBackground,
-              },
-              "&.current": {
-                backgroundColor: lightTheme.gridButtonActiveBackground,
-                "&:hover": {
-                  backgroundColor: lightTheme.gridButtonHoverBackground,
-                },
-              },
             },
           },
         },

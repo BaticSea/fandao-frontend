@@ -58,13 +58,13 @@ export const secondsToDaysForInput = (seconds: number) => {
 /**
  * TODO: add the mainnet urls
  * return helper urls for the Pool Together UI.
- * @param networkId
+ * @param chainID
  * @returns [PrizePoolURI, PoolDetailsURI]
  */
-export const poolTogetherUILinks = (networkId: number): Array<string> => {
-  const contractAddress = addresses[networkId].PT_PRIZE_POOL_ADDRESS;
+export const poolTogetherUILinks = (chainID: number): Array<string> => {
+  const contractAddress = addresses[chainID].PT_PRIZE_POOL_ADDRESS;
 
-  if (networkId === 4) {
+  if (chainID === 4) {
     return [
       `https://community.pooltogether.com/pools/rinkeby/${contractAddress}/home`,
       `https://community.pooltogether.com/pools/rinkeby/${contractAddress}/manage#stats`,

@@ -4,7 +4,7 @@ import { Button, Typography, Box, Slide } from "@material-ui/core";
 import { t, Trans } from "@lingui/macro";
 import { redeemBond } from "../../slices/BondSlice";
 import { useWeb3Context } from "src/hooks/web3Context";
-import { prettifySeconds, prettyVestingPeriod, secondsUntilBlock, trim } from "../../helpers";
+import { trim, secondsUntilBlock, prettifySeconds, prettyVestingPeriod } from "../../helpers";
 import { isPendingTxn, txnButtonText } from "src/slices/PendingTxnsSlice";
 import { Skeleton } from "@material-ui/lab";
 import { DisplayBondDiscount } from "./Bond";
@@ -13,8 +13,7 @@ import ConnectButton from "../../components/ConnectButton";
 function BondRedeem({ bond }) {
   // const { bond: bondName } = bond;
   const dispatch = useDispatch();
-  const { provider, address } = useWeb3Context();
-  const networkId = useSelector(state => state.network.networkId);
+  const { provider, address, chainID } = useWeb3Context();
 
   const isBondLoading = useSelector(state => state.bonding.loading ?? true);
 
@@ -32,7 +31,7 @@ function BondRedeem({ bond }) {
   });
 
   async function onRedeem({ autostake }) {
-    await dispatch(redeemBond({ address, bond, networkID: networkId, provider, autostake }));
+    await dispatch(redeemBond({ address, bond, networkID: chainID, provider, autostake }));
   }
 
   const vestingTime = () => {
@@ -45,11 +44,11 @@ function BondRedeem({ bond }) {
     return prettifySeconds(seconds, "day");
   };
 
-  // useEffect(() => {
-  //   console.log(bond);
-  //   console.log(bondingState);
-  //   console.log(bondDetails);
-  // }, []);
+  useEffect(() => {
+    console.log(bond);
+    console.log(bondingState);
+    console.log(bondDetails);
+  }, []);
 
   return (
     <Box display="flex" flexDirection="column">
