@@ -1,16 +1,16 @@
 module.exports = {
   env: {
-    browser: true,
+    browser: true
   },
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: 12,
     sourceType: "module",
     ecmaFeatures: {
-      jsx: true,
-    },
+      jsx: true
+    }
   },
-  extends: ["plugin:prettier/recommended", "prettier/react", "prettier/@typescript-eslint"],
+  extends: ["plugin:prettier/recommended", "prettier/react", "prettier/@typescript-eslint", "plugin:storybook/recommended"],
   plugins: ["prettier"],
   rules: {
     "prettier/prettier": ["error"],
@@ -26,6 +26,6 @@ module.exports = {
     "no-underscore-dangle": "off",
     "no-nested-ternary": "off",
     "no-restricted-syntax": "off",
-    "no-plusplus": "off",
-  },
+    "no-plusplus": "off"
+  }
 };

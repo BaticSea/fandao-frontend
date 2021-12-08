@@ -87,6 +87,12 @@
     "@graphql-codegen/typescript": "^2.3.0",
     "@lingui/cli": "^3.12.1",
     "@lingui/macro": "^3.12.1",
+    "@storybook/addon-actions": "^6.4.8",
+    "@storybook/addon-essentials": "^6.4.8",
+    "@storybook/addon-links": "^6.4.8",
+    "@storybook/node-logger": "^6.4.8",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.8",
     "@testing-library/dom": "^8.0.0",
     "@typechain/ethers-v5": "^8.0.2",
     "@types/graphql": "^14.5.0",
@@ -107,6 +113,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-storybook": "^0.5.3",
     "gulp": "^4.0.2",
     "gulp-csso": "^4.0.1",
     "gulp-debug": "^4.0.0",
@@ -119,7 +126,17 @@
     "typechain": "^6.0.2"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   },
   "scripts": {
     "build": "GENERATE_SOURCEMAP=false react-scripts build",
@@ -141,7 +158,9 @@
     "lingui:fetch": "git submodule update --init --remote src/locales/translations",
     "typechain:build": "yarn run typechain --target ethers-v5 --out-dir src/typechain src/abi/*.json src/abi/**/*.json",
     "preinstall": "[ ! -e src/locales/translations/.git ] && yarn lingui:fetch || exit 0",
-    "postinstall": "yarn typechain:build && yarn lingui:compile"
+    "postinstall": "yarn typechain:build && yarn lingui:compile",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "resolutions": {
     "**/immer": "9.0.6",
@@ -151,6 +170,8 @@
     "**/browserslist": "4.16.5",
     "**/node-fetch": "2.6.1",
     "**/nth-check": "2.0.1",
-    "**/ansi-regex": "5.0.1"
+    "**/ansi-regex": "5.0.1",
+    "babel-loader": "8.1.0",
+    "react-router": "5.2.1"
   }
 }
