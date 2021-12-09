@@ -44,7 +44,7 @@ function a11yProps(index: number) {
   };
 }
 
-function Stake() {
+function V1Stake() {
   const dispatch = useDispatch();
   const { provider, address, connect } = useWeb3Context();
   const networkId = useAppSelector(state => state.network.networkId);
@@ -484,4 +484,4 @@ function Stake() {
   );
 }
 
-export default Stake;
+export default V1Stake;

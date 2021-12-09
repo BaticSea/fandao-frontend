@@ -26,6 +26,7 @@ import Messages from "./components/Messages/Messages";
 import NotFound from "./views/404/NotFound";
 import ChangeNetwork from "./views/ChangeNetwork/ChangeNetwork";
 import CallToMigrate from "./components/CallToMigrate/CallToMigrate";
+import MigrationModal from "./components/Migration/MigrationModal";
 import { dark as darkTheme } from "./themes/dark.js";
 import { light as lightTheme } from "./themes/light.js";
 import { girth as gTheme } from "./themes/girth.js";
@@ -269,7 +270,19 @@ function App() {
               <Redirect to="/stake" />
             </Route>
 
+            {/* <Route path="/stake">
+              <Stake />
+            </Route> */}
             <Route path="/stake">
+              {oldAssetsDetected ? (
+                // <V1Stake oldAssetsDetected={oldAssetsDetected} setMigrationModalOpen={setMigrationModalOpen} />
+                <V1Stake />
+              ) : (
+                <Stake />
+              )}
+            </Route>
+
+            <Route path="/stakey-stake">
               <Stake />
             </Route>
 
@@ -307,6 +320,7 @@ function App() {
             <Route component={NotFound} />
           </Switch>
         </div>
+        <MigrationModal open={migrationModalOpen} handleOpen={migModalOpen} handleClose={migModalClose} />
       </div>
     </ThemeProvider>
   );
