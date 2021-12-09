@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Box, Typography, Button, SvgIcon } from "@material-ui/core";
 import { ReactComponent as ArrowUp } from "../../assets/icons/arrow-up.svg";
-import "./calltoaction.scss";
+import "./call-to-migrate.scss";
 
 export const LearnMoreButton = () => {
   return (
@@ -34,7 +34,7 @@ export const MigrateButton = ({ setMigrationModalOpen, btnText }) => {
   );
 };
 
-const CallToAction = ({ setMigrationModalOpen }) => {
+const CallToMigrate = ({ setMigrationModalOpen }) => {
   return (
     <Box className="call-to-action ohm-card">
       <Typography style={{ fontSize: "20px", fontWeight: "600" }} variant="h5">
@@ -48,4 +48,4 @@ const CallToAction = ({ setMigrationModalOpen }) => {
   );
 };
 
-export default CallToAction;
+export default CallToMigrate;

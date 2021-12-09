@@ -25,6 +25,7 @@ import NavDrawer from "./components/Sidebar/NavDrawer.jsx";
 import Messages from "./components/Messages/Messages";
 import NotFound from "./views/404/NotFound";
 import ChangeNetwork from "./views/ChangeNetwork/ChangeNetwork";
+import CallToMigrate from "./components/CallToMigrate/CallToMigrate";
 import { dark as darkTheme } from "./themes/dark.js";
 import { light as lightTheme } from "./themes/light.js";
 import { girth as gTheme } from "./themes/girth.js";
@@ -32,6 +33,7 @@ import "./style.scss";
 import { useGoogleAnalytics } from "./hooks/useGoogleAnalytics";
 import { initializeNetwork } from "./slices/NetworkSlice";
 import { useAppSelector } from "./hooks";
+import { CallToAction } from "@material-ui/icons";
 
 // 😬 Sorry for all the console logging
 const DEBUG = false;
@@ -92,10 +94,8 @@ function App() {
   const { connect, hasCachedProvider, provider, connected, chainChanged, onChainChangeComplete } = useWeb3Context();
   const address = useAddress();
 
-
   const [walletChecked, setWalletChecked] = useState(false);
   const networkId = useAppSelector(state => state.network.networkId);
-
 
   const [migrationModalOpen, setMigrationModalOpen] = useState(false);
   const migModalOpen = () => {
@@ -106,17 +106,15 @@ function App() {
     setMigrationModalOpen(false);
   };
 
-
   const oldAssetsDetected = useAppSelector(state => {
     return (
-      networkId === 1 && 
+      (networkId === 1 || networkId === 4) &&
       state.account.balances &&
       (Number(state.account.balances.sohm) || Number(state.account.balances.ohm) || Number(state.account.balances.wsohm)
         ? true
         : false)
     );
   });
-
 
   // TODO (appleseed-expiredBonds): there may be a smarter way to refactor this
   const { bonds, expiredBonds } = useBonds(networkId);
@@ -260,6 +258,8 @@ function App() {
         </nav>
 
         <div className={`${classes.content} ${isSmallerScreen && classes.contentShift}`}>
+          {oldAssetsDetected && <CallToMigrate setMigrationModalOpen={setMigrationModalOpen} />}
+
           <Switch>
             <Route exact path="/dashboard">
               <TreasuryDashboard />
