@@ -275,8 +275,7 @@ function App() {
             </Route> */}
             <Route path="/stake">
               {oldAssetsDetected ? (
-                // <V1Stake oldAssetsDetected={oldAssetsDetected} setMigrationModalOpen={setMigrationModalOpen} />
-                <V1Stake />
+                <V1Stake oldAssetsDetected={oldAssetsDetected} setMigrationModalOpen={setMigrationModalOpen} />
               ) : (
                 <Stake />
               )}

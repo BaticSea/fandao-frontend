@@ -37,6 +37,7 @@ import { useAppSelector } from "src/hooks";
 import { ExpandMore } from "@material-ui/icons";
 import StakeRow from "./StakeRow";
 import Metric from "../../components/Metric/Metric";
+import { stubTrue } from "lodash";
 
 function a11yProps(index: number) {
   return {
@@ -136,7 +137,9 @@ function Stake() {
       return dispatch(error(t`You cannot unstake more than your sOHM balance.`));
     }
 
-    await dispatch(changeStake({ address, action, value: quantity.toString(), provider, networkID: networkId }));
+    await dispatch(
+      changeStake({ address, action, value: quantity.toString(), provider, networkID: networkId, version2: true }),
+    );
   };
 
   const hasAllowance = useCallback(
