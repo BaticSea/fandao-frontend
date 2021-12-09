@@ -18,7 +18,7 @@ import { loadAccountDetails, calculateUserBondDetails, getMigrationAllowances } 
 import { getZapTokenBalances } from "./slices/ZapSlice";
 import { info } from "./slices/MessagesSlice";
 
-import { Stake, ChooseBond, Bond, TreasuryDashboard, PoolTogether, Zap, Wrap } from "./views";
+import { Stake, V1Stake, ChooseBond, Bond, TreasuryDashboard, PoolTogether, Zap, Wrap } from "./views";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import TopBar from "./components/TopBar/TopBar.jsx";
 import NavDrawer from "./components/Sidebar/NavDrawer.jsx";
@@ -92,8 +92,31 @@ function App() {
   const { connect, hasCachedProvider, provider, connected, chainChanged, onChainChangeComplete } = useWeb3Context();
   const address = useAddress();
 
+
   const [walletChecked, setWalletChecked] = useState(false);
   const networkId = useAppSelector(state => state.network.networkId);
+
+
+  const [migrationModalOpen, setMigrationModalOpen] = useState(false);
+  const migModalOpen = () => {
+    setMigrationModalOpen(true);
+  };
+  const migModalClose = () => {
+    dispatch(loadAccountDetails({ networkID: networkId, address, provider }));
+    setMigrationModalOpen(false);
+  };
+
+
+  const oldAssetsDetected = useAppSelector(state => {
+    return (
+      networkId === 1 && 
+      state.account.balances &&
+      (Number(state.account.balances.sohm) || Number(state.account.balances.ohm) || Number(state.account.balances.wsohm)
+        ? true
+        : false)
+    );
+  });
+
 
   // TODO (appleseed-expiredBonds): there may be a smarter way to refactor this
   const { bonds, expiredBonds } = useBonds(networkId);
