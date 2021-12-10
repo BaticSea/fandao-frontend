@@ -2,12 +2,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
   text-overflow: ellipsis;
   // white-space: nowrap;
   overflow: hidden;
-}
 
-.mobile .metric {
-    align-items: flex-start;
+  h4 {
+    font-weight: 500;
+  }
 }
