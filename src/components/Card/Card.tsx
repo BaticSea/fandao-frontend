@@ -1,6 +1,6 @@
 import { Grid, Paper, Typography } from "@material-ui/core";
 interface CardProps {
-  headerText: string;
+  headerText?: string;
   headerContent?: any;
   children?: any;
 }
@@ -10,10 +10,12 @@ const Card = (props: CardProps) => {
     <Paper className={`ohm-card`}>
       <Grid container direction="column" spacing={2}>
         <Grid item>
-          <div className="card-header">
-            <Typography variant="h5">{props.headerText}</Typography>
-            {props.headerContent}
-          </div>
+          {props.headerText && (
+            <div className="card-header">
+              <Typography variant="h5">{props.headerText}</Typography>
+              {props.headerContent}
+            </div>
+          )}
         </Grid>
         {props.children}
       </Grid>
