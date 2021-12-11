@@ -3,6 +3,7 @@ import { Box, Grid } from "@material-ui/core";
 
 import Metric from "../components/Metric/Metric";
 import Card from "../components/Card/Card";
+import MetricCollection from "../components/Metric/MetricCollection";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -18,27 +19,13 @@ const Template: ComponentStory<typeof Metric> = args => <Metric {...args} />;
 
 export const MetricsCollection = () => (
   <Card>
-    <Box display="flex" flexWrap="wrap" justifyContent="space-between" alignItems={{ xs: "left", sm: "center" }}>
-      <Grid container spacing={2} alignItems="flex-end">
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={true} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={true} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={true} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={false} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={false} />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <Metric label="APY" metric="5000%" isLoading={false} />
-        </Grid>
-      </Grid>
-    </Box>
+    <MetricCollection>
+      <Metric label="APY" metric="5000%" isLoading={true} />
+      <Metric label="APY" metric="5000%" isLoading={true} />
+      <Metric label="APY" metric="5000%" isLoading={true} />
+      <Metric label="APY" metric="5000%" isLoading={false} />
+      <Metric label="APY" metric="5000%" isLoading={false} />
+      <Metric label="APY" metric="5000%" isLoading={false} />
+    </MetricCollection>
   </Card>
 );

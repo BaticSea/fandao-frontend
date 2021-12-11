@@ -16,7 +16,6 @@ export default {
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof MultiLogo> = args => <MultiLogo {...args} />;
 
-export const Default = Template.bind({});
 export const SingleIcon = Template.bind({});
 export const MultiIcon = Template.bind({});
 export const SingleImage = Template.bind({});
@@ -24,9 +23,6 @@ export const MultiImage = Template.bind({});
 export const IconAndImage = Template.bind({});
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-Default.args = {
-  images: {},
-};
 
 SingleIcon.args = {
   icons: [CircleZapIcon],
