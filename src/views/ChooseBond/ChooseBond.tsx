@@ -17,6 +17,8 @@ import { BondDataCard, BondTableData } from "./BondRow";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { formatCurrency } from "../../helpers";
 import useBonds from "../../hooks/Bonds";
+import { useHistory } from "react-router";
+import { usePathForNetwork } from "src/hooks/usePathForNetwork";
 import "./choosebond.scss";
 import { Skeleton } from "@material-ui/lab";
 import ClaimBonds from "./ClaimBonds";
@@ -29,7 +31,9 @@ import Metric from "src/components/Metric/Metric";
 
 function ChooseBond() {
   const networkId = useAppSelector(state => state.network.networkId);
+  const history = useHistory();
   const { bonds } = useBonds(networkId);
+  usePathForNetwork({ pathName: "bonds", networkID: networkId, history });
   const isSmallScreen = useMediaQuery("(max-width: 733px)"); // change to breakpoint query
   const isVerySmallScreen = useMediaQuery("(max-width: 420px)");
 
