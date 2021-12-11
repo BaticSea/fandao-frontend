@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { t, Trans } from "@lingui/macro";
 import { shorten, trim, prettyVestingPeriod } from "../../helpers";
 import { redeemBond } from "../../slices/BondSlice";
-import BondLogo from "../../components/BondLogo";
 import { Box, Button, TableCell, TableRow, Typography } from "@material-ui/core";
 import "./choosebond.scss";
 import { Skeleton } from "@material-ui/lab";
 import { useBonds, useWeb3Context } from "src/hooks";
 import { isPendingTxn, txnButtonTextGeneralPending } from "src/slices/PendingTxnsSlice";
+import MultiLogo from "src/components/MultiLogo";
 
 export function ClaimBondTableData({ userBond }) {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ export function ClaimBondTableData({ userBond }) {
   return (
     <TableRow id={`${bondName}--claim`}>
       <TableCell align="left" className="bond-name-cell">
-        <BondLogo bond={bond} />
+        <MultiLogo icons={[bond.bondIconSvg]} isLP={bond.isLP} />
         <div className="bond-name">
           <Typography variant="body1">
             {bond.displayName ? trim(bond.displayName, 4) : <Skeleton width={100} />}
@@ -102,7 +102,7 @@ export function ClaimBondCardData({ userBond }) {
   return (
     <Box id={`${bondName}--claim`} className="claim-bond-data-card bond-data-card" style={{ marginBottom: "30px" }}>
       <Box className="bond-pair">
-        <BondLogo bond={bond} />
+        <MultiLogo icons={[bond.bondIconSvg]} isLP={bond.isLP} />
         <Box className="bond-name">
           <Typography>{bond.displayName ? trim(bond.displayName, 4) : <Skeleton width={100} />}</Typography>
         </Box>

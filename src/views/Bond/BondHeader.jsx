@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
-import BondLogo from "../../components/BondLogo";
 import AdvancedSettings from "./AdvancedSettings";
 import { Typography, IconButton, SvgIcon, Link } from "@material-ui/core";
 import { ReactComponent as SettingsIcon } from "../../assets/icons/settings.svg";
 import { ReactComponent as XIcon } from "../../assets/icons/x.svg";
 import useEscape from "../../hooks/useEscape";
+import MultiLogo from "src/components/MultiLogo";
 
 function BondHeader({ bond, slippage, recipientAddress, onRecipientAddressChange, onSlippageChange }) {
   const [open, setOpen] = useState(false);
@@ -32,7 +32,7 @@ function BondHeader({ bond, slippage, recipientAddress, onRecipientAddressChange
       </Link>
 
       <div className="bond-header-logo">
-        <BondLogo bond={bond} />
+        <MultiLogo icons={[bond.bondIconSvg]} isLP={bond.isLP} />
         <div className="bond-header-name">
           <Typography variant="h5">{bond.displayName}</Typography>
         </div>
