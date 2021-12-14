@@ -2,6 +2,7 @@ import { BigNumber, BigNumberish, ethers } from "ethers";
 import { addresses } from "../constants";
 import { abi as ierc20Abi } from "../abi/IERC20.json";
 import { abi as sOHMv2 } from "../abi/sOhmv2.json";
+import { abi as sOHMV1 } from "../abi/sOHM.json";
 import { abi as fuseProxy } from "../abi/FuseProxy.json";
 import { abi as wsOHM } from "../abi/wsOHM.json";
 import { abi as fiatDAO } from "../abi/FiatDAOContract.json";
@@ -11,7 +12,7 @@ import { setAll, handleContractError } from "../helpers";
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "src/store";
 import { IBaseAddressAsyncThunk, ICalcUserBondDetailsAsyncThunk } from "./interfaces";
-import { FiatDAOContract, FuseProxy, IERC20, IERC20__factory, SOhmv2, WsOHM } from "src/typechain";
+import { FiatDAOContract, FuseProxy, IERC20, IERC20__factory, SOhmv2, SOHM, WsOHM } from "src/typechain";
 import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
 
 export const getBalances = createAsyncThunk(
@@ -213,16 +214,17 @@ export const loadAccountDetails = createAsyncThunk(
       ) as IERC20;
       stakeAllowance = await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
 
-      const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, sOHMv2, provider) as SOhmv2;
+      const sohmContract = new ethers.Contract(addresses[networkID].SOHM_ADDRESS as string, sOHMV1, provider) as SOHM;
       unstakeAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
       poolAllowance = await sohmContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
-      wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
+      // wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
 
       const wsohmContract = new ethers.Contract(addresses[networkID].WSOHM_ADDRESS as string, wsOHM, provider) as WsOHM;
       unwrapAllowance = await wsohmContract.allowance(address, addresses[networkID].WSOHM_ADDRESS);
 
       const sohmV2Contract = IERC20__factory.connect(addresses[networkID].SOHM_V2, provider);
       unstakeAllowanceV2 = await sohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+      wrapAllowance = unstakeAllowanceV2;
 
       const ohmV2Contract = IERC20__factory.connect(addresses[networkID].OHM_V2, provider);
       stakeAllowanceV2 = await ohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);

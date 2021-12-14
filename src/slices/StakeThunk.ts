@@ -186,6 +186,7 @@ export const changeStake = createAsyncThunk(
           uaData.type = "stake";
           stakeTx = await stakingV2.stake(ethers.utils.parseUnits(value, "gwei"), address);
         } else {
+          console.log("stakingV2");
           uaData.type = "unstake";
           stakeTx = await stakingV2.unstake(ethers.utils.parseUnits(value, "gwei"), true);
         }
