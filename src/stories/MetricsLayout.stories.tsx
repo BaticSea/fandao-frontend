@@ -8,12 +8,12 @@ import MetricCollection from "../components/Metric/MetricCollection";
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: "Layout/Metrics",
-  component: Metric,
+  component: MetricCollection,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-} as ComponentMeta<typeof Metric>;
+} as ComponentMeta<typeof MetricCollection>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Metric> = args => <Metric {...args} />;
+const Template: ComponentStory<typeof MetricCollection> = args => <MetricCollection {...args} />;
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
