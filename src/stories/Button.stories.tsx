@@ -23,23 +23,24 @@ export const IconButton = Template.bind({});
 export const IconButtonWithText = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Default.args = {
-  text: "Learn More",
+  children: "Learn More",
+  size: "large",
 };
 DefaultWithExternalLink.args = {
-  text: "Learn More",
+  children: "Learn More",
   href: "https://docs.olympusdao.finance/main/basics/migration",
 };
 Outlined.args = {
-  text: "Learn More",
+  children: "Learn More",
   template: "outlined",
 };
 OutlinedWithExternalLink.args = {
-  text: "Learn More",
+  children: "Learn More",
   template: "outlined",
   href: "https://docs.olympusdao.finance/main/basics/migration",
 };
 TextButton.args = {
-  text: "Text Button",
+  children: "Text Button",
   template: "text",
   disabled: true,
 };
@@ -49,5 +50,5 @@ IconButton.args = {
 };
 IconButtonWithText.args = {
   icon: InfoIcon,
-  text: "Click to Learn More",
+  children: "Click to Learn More",
 };
