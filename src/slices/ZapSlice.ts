@@ -6,6 +6,7 @@ import { IActionValueAsyncThunk, IBaseAddressAsyncThunk, IZapAsyncThunk } from "
 import { error, info } from "./MessagesSlice";
 import { segmentUA } from "../helpers/userAnalyticHelpers";
 import { ethers } from "ethers";
+import { clearPendingTxn, fetchPendingTxns } from "./PendingTxnsSlice";
 interface IUAData {
   address: string;
   value: string;
@@ -96,6 +97,7 @@ export const getZapTokenBalances = createAsyncThunk(
 export const executeZap = createAsyncThunk(
   "zap/executeZap",
   async ({ provider, address, sellAmount, slippage, tokenAddress, networkID }: IZapAsyncThunk, { dispatch }) => {
+    let tx;
     try {
       const gasPrice = await provider.getGasPrice();
       const rawTransactionData = await ZapHelper.executeZapHelper(
@@ -113,7 +115,9 @@ export const executeZap = createAsyncThunk(
         gasLimit: ethers.utils.hexlify(Number(rawTransactionData.gas)),
       };
       const signer = provider.getSigner();
-      const tx = await signer.sendTransaction(transactionData);
+      tx = await signer.sendTransaction(transactionData);
+      // set pending txn here
+      dispatch(fetchPendingTxns({ txnHash: tx.hash, text: "test", type: "staking" }));
       await tx.wait();
 
       let uaData: IUADataZap = {
@@ -140,6 +144,11 @@ export const executeZap = createAsyncThunk(
       const rpcError = e as any;
       dispatch(error(`${rpcError.message} ${rpcError.data?.message ?? ""}`));
       throw e;
+    } finally {
+      // clear pending txn here
+      if (tx) {
+        dispatch(clearPendingTxn(tx.hash));
+      }
     }
     dispatch(getBalances({ address, provider, networkID }));
     dispatch(getZapTokenBalances({ address, provider, networkID }));

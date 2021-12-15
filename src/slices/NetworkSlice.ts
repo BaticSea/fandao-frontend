@@ -45,6 +45,10 @@ export const initializeNetwork = createAsyncThunk(
           networkName = "Avalanche";
           uri = NodeHelper.getMainnetURI(id);
           break;
+        case 31337: // remember to delete this. only for testing.
+          networkName = "goats";
+          uri = NodeHelper.getMainnetURI(id);
+          break;
         default:
           supported = false;
           networkName = "Unsupported Network";
