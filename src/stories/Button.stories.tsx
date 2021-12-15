@@ -16,27 +16,44 @@ const Template: ComponentStory<typeof Button> = args => <Button {...args} />;
 
 export const Default = Template.bind({});
 export const DefaultWithExternalLink = Template.bind({});
-export const Outlined = Template.bind({});
-export const OutlinedWithExternalLink = Template.bind({});
 export const TextButton = Template.bind({});
 export const IconButton = Template.bind({});
 export const IconButtonWithText = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Default.args = {
   children: "Learn More",
-  size: "large",
 };
+export const Small = () => <Button size="small">Small Button</Button>;
+export const Medium = () => <Button size="medium">Medium Button</Button>;
+export const Large = () => <Button size="large">Large Button</Button>;
+export const SmallOutlined = () => (
+  <Button size="small" template="outlined">
+    Small Button
+  </Button>
+);
+export const DefaultOutlined = () => <Button template="outlined">Learn More</Button>;
+export const LargeOutlined = () => (
+  <Button size="large" template="outlined">
+    Learn More
+  </Button>
+);
+export const SecondarySmall = () => (
+  <Button template="secondary" size="small">
+    Learn More
+  </Button>
+);
+export const SecondaryDefault = () => (
+  <Button template="secondary" size="medium">
+    Learn More
+  </Button>
+);
+export const SecondaryLarge = () => (
+  <Button template="secondary" size="large">
+    Learn More
+  </Button>
+);
 DefaultWithExternalLink.args = {
   children: "Learn More",
-  href: "https://docs.olympusdao.finance/main/basics/migration",
-};
-Outlined.args = {
-  children: "Learn More",
-  template: "outlined",
-};
-OutlinedWithExternalLink.args = {
-  children: "Learn More",
-  template: "outlined",
   href: "https://docs.olympusdao.finance/main/basics/migration",
 };
 TextButton.args = {
