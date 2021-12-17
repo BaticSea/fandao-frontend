@@ -2,22 +2,36 @@ import { Button, SvgIcon, ButtonProps } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as ArrowUp } from "src/assets/icons/arrow-up.svg";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   root: {
     fontSize: "0.875rem",
+    height: "39px",
+    borderRadius: "4px",
+    padding: ({ icon }) => (icon ? "0px 8px" : "0px 47px"),
     "&.MuiButton-sizeLarge": {
-      fontSize: "1.2857rem",
-      padding: "8px 60px",
-      height: "40px",
+      padding: "0px 120px",
     },
     "&.MuiButton-sizeSmall": {
-      fontSize: "0.75rem",
+      //fontSize: "0.75rem",
+      padding: "0px 23px",
+    },
+    "& .MuiButton-endIcon, & .MuiButton-startIcon": {
+      marginTop: "-2px",
+    },
+    "& .MuiButton-endIcon": {
+      marginLeft: "5px",
+    },
+    "& .MuiButton-startIcon": {
+      marginRight: "5px",
+    },
+    "& .MuiButton-iconSizeMedium > *:first-child, & .MuiSvgIcon-fontSizeSmall": {
+      fontSize: "1.4rem",
     },
   },
-});
+}));
 
 interface props extends ButtonProps {
-  template?: "default" | "outlined" | "text" | "secondary" | "outlinedSecondary";
+  template?: "primary" | "secondary" | "tertiary";
   text?: string;
   icon?: React.ElementType;
   onClick?: any;
@@ -26,46 +40,40 @@ interface props extends ButtonProps {
 /**
  * Primary Button Component for UI.
  */
-const ButtonComponent = ({ template = "default", ...props }: props) => {
-  const classes = useStyles();
+const ButtonComponent = ({ template = "primary", ...props }: props) => {
+  const icon = props.icon && !props.children ? true : false;
+  const classes = useStyles({ icon });
   let variant = props.variant;
   let color = props.color;
   let target;
   switch (template) {
-    case "default":
+    case "primary":
       variant = "contained";
-      color = "primary";
-      break;
-    case "outlined":
-      variant = "outlined";
-      color = "secondary";
-      break;
-    case "text":
-      variant = "text";
       color = "primary";
       break;
     case "secondary":
-      variant = "contained";
+      variant = "outlined";
       color = "secondary";
       break;
-    case "outlinedSecondary":
+    case "tertiary":
       variant = "outlined";
+      color = "primary";
       break;
   }
   if (props.href) {
     target = "_blank";
   }
-
+  const endIcon = props.endIcon || (props.href && ArrowUp) || null;
   return (
     <Button
       variant={variant}
       color={color}
       className={`${classes.root} ${props.className}`}
       {...props}
-      startIcon={props.icon && props.children ? <SvgIcon component={props.icon} color="primary" /> : null}
-      endIcon={props.href ? <SvgIcon component={ArrowUp} color="primary" /> : props.endIcon}
+      startIcon={props.startIcon ? <SvgIcon component={props.startIcon} fontSize="large" /> : null}
+      endIcon={endIcon && <SvgIcon component={endIcon} fontSize="large" />}
     >
-      {props.icon && !props.children ? <SvgIcon component={props.icon} color="primary" /> : null}
+      {props.icon && !props.children ? <SvgIcon component={props.icon} /> : null}
       {/* {<Typography variant="body1">{props.text}</Typography>} */}
       {props.children}
     </Button>

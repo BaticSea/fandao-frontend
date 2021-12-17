@@ -15,10 +15,14 @@ export const parameters = {
 };
 
 export const decorators = [
-  Story => (
-    <ThemeProvider theme={lightTheme}>
-      <CssBaseline />
-      <Story />
-    </ThemeProvider>
-  ),
+  (Story, options) => {
+    const { parameters } = options;
+    const theme = parameters.theme === "dark" ? darkTheme : lightTheme;
+    return (
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Story />
+      </ThemeProvider>
+    );
+  },
 ];
