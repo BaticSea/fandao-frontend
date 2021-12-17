@@ -45,6 +45,10 @@ export const initializeNetwork = createAsyncThunk(
           networkName = "Avalanche";
           uri = NodeHelper.getMainnetURI(id);
           break;
+        case 31337:
+          networkName = "Ethereum mainnet fork";
+          uri = NodeHelper.getMainnetURI(id);
+          break;
         default:
           supported = false;
           networkName = "Unsupported Network";

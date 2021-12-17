@@ -21,6 +21,7 @@ import { useSelector } from "react-redux";
 import { useWeb3Context } from "../../hooks";
 
 const addTokenToWallet = (tokenSymbol, tokenAddress, address) => async () => {
+  console.log("window.ethereum", window.ethereum);
   if (window.ethereum) {
     const host = window.location.origin;
     let tokenPath;

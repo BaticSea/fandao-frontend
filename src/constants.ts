@@ -212,6 +212,20 @@ export const NETWORKS: { [key: number]: INetwork } = {
     imageAltText: "Ethereum Logo",
     uri: () => NodeHelper.getMainnetURI(1),
   },
+  31337: {
+    chainName: "Ethereum mainnet fork",
+    chainId: 31337,
+    nativeCurrency: {
+      name: "Ethereum mainnet fork",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: [""],
+    blockExplorerUrls: ["http://127.0.0.1:8545/"],
+    image: ethereum,
+    imageAltText: "Ethereum Logo",
+    uri: () => NodeHelper.getMainnetURI(31337),
+  },
   4: {
     chainName: "Rinkeby Testnet",
     chainId: 4,
