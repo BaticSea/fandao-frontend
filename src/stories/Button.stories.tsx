@@ -10,7 +10,6 @@ export default {
   component: Button,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   parameters: {
-    theme: "dark",
     actions: { argTypesRegex: null },
   },
 } as ComponentMeta<typeof Button>;
@@ -26,9 +25,8 @@ export const PrimaryIconLeft = Template.bind({});
 export const PrimaryIconRight = Template.bind({});
 export const PrimaryIcon = Template.bind({});
 export const DefaultWithExternalLink = Template.bind({});
-Primary.args = {
-  children: "Label",
-};
+
+Primary.args = { children: "Label" };
 PrimarySmall.args = { ...Primary.args, size: "small" };
 PrimaryLarge.args = { ...Primary.args, size: "large" };
 Secondary.args = { ...Primary.args, template: "secondary" };
@@ -37,43 +35,3 @@ PrimaryIconLeft.args = { ...Primary.args, startIcon: InfoIcon };
 PrimaryIconRight.args = { ...Primary.args, endIcon: InfoIcon };
 PrimaryIcon.args = { icon: InfoIcon };
 DefaultWithExternalLink.args = { ...Primary.args, href: "https://www.google.com" };
-// export const SmallOutlined = () => (
-//   <Button size="small" template="outlined">
-//     Small Button
-//   </Button>
-// );
-// export const DefaultOutlined = () => <Button template="outlined">Learn More</Button>;
-// export const LargeOutlined = () => (
-//   <Button size="large" template="outlined">
-//     Learn More
-//   </Button>
-// );
-// export const SecondarySmall = () => (
-//   <Button template="secondary" size="small">
-//     Learn More
-//   </Button>
-// );
-// export const SecondaryDefault = () => (
-//   <Button template="secondary" size="medium">
-//     Learn More
-//   </Button>
-// );
-// export const SecondaryLarge = () => (
-//   <Button template="secondary" size="large">
-//     Learn More
-//   </Button>
-// );
-
-// TextButton.args = {
-//   children: "Text Button",
-//   template: "text",
-//   disabled: true,
-// };
-
-// IconButton.args = {
-//   icon: InfoIcon,
-// };
-// IconButtonWithText.args = {
-//   icon: InfoIcon,
-//   children: "Click to Learn More",
-// };
