@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { trim, formatCurrency } from "../../../../helpers";
-import Metric from "src/components/Metric/Metric";
+import { Metric } from "src/components/Metric";
 import { t } from "@lingui/macro";
 
 const sharedProps = {
@@ -71,15 +71,13 @@ export const CurrentIndex = () => {
   );
 };
 
-export const WSOHMPrice = () => {
-  const wsOhmPrice = useSelector(state => state.app.marketPrice * state.app.currentIndex);
+export const GOHMPrice = () => {
+  const gOhmPrice = useSelector(state => state.app.marketPrice * state.app.currentIndex);
   return (
     <Metric
-      label={t`wsOHM Price`}
       metric={wsOhmPrice && formatCurrency(wsOhmPrice, 2)}
-      isLoading={wsOhmPrice ? false : true}
       {...sharedProps}
-      tooltip={`wsOHM = sOHM * index\n\nThe price of wsOHM is equal to the price of OHM multiplied by the current index`}
+      tooltip={`gOHM = sOHM * index\n\nThe price of gOHM is equal to the price of OHM multiplied by the current index`}
     />
   );
 };

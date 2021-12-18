@@ -26,8 +26,7 @@ import isEmpty from "lodash/isEmpty";
 import { allBondsMap } from "src/helpers/AllBonds";
 import { useAppSelector } from "src/hooks";
 import { IUserBondDetails } from "src/slices/AccountSlice";
-import MetricCollection from "src/components/Metric/MetricCollection";
-import Metric from "src/components/Metric/Metric";
+import { Metric, MetricCollection } from "src/components/Metric";
 
 function ChooseBond() {
   const networkId = useAppSelector(state => state.network.networkId);
