@@ -1,8 +1,11 @@
-import { Button, SvgIcon, ButtonProps } from "@material-ui/core";
+import { Button, SvgIcon, ButtonProps, Theme } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ReactComponent as ArrowUp } from "src/assets/icons/arrow-up.svg";
 
-const useStyles = makeStyles(theme => ({
+type Styles = {
+  icon: boolean;
+};
+const useStyles = makeStyles<Theme, Styles>(theme => ({
   root: {
     fontSize: "0.875rem",
     height: "39px",
@@ -35,6 +38,8 @@ interface props extends ButtonProps {
   text?: string;
   icon?: React.ElementType;
   onClick?: any;
+  startIcon: any;
+  endIcon: any;
 }
 
 /**
@@ -64,6 +69,7 @@ const ButtonComponent = ({ template = "primary", ...props }: props) => {
     target = "_blank";
   }
   const endIcon = props.endIcon || (props.href && ArrowUp) || null;
+
   return (
     <Button
       variant={variant}
