@@ -182,9 +182,9 @@ function App() {
     if (networkId && (networkId === 1 || networkId === 4)) {
       return (
         state.account.balances &&
-        (Number(state.account.balances.sohmV1) ||
-        Number(state.account.balances.ohmV1) ||
-        Number(state.account.balances.wsohm)
+        (Number(state.account.balances.sfanV1) ||
+        Number(state.account.balances.fanV1) ||
+        Number(state.account.balances.wsfan)
           ? true
           : false)
       );
@@ -197,16 +197,16 @@ function App() {
     if (!state.app.currentIndex || !state.app.marketPrice) {
       return true;
     }
-    const wrappedBalance = Number(state.account.balances.wsohm) * Number(state.app.currentIndex!);
+    const wrappedBalance = Number(state.account.balances.wsfan) * Number(state.app.currentIndex!);
     const allAssetsBalance =
-      Number(state.account.balances.sohmV1) + Number(state.account.balances.ohmV1) + wrappedBalance;
+      Number(state.account.balances.sfanV1) + Number(state.account.balances.fanV1) + wrappedBalance;
     return state.app.marketPrice * allAssetsBalance >= 10;
   });
 
   const newAssetsDetected = useAppSelector(state => {
     return (
       state.account.balances &&
-      (Number(state.account.balances.gohm) || Number(state.account.balances.sohm) || Number(state.account.balances.ohm)
+      (Number(state.account.balances.gfan) || Number(state.account.balances.sfan) || Number(state.account.balances.fan)
         ? true
         : false)
     );

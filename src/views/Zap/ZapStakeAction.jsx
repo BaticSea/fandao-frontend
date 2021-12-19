@@ -102,13 +102,13 @@ function ZapStakeAction(props) {
     segmentUA(uaData);
   };
 
-  const ohmMarketPrice = useAppSelector(state => {
+  const fanMarketPrice = useAppSelector(state => {
     return state.app.marketPrice;
   });
 
-  const sOhmBalance = useAppSelector(state => Number(state.account?.balances?.sohm ?? 0.0));
+  const sFanBalance = useAppSelector(state => Number(state.account?.balances?.sfan ?? 0.0));
 
-  const exchangeRate = ohmMarketPrice / tokens[zapToken]?.price;
+  const exchangeRate = fanMarketPrice / tokens[zapToken]?.price;
 
   const setZapTokenQuantity = q => {
     if (q == null || q === "") {
@@ -140,7 +140,7 @@ function ZapStakeAction(props) {
   const inputTokenImages = useMemo(
     () =>
       Object.entries(tokens)
-        .filter(token => token[0] !== "sohm" && !token[1].hide)
+        .filter(token => token[0] !== "sfan" && !token[1].hide)
         .sort((tokenA, tokenB) => tokenB[1].balanceUSD - tokenA[1].balanceUSD)
         .map(token => token[1].tokenImageUrl)
         .slice(0, 3),
@@ -322,10 +322,10 @@ function ZapStakeAction(props) {
                       style={{ height: "36px", width: "36px" }}
                     />
                     <Box width="10px" />
-                    <Typography>sOHM</Typography>
+                    <Typography>sFAN</Typography>
                   </Box>
                   <Box flexDirection="row" display="flex" alignItems="center">
-                    <Typography color="textSecondary">{`Balance ${trim(sOhmBalance, 2)}`}</Typography>
+                    <Typography color="textSecondary">{`Balance ${trim(sFanBalance, 2)}`}</Typography>
                   </Box>
                 </Box>
               </div>
@@ -366,7 +366,7 @@ function ZapStakeAction(props) {
           <Trans>Exchange Rate</Trans>
         </Typography>
         <Typography>
-          {zapToken == null ? "nil" : `${trim(exchangeRate, 4)} ${tokens[zapToken]?.symbol}`} = 1 sOHM
+          {zapToken == null ? "nil" : `${trim(exchangeRate, 4)} ${tokens[zapToken]?.symbol}`} = 1 sFAN
         </Typography>
       </Box>
       <Box
@@ -380,7 +380,7 @@ function ZapStakeAction(props) {
         <Typography>
           <Trans>Minimum You Get</Trans>
         </Typography>
-        <Typography>{trim(Number(outputQuantity) * 0.98, 2)} sOHM</Typography>
+        <Typography>{trim(Number(outputQuantity) * 0.98, 2)} sFAN</Typography>
       </Box>
       {initialTokenAllowance ? (
         <Button

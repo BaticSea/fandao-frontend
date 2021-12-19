@@ -25,7 +25,7 @@ import NewReleases from "@material-ui/icons/NewReleases";
 import RebaseTimer from "../../components/RebaseTimer/RebaseTimer";
 import TabPanel from "../../components/TabPanel";
 import { MigrateButton, LearnMoreButton } from "src/components/CallToAction/CallToAction";
-import { getOhmTokenImage, getTokenImage, trim } from "../../helpers";
+import { getFanTokenImage, getTokenImage, trim } from "../../helpers";
 import { changeApproval, changeStake } from "../../slices/StakeThunk";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import "../Stake/stake.scss";
@@ -48,8 +48,8 @@ function a11yProps(index) {
   };
 }
 
-const sOhmImg = getTokenImage("sohm");
-const ohmImg = getOhmTokenImage(16, 16);
+const sFanImg = getTokenImage("sfan");
+const fanImg = getFanTokenImage(16, 16);
 
 function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds }) {
   const dispatch = useDispatch();
@@ -69,23 +69,23 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
   const fiveDayRate = useSelector(state => {
     return state.app.fiveDayRate;
   });
-  const ohmBalance = useSelector(state => {
-    return state.account.balances && state.account.balances.ohmV1;
+  const fanBalance = useSelector(state => {
+    return state.account.balances && state.account.balances.fanV1;
   });
-  const sohmBalance = useSelector(state => {
-    return state.account.balances && state.account.balances.sohmV1;
+  const sfanBalance = useSelector(state => {
+    return state.account.balances && state.account.balances.sfanV1;
   });
-  const fsohmBalance = useSelector(state => {
-    return state.account.balances && state.account.balances.fsohm;
+  const fsfanBalance = useSelector(state => {
+    return state.account.balances && state.account.balances.fsfan;
   });
-  const wsohmBalance = useSelector(state => {
-    return state.account.balances && state.account.balances.wsohm;
+  const wsfanBalance = useSelector(state => {
+    return state.account.balances && state.account.balances.wsfan;
   });
   const stakeAllowance = useSelector(state => {
-    return state.account.staking && state.account.staking.ohmStakeV1;
+    return state.account.staking && state.account.staking.fanStakeV1;
   });
   const unstakeAllowance = useSelector(state => {
-    return state.account.staking && state.account.staking.ohmUnstakeV1;
+    return state.account.staking && state.account.staking.fanUnstakeV1;
   });
   const stakingRebase = useSelector(state => {
     return state.app.stakingRebase;
@@ -101,29 +101,29 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
     return state.pendingTransactions;
   });
 
-  const fiatDaowsohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.fiatDaowsohm;
+  const fiatDaowsfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fiatDaowsfan;
   });
 
-  const gOhmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.gohm;
+  const gFanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.gfan;
   });
-  const sohmV2Balance = useSelector(state => {
-    return state.account.balances && state.account.balances.sohm;
+  const sfanV2Balance = useSelector(state => {
+    return state.account.balances && state.account.balances.sfan;
   });
 
-  const calculateWrappedAsSohm = balance => {
+  const calculateWrappedAsSfan = balance => {
     return Number(balance) * Number(currentIndex);
   };
-  const fiatDaoAsSohm = calculateWrappedAsSohm(fiatDaowsohmBalance);
-  const gOhmAsSohm = calculateWrappedAsSohm(gOhmBalance);
-  const wsohmAsSohm = calculateWrappedAsSohm(wsohmBalance);
+  const fiatDaoAsSfan = calculateWrappedAsSfan(fiatDaowsfanBalance);
+  const gFanAsSfan = calculateWrappedAsSfan(gFanBalance);
+  const wsfanAsSfan = calculateWrappedAsSfan(wsfanBalance);
 
   const setMax = () => {
     if (view === 0) {
-      setQuantity(ohmBalance);
+      setQuantity(fanBalance);
     } else {
-      setQuantity(sohmBalance);
+      setQuantity(sfanBalance);
     }
   };
 
@@ -140,12 +140,12 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
 
     // 1st catch if quantity > balance
     let gweiValue = ethers.utils.parseUnits(quantity, "gwei");
-    if (action === "stake" && gweiValue.gt(ethers.utils.parseUnits(ohmBalance, "gwei"))) {
-      return dispatch(error("You cannot stake more than your OHM balance."));
+    if (action === "stake" && gweiValue.gt(ethers.utils.parseUnits(fanBalance, "gwei"))) {
+      return dispatch(error("You cannot stake more than your FAN balance."));
     }
 
-    if (action === "unstake" && gweiValue.gt(ethers.utils.parseUnits(sohmBalance, "gwei"))) {
-      return dispatch(error("You cannot unstake more than your sOHM balance."));
+    if (action === "unstake" && gweiValue.gt(ethers.utils.parseUnits(sfanBalance, "gwei"))) {
+      return dispatch(error("You cannot unstake more than your sFAN balance."));
     }
 
     await dispatch(
@@ -155,8 +155,8 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
 
   const hasAllowance = useCallback(
     token => {
-      if (token === "ohm") return stakeAllowance > 0;
-      if (token === "sohm") return unstakeAllowance > 0;
+      if (token === "fan") return stakeAllowance > 0;
+      if (token === "sfan") return unstakeAllowance > 0;
       return 0;
     },
     [stakeAllowance, unstakeAllowance],
@@ -177,7 +177,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
   };
 
   const trimmedBalance = Number(
-    [sohmBalance, gOhmAsSohm, sohmV2Balance, wsohmAsSohm, fiatDaoAsSohm, fsohmBalance]
+    [sfanBalance, gFanAsSfan, sfanV2Balance, wsfanAsSfan, fiatDaoAsSfan, fsfanBalance]
       .filter(Boolean)
       .map(balance => Number(balance))
       .reduce((a, b) => a + b, 0)
@@ -198,7 +198,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
   return (
     <div id="v1-stake-view">
       <Zoom in={true} onEntered={() => setZoomed(true)}>
-        <Paper className={`ohm-card`}>
+        <Paper className={`fan-card`}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <div className="card-header">
@@ -253,7 +253,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                         <Trans>Current Index</Trans> (v1)
                       </Typography>
                       <Typography variant="h4">
-                        {currentIndex ? <>{trim(currentIndex, 1)} OHM</> : <Skeleton width="150px" />}
+                        {currentIndex ? <>{trim(currentIndex, 1)} FAN</> : <Skeleton width="150px" />}
                       </Typography>
                     </div>
                   </Grid>
@@ -268,7 +268,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                     {modalButton}
                   </div>
                   <Typography variant="h6">
-                    <Trans>Connect your wallet to stake OHM</Trans>
+                    <Trans>Connect your wallet to stake FAN</Trans>
                   </Typography>
                 </div>
               ) : (
@@ -293,10 +293,10 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                         {view === 0 ? (
                           <>
                             {hasActiveV1Bonds
-                              ? t`Once your current bonds have been claimed, you can migrate your assets to stake more OHM`
+                              ? t`Once your current bonds have been claimed, you can migrate your assets to stake more FAN`
                               : !oldAssetsDetected
                               ? t`All your assets are migrated`
-                              : t`You must complete the migration of your assets to stake additional OHM`}
+                              : t`You must complete the migration of your assets to stake additional FAN`}
                           </>
                         ) : (
                           <br />
@@ -306,13 +306,13 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
 
                     <Box className="stake-action-row v1-row " display="flex" alignItems="center">
                       {address && !isAllowanceDataLoading ? (
-                        !hasAllowance("sohm") && view === 1 ? (
+                        !hasAllowance("sfan") && view === 1 ? (
                           <Box className="help-text">
                             <Typography variant="body1" className="stake-note" color="textSecondary">
                               <>
-                                <Trans>First time unstaking</Trans> <b>sOHM</b>?
+                                <Trans>First time unstaking</Trans> <b>sFAN</b>?
                                 <br />
-                                <Trans>Please approve Olympus Dao to use your</Trans> <b>sOHM </b>
+                                <Trans>Please approve Olympus Dao to use your</Trans> <b>sFAN </b>
                                 <Trans> for unstaking</Trans>.
                               </>
                             </Typography>
@@ -320,7 +320,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                         ) : (
                           <>
                             {view === 1 && (
-                              <FormControl className="ohm-input" variant="outlined" color="primary">
+                              <FormControl className="fan-input" variant="outlined" color="primary">
                                 <InputLabel htmlFor="amount-input"></InputLabel>
                                 <OutlinedInput
                                   id="amount-input"
@@ -387,7 +387,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                       <TabPanel value={view} index={1} className="stake-tab-panel">
                         {isAllowanceDataLoading ? (
                           <Skeleton />
-                        ) : address && hasAllowance("sohm") ? (
+                        ) : address && hasAllowance("sfan") ? (
                           <Button
                             className="stake-button"
                             variant="contained"
@@ -397,7 +397,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                               onChangeStake("unstake");
                             }}
                           >
-                            {txnButtonText(pendingTransactions, "unstaking", t`Unstake OHM`)}
+                            {txnButtonText(pendingTransactions, "unstaking", t`Unstake FAN`)}
                           </Button>
                         ) : (
                           <Button
@@ -406,7 +406,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                             color="primary"
                             disabled={isPendingTxn(pendingTransactions, "approve_unstaking")}
                             onClick={() => {
-                              onSeekApproval("sohm");
+                              onSeekApproval("sfan");
                             }}
                           >
                             {txnButtonText(pendingTransactions, "approve_unstaking", t`Approve`)}
@@ -419,7 +419,7 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                     <StakeRow
                       title={`${t`Unstaked Balance`} (v1)`}
                       id="user-balance"
-                      balance={`${trim(Number(ohmBalance), 4)} OHM`}
+                      balance={`${trim(Number(fanBalance), 4)} FAN`}
                       {...{ isAppLoading }}
                     />
                     <Accordion className="stake-accordion" square>
@@ -427,57 +427,57 @@ function V1Stake({ oldAssetsDetected, setMigrationModalOpen, hasActiveV1Bonds })
                         <StakeRow
                           title={t`Staked Balance`}
                           id="user-staked-balance"
-                          balance={`${trimmedBalance} sOHM`}
+                          balance={`${trimmedBalance} sFAN`}
                           {...{ isAppLoading }}
                         />
                       </AccordionSummary>
                       <AccordionDetails>
                         <StakeRow
                           title={`${t`Single Staking`} (v1)`}
-                          balance={`${trim(Number(sohmBalance), 4)} sOHM`}
+                          balance={`${trim(Number(sfanBalance), 4)} sFAN`}
                           indented
                           {...{ isAppLoading }}
                         />
-                        {Number(fsohmBalance) > 0.00009 && (
+                        {Number(fsfanBalance) > 0.00009 && (
                           <StakeRow
                             title={`${t`Staked Balance in Fuse`} (v2)`}
-                            balance={`${trim(Number(fsohmBalance), 4)} fsOHM`}
+                            balance={`${trim(Number(fsfanBalance), 4)} fsFAN`}
                             indented
                             {...{ isAppLoading }}
                           />
                         )}
-                        {Number(wsohmBalance) > 0.0 && (
+                        {Number(wsfanBalance) > 0.0 && (
                           <StakeRow
                             title={`${t`Wrapped Balance`} (v1)`}
-                            balance={`${trim(Number(wsohmBalance), 4)} wsOHM`}
+                            balance={`${trim(Number(wsfanBalance), 4)} wsFAN`}
                             {...{ isAppLoading }}
                             indented
                           />
                         )}
-                        {Number(fiatDaowsohmBalance) > 0.00009 && (
+                        {Number(fiatDaowsfanBalance) > 0.00009 && (
                           <StakeRow
                             title={`${t`Wrapped Balance in FiatDAO`} (v1)`}
-                            balance={`${trim(Number(fiatDaowsohmBalance), 4)} wsOHM`}
+                            balance={`${trim(Number(fiatDaowsfanBalance), 4)} wsFAN`}
                             {...{ isAppLoading }}
                             indented
                           />
                         )}
                         <StakeRow
                           title={`${t`Single Staking`} (v2)`}
-                          balance={`${trim(Number(sohmV2Balance), 4)} sOHM`}
+                          balance={`${trim(Number(sfanV2Balance), 4)} sFAN`}
                           indented
                           {...{ isAppLoading }}
                         />
                         <StakeRow
                           title={`${t`Wrapped Balance`} (v2)`}
-                          balance={`${trim(Number(gOhmBalance), 4)} gOHM`}
+                          balance={`${trim(Number(gFanBalance), 4)} gFAN`}
                           indented
                           {...{ isAppLoading }}
                         />
                       </AccordionDetails>
                     </Accordion>
                     <Divider color="secondary" />
-                    <StakeRow title={t`Next Reward Amount`} balance={`${nextRewardValue} sOHM`} {...{ isAppLoading }} />
+                    <StakeRow title={t`Next Reward Amount`} balance={`${nextRewardValue} sFAN`} {...{ isAppLoading }} />
                     <StakeRow
                       title={t`Next Reward Yield`}
                       balance={`${stakingRebasePercentage}%`}

@@ -9,7 +9,7 @@
         },
         {
           "internalType": "address",
-          "name": "_sOHM",
+          "name": "_sFAN",
           "type": "address"
         }
       ],
@@ -439,7 +439,7 @@
         },
         {
           "internalType": "address",
-          "name": "_sOHM",
+          "name": "_sFAN",
           "type": "address"
         }
       ],
@@ -513,10 +513,10 @@
     },
     {
       "inputs": [],
-      "name": "sOHM",
+      "name": "sFAN",
       "outputs": [
         {
-          "internalType": "contract IsOHM",
+          "internalType": "contract IsFAN",
           "name": "",
           "type": "address"
         }

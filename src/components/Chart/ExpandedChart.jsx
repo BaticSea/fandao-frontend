@@ -19,7 +19,7 @@ function ExpandedChart({
     <Modal open={open} onClose={handleClose}>
       <Backdrop open={true}>
         <Fade in={true}>
-          <Paper className="ohm-card ohm-popover">
+          <Paper className="fan-card fan-popover">
             <div className="chart-card-header">
               <Box display="flex">
                 <Box display="flex" alignItems="center" style={{ width: "max-content", whiteSpace: "nowrap" }}>

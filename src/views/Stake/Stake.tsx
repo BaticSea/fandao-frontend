@@ -28,9 +28,9 @@ import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
 
 import RebaseTimer from "../../components/RebaseTimer/RebaseTimer";
 import TabPanel from "../../components/TabPanel";
-import { getGohmBalFromSohm, trim } from "../../helpers";
+import { getGfanBalFromSfan, trim } from "../../helpers";
 import { changeApproval, changeStake } from "../../slices/StakeThunk";
-import { changeApproval as changeGohmApproval } from "../../slices/WrapThunk";
+import { changeApproval as changeGfanApproval } from "../../slices/WrapThunk";
 import "./stake.scss";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonText } from "src/slices/PendingTxnsSlice";
@@ -69,53 +69,53 @@ function Stake() {
   const fiveDayRate = useAppSelector(state => {
     return state.app.fiveDayRate;
   });
-  const ohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.ohm;
+  const fanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fan;
   });
-  const sohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.sohm;
+  const sfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.sfan;
   });
-  const sohmV1Balance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.sohmV1;
+  const sfanV1Balance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.sfanV1;
   });
-  const fsohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.fsohm;
+  const fsfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fsfan;
   });
-  const fgohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.fgohm;
+  const fgfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fgfan;
   });
-  const fgOHMAsfsOHMBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.fgOHMAsfsOHM;
+  const fgFANAsfsFANBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fgFANAsfsFAN;
   });
-  const wsohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.wsohm;
+  const wsfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.wsfan;
   });
-  const fiatDaowsohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.fiatDaowsohm;
+  const fiatDaowsfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.fiatDaowsfan;
   });
-  const calculateWrappedAsSohm = (balance: string) => {
+  const calculateWrappedAsSfan = (balance: string) => {
     return Number(balance) * Number(currentIndex);
   };
-  const fiatDaoAsSohm = calculateWrappedAsSohm(fiatDaowsohmBalance);
-  const gOhmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.gohm;
+  const fiatDaoAsSfan = calculateWrappedAsSfan(fiatDaowsfanBalance);
+  const gFanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.gfan;
   });
 
-  // const gOhmAsSohm = calculateWrappedAsSohm(gOhmBalance);
-  const gOhmAsSohm = useAppSelector(state => {
-    return state.account.balances && state.account.balances.gOhmAsSohmBal;
+  // const gFanAsSfan = calculateWrappedAsSfan(gFanBalance);
+  const gFanAsSfan = useAppSelector(state => {
+    return state.account.balances && state.account.balances.gFanAsSfanBal;
   });
-  const wsohmAsSohm = calculateWrappedAsSohm(wsohmBalance);
+  const wsfanAsSfan = calculateWrappedAsSfan(wsfanBalance);
 
   const stakeAllowance = useAppSelector(state => {
-    return (state.account.staking && state.account.staking.ohmStake) || 0;
+    return (state.account.staking && state.account.staking.fanStake) || 0;
   });
   const unstakeAllowance = useAppSelector(state => {
-    return (state.account.staking && state.account.staking.ohmUnstake) || 0;
+    return (state.account.staking && state.account.staking.fanUnstake) || 0;
   });
 
   const directUnstakeAllowance = useAppSelector(state => {
-    return (state.account.wrapping && state.account.wrapping.gOhmUnwrap) || 0;
+    return (state.account.wrapping && state.account.wrapping.gFanUnwrap) || 0;
   });
 
   const stakingRebase = useAppSelector(state => {
@@ -134,17 +134,17 @@ function Stake() {
 
   const setMax = () => {
     if (view === 0) {
-      setQuantity(ohmBalance);
+      setQuantity(fanBalance);
     } else if (!checked) {
-      setQuantity(sohmBalance);
+      setQuantity(sfanBalance);
     } else if (checked) {
-      setQuantity(gOhmAsSohm.toString());
+      setQuantity(gFanAsSfan.toString());
     }
   };
 
   const onSeekApproval = async (token: string) => {
-    if (token === "gohm") {
-      await dispatch(changeGohmApproval({ address, token: token.toLowerCase(), provider, networkID: networkId }));
+    if (token === "gfan") {
+      await dispatch(changeGfanApproval({ address, token: token.toLowerCase(), provider, networkID: networkId }));
     } else {
       await dispatch(changeApproval({ address, token, provider, networkID: networkId, version2: true }));
     }
@@ -159,26 +159,26 @@ function Stake() {
 
     // 1st catch if quantity > balance
     let gweiValue = ethers.utils.parseUnits(quantity.toString(), "gwei");
-    if (action === "stake" && gweiValue.gt(ethers.utils.parseUnits(ohmBalance, "gwei"))) {
-      return dispatch(error(t`You cannot stake more than your OHM balance.`));
+    if (action === "stake" && gweiValue.gt(ethers.utils.parseUnits(fanBalance, "gwei"))) {
+      return dispatch(error(t`You cannot stake more than your FAN balance.`));
     }
 
-    if (checked === false && action === "unstake" && gweiValue.gt(ethers.utils.parseUnits(sohmBalance, "gwei"))) {
+    if (checked === false && action === "unstake" && gweiValue.gt(ethers.utils.parseUnits(sfanBalance, "gwei"))) {
       return dispatch(
         error(
-          t`You do not have enough sOHM to complete this transaction.  To unstake from gOHM, please check the box.`,
+          t`You do not have enough sFAN to complete this transaction.  To unstake from gFAN, please check the box.`,
         ),
       );
     }
 
     /**
-     * converts sOHM quantity to gOHM quantity when box is checked for gOHM staking
-     * @returns sOHM as gOHM quantity
+     * converts sFAN quantity to gFAN quantity when box is checked for gFAN staking
+     * @returns sFAN as gFAN quantity
      */
     // const formQuant = checked && currentIndex && view === 1 ? quantity / Number(currentIndex) : quantity;
     const formQuant = async () => {
       if (checked && currentIndex && view === 1) {
-        return await getGohmBalFromSohm({ provider, networkID: networkId, sOHMbalance: quantity });
+        return await getGfanBalFromSfan({ provider, networkID: networkId, sFANbalance: quantity });
       } else {
         return quantity;
       }
@@ -199,9 +199,9 @@ function Stake() {
 
   const hasAllowance = useCallback(
     token => {
-      if (token === "ohm") return stakeAllowance > 0;
-      if (token === "sohm") return unstakeAllowance > 0;
-      if (token === "gohm") return directUnstakeAllowance > 0;
+      if (token === "fan") return stakeAllowance > 0;
+      if (token === "sfan") return unstakeAllowance > 0;
+      if (token === "gfan") return directUnstakeAllowance > 0;
       return 0;
     },
     [stakeAllowance, unstakeAllowance, directUnstakeAllowance],
@@ -226,7 +226,7 @@ function Stake() {
   }, []);
 
   const trimmedBalance = Number(
-    [sohmBalance, gOhmAsSohm, sohmV1Balance, wsohmAsSohm, fiatDaoAsSohm, fsohmBalance, fgOHMAsfsOHMBalance]
+    [sfanBalance, gFanAsSfan, sfanV1Balance, wsfanAsSfan, fiatDaoAsSfan, fsfanBalance, fgFANAsfsFANBalance]
       .filter(Boolean)
       .map(balance => Number(balance))
       .reduce((a, b) => a + b, 0)
@@ -253,14 +253,14 @@ function Stake() {
   };
 
   function ConfirmDialog() {
-    const gohmQuantity = () => {
+    const gfanQuantity = () => {
       if (quantity) {
         return (Number(quantity) / Number(currentIndex)).toFixed(4);
       } else {
         return "";
       }
     };
-    const ohmQuantity = () => {
+    const fanQuantity = () => {
       if (quantity) {
         return Number(quantity).toFixed(4);
       } else {
@@ -270,7 +270,7 @@ function Stake() {
 
     return (
       <Paper
-        className="ohm-card confirm-dialog"
+        className="fan-card confirm-dialog"
         style={{ marginBottom: "0.8rem", width: "100%", padding: "12px 12px" }}
       >
         <Box className="dialog-container" display="flex" alignItems="center" justifyContent="center">
@@ -280,17 +280,17 @@ function Stake() {
               onChange={e => handleCheck(e)}
               color="primary"
               inputProps={{ "aria-label": "checkbox" }}
-              className="stake-to-ohm-checkbox"
+              className="stake-to-fan-checkbox"
               checkedIcon={<CheckBoxIcon viewBox="0 0 25 25" />}
               icon={<CheckBoxOutlineBlankIcon viewBox="0 0 25 25" />}
             />
           </Box>
           <Box width="100%">
             <Typography variant="body2" style={{ margin: "10px 10px 10px 0px" }}>
-              {view === 0 && checked && `Staking ${ohmQuantity()} OHM to ${gohmQuantity()} gOHM`}
-              {view === 1 && checked && `Unstaking ${gohmQuantity()} gOHM to ${ohmQuantity()} OHM`}
-              {view === 0 && !checked && "Stake to gOHM instead"}
-              {view === 1 && !checked && "Unstake from gOHM instead"}
+              {view === 0 && checked && `Staking ${fanQuantity()} FAN to ${gfanQuantity()} gFAN`}
+              {view === 1 && checked && `Unstaking ${gfanQuantity()} gFAN to ${fanQuantity()} FAN`}
+              {view === 0 && !checked && "Stake to gFAN instead"}
+              {view === 1 && !checked && "Unstake from gFAN instead"}
             </Typography>
           </Box>
         </Box>
@@ -301,7 +301,7 @@ function Stake() {
   return (
     <div id="stake-view">
       <Zoom in={true} onEntered={() => setZoomed(true)}>
-        <Paper className={`ohm-card`}>
+        <Paper className={`fan-card`}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <div className="card-header">
@@ -327,7 +327,7 @@ function Stake() {
                 <Metric
                   className="stake-index"
                   label={t`Current Index`}
-                  metric={`${formattedCurrentIndex} OHM`}
+                  metric={`${formattedCurrentIndex} FAN`}
                   isLoading={currentIndex ? false : true}
                 />
               </MetricCollection>
@@ -340,7 +340,7 @@ function Stake() {
                     {modalButton}
                   </div>
                   <Typography variant="h6">
-                    <Trans>Connect your wallet to stake OHM</Trans>
+                    <Trans>Connect your wallet to stake FAN</Trans>
                   </Typography>
                 </div>
               ) : (
@@ -360,7 +360,7 @@ function Stake() {
                     >
                       <Tab
                         label={t({
-                          id: "do_stake",
+                          id: "Stake",
                           comment: "The action of staking (verb)",
                         })}
                         {...a11yProps(0)}
@@ -370,30 +370,30 @@ function Stake() {
                     <Grid container className="stake-action-row">
                       <Grid item xs={12} sm={8} className="stake-grid-item">
                         {address && !isAllowanceDataLoading ? (
-                          (!hasAllowance("ohm") && view === 0) ||
-                          (!hasAllowance("sohm") && view === 1 && !checked) ||
-                          (!hasAllowance("gohm") && view === 1 && checked) ? (
+                          (!hasAllowance("fan") && view === 0) ||
+                          (!hasAllowance("sfan") && view === 1 && !checked) ||
+                          (!hasAllowance("gfan") && view === 1 && checked) ? (
                             <Box className="help-text">
                               <Typography variant="body1" className="stake-note" color="textSecondary">
                                 {view === 0 ? (
                                   <>
-                                    <Trans>First time staking</Trans> <b>OHM</b>?
+                                    <Trans>First time staking</Trans> <b>FAN</b>?
                                     <br />
-                                    <Trans>Please approve Olympus Dao to use your</Trans> <b>OHM</b>{" "}
+                                    <Trans>Please approve Olympus Dao to use your</Trans> <b>FAN</b>{" "}
                                     <Trans>for staking</Trans>.
                                   </>
                                 ) : (
                                   <>
-                                    <Trans>First time unstaking</Trans> <b>sOHM</b>?
+                                    <Trans>First time unstaking</Trans> <b>sFAN</b>?
                                     <br />
-                                    <Trans>Please approve Olympus Dao to use your</Trans> <b>sOHM</b>{" "}
+                                    <Trans>Please approve Olympus Dao to use your</Trans> <b>sFAN</b>{" "}
                                     <Trans>for unstaking</Trans>.
                                   </>
                                 )}
                               </Typography>
                             </Box>
                           ) : (
-                            <FormControl className="ohm-input" variant="outlined" color="primary">
+                            <FormControl className="fan-input" variant="outlined" color="primary">
                               <InputLabel htmlFor="amount-input"></InputLabel>
                               <OutlinedInput
                                 id="amount-input"
@@ -422,7 +422,7 @@ function Stake() {
                           <Box m={-2}>
                             {isAllowanceDataLoading ? (
                               <Skeleton />
-                            ) : address && hasAllowance("ohm") ? (
+                            ) : address && hasAllowance("fan") ? (
                               <Button
                                 className="stake-button"
                                 variant="contained"
@@ -432,7 +432,7 @@ function Stake() {
                                   onChangeStake("stake");
                                 }}
                               >
-                                {txnButtonText(pendingTransactions, "staking", t`Stake OHM`)}
+                                {txnButtonText(pendingTransactions, "staking", t`Stake FAN`)}
                               </Button>
                             ) : (
                               <Button
@@ -441,7 +441,7 @@ function Stake() {
                                 color="primary"
                                 disabled={isPendingTxn(pendingTransactions, "approve_staking")}
                                 onClick={() => {
-                                  onSeekApproval("ohm");
+                                  onSeekApproval("fan");
                                 }}
                               >
                                 {txnButtonText(pendingTransactions, "approve_staking", t`Approve`)}
@@ -454,7 +454,7 @@ function Stake() {
                           <Box m={-2}>
                             {isAllowanceDataLoading ? (
                               <Skeleton />
-                            ) : (address && hasAllowance("sohm") && !checked) || (hasAllowance("gohm") && checked) ? (
+                            ) : (address && hasAllowance("sfan") && !checked) || (hasAllowance("gfan") && checked) ? (
                               <Button
                                 className="stake-button"
                                 variant="contained"
@@ -473,7 +473,7 @@ function Stake() {
                                 color="primary"
                                 disabled={isPendingTxn(pendingTransactions, "approve_unstaking")}
                                 onClick={() => {
-                                  onSeekApproval(checked ? "gohm" : "sohm");
+                                  onSeekApproval(checked ? "gfan" : "sfan");
                                 }}
                               >
                                 {txnButtonText(pendingTransactions, "approve_unstaking", t`Approve`)}
@@ -489,7 +489,7 @@ function Stake() {
                     <StakeRow
                       title={t`Unstaked Balance`}
                       id="user-balance"
-                      balance={`${trim(Number(ohmBalance), 4)} OHM`}
+                      balance={`${trim(Number(fanBalance), 4)} FAN`}
                       {...{ isAppLoading }}
                     />
                     <Accordion className="stake-accordion" square expanded={true}>
@@ -497,59 +497,59 @@ function Stake() {
                         <StakeRow
                           title={t`Staked Balance`}
                           id="user-staked-balance"
-                          balance={`${trimmedBalance} sOHM`}
+                          balance={`${trimmedBalance} sFAN`}
                           {...{ isAppLoading }}
                         />
                       </AccordionSummary>
                       <AccordionDetails>
                         <StakeRow
                           title={t`Single Staking`}
-                          balance={`${trim(Number(sohmBalance), 4)} sOHM`}
+                          balance={`${trim(Number(sfanBalance), 4)} sFAN`}
                           indented
                           {...{ isAppLoading }}
                         />
                         <StakeRow
                           title={`${t`Wrapped Balance`}`}
-                          balance={`${trim(Number(gOhmBalance), 4)} gOHM`}
+                          balance={`${trim(Number(gFanBalance), 4)} gFAN`}
                           indented
                           {...{ isAppLoading }}
                         />
-                        {Number(fgohmBalance) > 0.00009 && (
+                        {Number(fgfanBalance) > 0.00009 && (
                           <StakeRow
                             title={`${t`Wrapped Balance in Fuse`}`}
-                            balance={`${trim(Number(fgohmBalance), 4)} gOHM`}
+                            balance={`${trim(Number(fgfanBalance), 4)} gFAN`}
                             indented
                             {...{ isAppLoading }}
                           />
                         )}
-                        {Number(sohmV1Balance) > 0.00009 && (
+                        {Number(sfanV1Balance) > 0.00009 && (
                           <StakeRow
                             title={`${t`Single Staking`} (v1)`}
-                            balance={`${trim(Number(sohmV1Balance), 4)} sOHM (v1)`}
+                            balance={`${trim(Number(sfanV1Balance), 4)} sFAN (v1)`}
                             indented
                             {...{ isAppLoading }}
                           />
                         )}
-                        {Number(wsohmBalance) > 0.00009 && (
+                        {Number(wsfanBalance) > 0.00009 && (
                           <StakeRow
                             title={`${t`Wrapped Balance`} (v1)`}
-                            balance={`${trim(Number(wsohmBalance), 4)} wsOHM (v1)`}
+                            balance={`${trim(Number(wsfanBalance), 4)} wsFAN (v1)`}
                             {...{ isAppLoading }}
                             indented
                           />
                         )}
-                        {Number(fiatDaowsohmBalance) > 0.00009 && (
+                        {Number(fiatDaowsfanBalance) > 0.00009 && (
                           <StakeRow
                             title={t`Wrapped Balance in FiatDAO`}
-                            balance={`${trim(Number(fiatDaowsohmBalance), 4)} wsOHM (v1)`}
+                            balance={`${trim(Number(fiatDaowsfanBalance), 4)} wsFAN (v1)`}
                             {...{ isAppLoading }}
                             indented
                           />
                         )}
-                        {Number(fsohmBalance) > 0.00009 && (
+                        {Number(fsfanBalance) > 0.00009 && (
                           <StakeRow
                             title={t`Staked Balance in Fuse`}
-                            balance={`${trim(Number(fsohmBalance), 4)} fsOHM (v1)`}
+                            balance={`${trim(Number(fsfanBalance), 4)} fsFAN (v1)`}
                             indented
                             {...{ isAppLoading }}
                           />
@@ -557,7 +557,7 @@ function Stake() {
                       </AccordionDetails>
                     </Accordion>
                     <Divider color="secondary" />
-                    <StakeRow title={t`Next Reward Amount`} balance={`${nextRewardValue} sOHM`} {...{ isAppLoading }} />
+                    <StakeRow title={t`Next Reward Amount`} balance={`${nextRewardValue} sFAN`} {...{ isAppLoading }} />
                     <StakeRow
                       title={t`Next Reward Yield`}
                       balance={`${stakingRebasePercentage}%`}

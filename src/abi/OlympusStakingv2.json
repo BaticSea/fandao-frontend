@@ -1,9 +1,9 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_ohm", "type": "address" },
-      { "internalType": "address", "name": "_sOHM", "type": "address" },
-      { "internalType": "address", "name": "_gOHM", "type": "address" },
+      { "internalType": "address", "name": "_fan", "type": "address" },
+      { "internalType": "address", "name": "_sFAN", "type": "address" },
+      { "internalType": "address", "name": "_gFAN", "type": "address" },
       { "internalType": "uint256", "name": "_epochLength", "type": "uint256" },
       { "internalType": "uint256", "name": "_firstEpochNumber", "type": "uint256" },
       { "internalType": "uint256", "name": "_firstEpochTime", "type": "uint256" },
@@ -34,7 +34,7 @@
   },
   {
     "inputs": [],
-    "name": "OHM",
+    "name": "FAN",
     "outputs": [{ "internalType": "contract IERC20", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
@@ -84,8 +84,8 @@
   },
   {
     "inputs": [],
-    "name": "gOHM",
-    "outputs": [{ "internalType": "contract IgOHM", "name": "", "type": "address" }],
+    "name": "gFAN",
+    "outputs": [{ "internalType": "contract IgFAN", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -105,8 +105,8 @@
   },
   {
     "inputs": [],
-    "name": "sOHM",
-    "outputs": [{ "internalType": "contract IsOHM", "name": "", "type": "address" }],
+    "name": "sFAN",
+    "outputs": [{ "internalType": "contract IsFAN", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },

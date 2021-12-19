@@ -77,7 +77,7 @@ function ChooseBond() {
       {!isAccountLoading && !isEmpty(accountBonds) && <ClaimBonds activeBonds={accountBonds} />}
 
       <Zoom in={true}>
-        <Paper className="ohm-card">
+        <Paper className="fan-card">
           <Box className="card-header">
             <Typography variant="h5" data-testid="t">
               <Trans>Bond</Trans> (1,1)
@@ -91,7 +91,7 @@ function ChooseBond() {
               isLoading={!!treasuryBalance ? false : true}
             />
             <Metric
-              label={t`OHM Price`}
+              label={t`FAN Price`}
               metric={formatCurrency(Number(marketPrice), 2)}
               isLoading={marketPrice ? false : true}
             />
@@ -135,7 +135,7 @@ function ChooseBond() {
       </Zoom>
 
       {isSmallScreen && (
-        <Box className="ohm-card-container">
+        <Box className="fan-card-container">
           <Grid container item spacing={2}>
             {bonds.map(bond => {
               // NOTE (appleseed): temporary for ONHOLD MIGRATION

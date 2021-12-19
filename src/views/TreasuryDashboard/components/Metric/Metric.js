@@ -20,11 +20,11 @@ export const MarketCap = () => {
   );
 };
 
-export const OHMPrice = () => {
+export const FANPrice = () => {
   const marketPrice = useSelector(state => state.app.marketPrice);
   return (
     <Metric
-      label={t`OHM Price`}
+      label={t`FAN Price`}
       metric={marketPrice && formatCurrency(marketPrice, 2)}
       isLoading={marketPrice ? false : true}
       {...sharedProps}
@@ -46,13 +46,13 @@ export const CircSupply = () => {
   );
 };
 
-export const BackingPerOHM = () => {
-  const backingPerOhm = useSelector(state => state.app.treasuryMarketValue / state.app.circSupply);
+export const BackingPerFAN = () => {
+  const backingPerFan = useSelector(state => state.app.treasuryMarketValue / state.app.circSupply);
   return (
     <Metric
-      label={t`Backing per OHM`}
-      metric={!isNaN(backingPerOhm) && formatCurrency(backingPerOhm, 2)}
-      isLoading={backingPerOhm ? false : true}
+      label={t`Backing per FAN`}
+      metric={!isNaN(backingPerFan) && formatCurrency(backingPerFan, 2)}
+      isLoading={backingPerFan ? false : true}
       {...sharedProps}
     />
   );
@@ -63,24 +63,24 @@ export const CurrentIndex = () => {
   return (
     <Metric
       label={t`Current Index`}
-      metric={currentIndex && trim(currentIndex, 2) + " sOHM"}
+      metric={currentIndex && trim(currentIndex, 2) + " sFAN"}
       isLoading={currentIndex ? false : true}
       {...sharedProps}
-      tooltip="The current index tracks the amount of sOHM accumulated since the beginning of staking. Basically, how much sOHM one would have if they staked and held a single OHM from day 1."
+      tooltip="The current index tracks the amount of sFAN accumulated since the beginning of staking. Basically, how much sFAN one would have if they staked and held a single FAN from day 1."
     />
   );
 };
 
-export const GOHMPrice = () => {
-  const gOhmPrice = useSelector(state => state.app.marketPrice * state.app.currentIndex);
+export const GFANPrice = () => {
+  const gFanPrice = useSelector(state => state.app.marketPrice * state.app.currentIndex);
   return (
     <Metric
       className="metric wsoprice"
-      label={t`gOHM Price`}
-      metric={gOhmPrice && formatCurrency(gOhmPrice, 2)}
-      isLoading={gOhmPrice ? false : true}
+      label={t`gFAN Price`}
+      metric={gFanPrice && formatCurrency(gFanPrice, 2)}
+      isLoading={gFanPrice ? false : true}
       {...sharedProps}
-      tooltip={`gOHM = sOHM * index\n\nThe price of gOHM is equal to the price of OHM multiplied by the current index`}
+      tooltip={`gFAN = sFAN * index\n\nThe price of gFAN is equal to the price of FAN multiplied by the current index`}
     />
   );
 };

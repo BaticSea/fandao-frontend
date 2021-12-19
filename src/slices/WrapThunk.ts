@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers";
 import { addresses } from "../constants";
 import { abi as ierc20ABI } from "../abi/IERC20.json";
-import { abi as v2sOHM } from "../abi/v2sOhmNew.json";
+import { abi as v2sFAN } from "../abi/v2sFanNew.json";
 import { clearPendingTxn, fetchPendingTxns, getWrappingTypeText } from "./PendingTxnsSlice";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchAccountSuccess, getBalances } from "./AccountSlice";
@@ -27,28 +27,28 @@ export const changeApproval = createAsyncThunk(
     }
 
     const signer = provider.getSigner();
-    const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, ierc20ABI, signer) as IERC20;
-    const gohmContract = new ethers.Contract(addresses[networkID].GOHM_ADDRESS as string, ierc20ABI, signer) as IERC20;
+    const sfanContract = new ethers.Contract(addresses[networkID].SFAN_V2 as string, ierc20ABI, signer) as IERC20;
+    const gfanContract = new ethers.Contract(addresses[networkID].GFAN_ADDRESS as string, ierc20ABI, signer) as IERC20;
     let approveTx;
-    let wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
-    let unwrapAllowance = await gohmContract.allowance(address, addresses[networkID].STAKING_V2);
+    let wrapAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_V2);
+    let unwrapAllowance = await gfanContract.allowance(address, addresses[networkID].STAKING_V2);
 
     try {
-      if (token === "sohm") {
+      if (token === "sfan") {
         // won't run if wrapAllowance > 0
-        approveTx = await sohmContract.approve(
+        approveTx = await sfanContract.approve(
           addresses[networkID].STAKING_V2,
           ethers.utils.parseUnits("1000000000", "gwei"),
         );
-      } else if (token === "gohm") {
-        approveTx = await gohmContract.approve(
+      } else if (token === "gfan") {
+        approveTx = await gfanContract.approve(
           addresses[networkID].STAKING_V2,
           ethers.utils.parseUnits("1000000000", "ether"),
         );
       }
 
-      const text = "Approve " + (token === "sohm" ? "Wrapping" : "Unwrapping");
-      const pendingTxnType = token === "sohm" ? "approve_wrapping" : "approve_unwrapping";
+      const text = "Approve " + (token === "sfan" ? "Wrapping" : "Unwrapping");
+      const pendingTxnType = token === "sfan" ? "approve_wrapping" : "approve_unwrapping";
       if (approveTx) {
         dispatch(fetchPendingTxns({ txnHash: approveTx.hash, text, type: pendingTxnType }));
         await approveTx.wait();
@@ -64,14 +64,14 @@ export const changeApproval = createAsyncThunk(
     }
 
     // go get fresh allowances
-    wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
-    unwrapAllowance = await gohmContract.allowance(address, addresses[networkID].STAKING_V2);
+    wrapAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_V2);
+    unwrapAllowance = await gfanContract.allowance(address, addresses[networkID].STAKING_V2);
 
     return dispatch(
       fetchAccountSuccess({
         wrapping: {
-          sohmWrap: Number(ethers.utils.formatUnits(wrapAllowance, "gwei")),
-          gOhmUnwrap: Number(ethers.utils.formatUnits(unwrapAllowance, "ether")),
+          sfanWrap: Number(ethers.utils.formatUnits(wrapAllowance, "gwei")),
+          gFanUnwrap: Number(ethers.utils.formatUnits(unwrapAllowance, "ether")),
         },
       }),
     );

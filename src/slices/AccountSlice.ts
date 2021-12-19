@@ -1,9 +1,9 @@
 import { BigNumber, BigNumberish, ethers } from "ethers";
 import { addresses } from "../constants";
 import { abi as ierc20Abi } from "../abi/IERC20.json";
-import { abi as sOHMv2 } from "../abi/sOhmv2.json";
+import { abi as sFANv2 } from "../abi/sFanv2.json";
 import { abi as fuseProxy } from "../abi/FuseProxy.json";
-import { abi as wsOHM } from "../abi/wsOHM.json";
+import { abi as wsFAN } from "../abi/wsFAN.json";
 import { abi as fiatDAO } from "../abi/FiatDAOContract.json";
 
 import { setAll, handleContractError } from "../helpers";
@@ -16,69 +16,69 @@ import {
   FuseProxy,
   IERC20,
   IERC20__factory,
-  SOhmv2,
-  WsOHM,
+  SFanv2,
+  WsFAN,
   OlympusStakingv2__factory,
 } from "src/typechain";
-import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
+import { GFAN__factory } from "src/typechain/factories/GFAN__factory";
 
 export const getBalances = createAsyncThunk(
   "account/getBalances",
   async ({ address, networkID, provider }: IBaseAddressAsyncThunk) => {
-    let gOhmBalance = BigNumber.from("0");
-    let gOhmBalAsSohmBal = BigNumber.from("0");
-    let ohmBalance = BigNumber.from("0");
-    let sohmBalance = BigNumber.from("0");
-    let ohmV2Balance = BigNumber.from("0");
-    let sohmV2Balance = BigNumber.from("0");
-    let wsohmBalance = BigNumber.from("0");
+    let gFanBalance = BigNumber.from("0");
+    let gFanBalAsSfanBal = BigNumber.from("0");
+    let fanBalance = BigNumber.from("0");
+    let sfanBalance = BigNumber.from("0");
+    let fanV2Balance = BigNumber.from("0");
+    let sfanV2Balance = BigNumber.from("0");
+    let wsfanBalance = BigNumber.from("0");
     let poolBalance = BigNumber.from("0");
-    let fsohmBalance = BigNumber.from(0);
-    let fgohmBalance = BigNumber.from(0);
-    let fgOHMAsfsOHMBalance = BigNumber.from(0);
-    let fiatDaowsohmBalance = BigNumber.from("0");
+    let fsfanBalance = BigNumber.from(0);
+    let fgfanBalance = BigNumber.from(0);
+    let fgFANAsfsFANBalance = BigNumber.from(0);
+    let fiatDaowsfanBalance = BigNumber.from("0");
     try {
-      const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
-      gOhmBalance = await gOhmContract.balanceOf(address);
-      gOhmBalAsSohmBal = await gOhmContract.balanceFrom(gOhmBalance.toString());
+      const gFanContract = GFAN__factory.connect(addresses[networkID].GFAN_ADDRESS, provider);
+      gFanBalance = await gFanContract.balanceOf(address);
+      gFanBalAsSfanBal = await gFanContract.balanceFrom(gFanBalance.toString());
     } catch (e) {
       handleContractError(e);
     }
     try {
-      const wsohmContract = new ethers.Contract(addresses[networkID].WSOHM_ADDRESS as string, wsOHM, provider) as WsOHM;
-      wsohmBalance = await wsohmContract.balanceOf(address);
+      const wsfanContract = new ethers.Contract(addresses[networkID].WSFAN_ADDRESS as string, wsFAN, provider) as WsFAN;
+      wsfanBalance = await wsfanContract.balanceOf(address);
     } catch (e) {
       handleContractError(e);
     }
     try {
-      const ohmContract = new ethers.Contract(
-        addresses[networkID].OHM_ADDRESS as string,
+      const fanContract = new ethers.Contract(
+        addresses[networkID].FAN_ADDRESS as string,
         ierc20Abi,
         provider,
       ) as IERC20;
-      ohmBalance = await ohmContract.balanceOf(address);
+      fanBalance = await fanContract.balanceOf(address);
     } catch (e) {
       handleContractError(e);
     }
     try {
-      const sohmContract = new ethers.Contract(
-        addresses[networkID].SOHM_ADDRESS as string,
+      const sfanContract = new ethers.Contract(
+        addresses[networkID].SFAN_ADDRESS as string,
         ierc20Abi,
         provider,
       ) as IERC20;
-      sohmBalance = await sohmContract.balanceOf(address);
+      sfanBalance = await sfanContract.balanceOf(address);
     } catch (e) {
       handleContractError(e);
     }
     try {
-      const ohmV2Contract = new ethers.Contract(addresses[networkID].OHM_V2 as string, ierc20Abi, provider) as IERC20;
-      ohmV2Balance = await ohmV2Contract.balanceOf(address);
+      const fanV2Contract = new ethers.Contract(addresses[networkID].FAN_V2 as string, ierc20Abi, provider) as IERC20;
+      fanV2Balance = await fanV2Contract.balanceOf(address);
     } catch (e) {
       handleContractError(e);
     }
     try {
-      const sohmV2Contract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, ierc20Abi, provider) as IERC20;
-      sohmV2Balance = await sohmV2Contract.balanceOf(address);
+      const sfanV2Contract = new ethers.Contract(addresses[networkID].SFAN_V2 as string, ierc20Abi, provider) as IERC20;
+      sfanV2Balance = await sfanV2Contract.balanceOf(address);
     } catch (e) {
       handleContractError(e);
     }
@@ -94,35 +94,35 @@ export const getBalances = createAsyncThunk(
       handleContractError(e);
     }
     try {
-      for (const fuseAddressKey of ["FUSE_6_SOHM", "FUSE_18_SOHM", "FUSE_36_SOHM"]) {
+      for (const fuseAddressKey of ["FUSE_6_SFAN", "FUSE_18_SFAN", "FUSE_36_SFAN"]) {
         if (addresses[networkID][fuseAddressKey]) {
-          const fsohmContract = new ethers.Contract(
+          const fsfanContract = new ethers.Contract(
             addresses[networkID][fuseAddressKey] as string,
             fuseProxy,
             provider.getSigner(),
           ) as FuseProxy;
-          let balanceOfUnderlying = await fsohmContract.callStatic.balanceOfUnderlying(address);
-          const underlying = await fsohmContract.callStatic.underlying();
-          if (underlying == addresses[networkID].GOHM_ADDRESS) {
-            fgohmBalance = balanceOfUnderlying.add(fgohmBalance);
-          } else fsohmBalance = balanceOfUnderlying.add(fsohmBalance);
+          let balanceOfUnderlying = await fsfanContract.callStatic.balanceOfUnderlying(address);
+          const underlying = await fsfanContract.callStatic.underlying();
+          if (underlying == addresses[networkID].GFAN_ADDRESS) {
+            fgfanBalance = balanceOfUnderlying.add(fgfanBalance);
+          } else fsfanBalance = balanceOfUnderlying.add(fsfanBalance);
         }
       }
-      const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
-      if (fgohmBalance.gt(0)) {
-        fgOHMAsfsOHMBalance = await gOhmContract.balanceFrom(fgohmBalance.toString());
+      const gFanContract = GFAN__factory.connect(addresses[networkID].GFAN_ADDRESS, provider);
+      if (fgfanBalance.gt(0)) {
+        fgFANAsfsFANBalance = await gFanContract.balanceFrom(fgfanBalance.toString());
       }
     } catch (e) {
       handleContractError(e);
     }
     try {
-      if (addresses[networkID].FIATDAO_WSOHM_ADDRESS) {
+      if (addresses[networkID].FIATDAO_WSFAN_ADDRESS) {
         const fiatDaoContract = new ethers.Contract(
-          addresses[networkID].FIATDAO_WSOHM_ADDRESS as string,
+          addresses[networkID].FIATDAO_WSFAN_ADDRESS as string,
           fiatDAO,
           provider,
         ) as FiatDAOContract;
-        fiatDaowsohmBalance = await fiatDaoContract.balanceOf(address, addresses[networkID].WSOHM_ADDRESS as string);
+        fiatDaowsfanBalance = await fiatDaoContract.balanceOf(address, addresses[networkID].WSFAN_ADDRESS as string);
       }
     } catch (e) {
       handleContractError(e);
@@ -130,18 +130,18 @@ export const getBalances = createAsyncThunk(
 
     return {
       balances: {
-        gohm: ethers.utils.formatEther(gOhmBalance),
-        gOhmAsSohmBal: ethers.utils.formatUnits(gOhmBalAsSohmBal, "gwei"),
-        ohmV1: ethers.utils.formatUnits(ohmBalance, "gwei"),
-        sohmV1: ethers.utils.formatUnits(sohmBalance, "gwei"),
-        fsohm: ethers.utils.formatUnits(fsohmBalance, "gwei"),
-        fgohm: ethers.utils.formatEther(fgohmBalance),
-        fgOHMAsfsOHM: ethers.utils.formatUnits(fgOHMAsfsOHMBalance, "gwei"),
-        wsohm: ethers.utils.formatEther(wsohmBalance),
-        fiatDaowsohm: ethers.utils.formatEther(fiatDaowsohmBalance),
+        gfan: ethers.utils.formatEther(gFanBalance),
+        gFanAsSfanBal: ethers.utils.formatUnits(gFanBalAsSfanBal, "gwei"),
+        fanV1: ethers.utils.formatUnits(fanBalance, "gwei"),
+        sfanV1: ethers.utils.formatUnits(sfanBalance, "gwei"),
+        fsfan: ethers.utils.formatUnits(fsfanBalance, "gwei"),
+        fgfan: ethers.utils.formatEther(fgfanBalance),
+        fgFANAsfsFAN: ethers.utils.formatUnits(fgFANAsfsFANBalance, "gwei"),
+        wsfan: ethers.utils.formatEther(wsfanBalance),
+        fiatDaowsfan: ethers.utils.formatEther(fiatDaowsfanBalance),
         pool: ethers.utils.formatUnits(poolBalance, "gwei"),
-        ohm: ethers.utils.formatUnits(ohmV2Balance, "gwei"),
-        sohm: ethers.utils.formatUnits(sohmV2Balance, "gwei"),
+        fan: ethers.utils.formatUnits(fanV2Balance, "gwei"),
+        sfan: ethers.utils.formatUnits(sfanV2Balance, "gwei"),
       },
     };
   },
@@ -149,52 +149,52 @@ export const getBalances = createAsyncThunk(
 
 interface IUserAccountDetails {
   wrapping: {
-    sohmWrap: number;
-    wsohmUnwrap: number;
-    gOhmUnwrap: number;
-    wsOhmMigrate: number;
+    sfanWrap: number;
+    wsfanUnwrap: number;
+    gFanUnwrap: number;
+    wsFanMigrate: number;
   };
 }
 
 export const getMigrationAllowances = createAsyncThunk(
   "account/getMigrationAllowances",
   async ({ networkID, provider, address }: IBaseAddressAsyncThunk) => {
-    let ohmAllowance = BigNumber.from(0);
-    let sOhmAllowance = BigNumber.from(0);
-    let wsOhmAllowance = BigNumber.from(0);
-    let gOhmAllowance = BigNumber.from(0);
+    let fanAllowance = BigNumber.from(0);
+    let sFanAllowance = BigNumber.from(0);
+    let wsFanAllowance = BigNumber.from(0);
+    let gFanAllowance = BigNumber.from(0);
 
-    if (addresses[networkID].OHM_ADDRESS) {
+    if (addresses[networkID].FAN_ADDRESS) {
       try {
-        const ohmContract = IERC20__factory.connect(addresses[networkID].OHM_ADDRESS, provider);
-        ohmAllowance = await ohmContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
+        const fanContract = IERC20__factory.connect(addresses[networkID].FAN_ADDRESS, provider);
+        fanAllowance = await fanContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
       } catch (e) {
         handleContractError(e);
       }
     }
 
-    if (addresses[networkID].SOHM_ADDRESS) {
+    if (addresses[networkID].SFAN_ADDRESS) {
       try {
-        const sOhmContract = IERC20__factory.connect(addresses[networkID].SOHM_ADDRESS, provider);
-        sOhmAllowance = await sOhmContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
+        const sFanContract = IERC20__factory.connect(addresses[networkID].SFAN_ADDRESS, provider);
+        sFanAllowance = await sFanContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
       } catch (e) {
         handleContractError(e);
       }
     }
 
-    if (addresses[networkID].WSOHM_ADDRESS) {
+    if (addresses[networkID].WSFAN_ADDRESS) {
       try {
-        const wsOhmContract = IERC20__factory.connect(addresses[networkID].WSOHM_ADDRESS, provider);
-        wsOhmAllowance = await wsOhmContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
+        const wsFanContract = IERC20__factory.connect(addresses[networkID].WSFAN_ADDRESS, provider);
+        wsFanAllowance = await wsFanContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
       } catch (e) {
         handleContractError(e);
       }
     }
 
-    if (addresses[networkID].GOHM_ADDRESS) {
+    if (addresses[networkID].GFAN_ADDRESS) {
       try {
-        const gOhmContract = IERC20__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
-        gOhmAllowance = await gOhmContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
+        const gFanContract = IERC20__factory.connect(addresses[networkID].GFAN_ADDRESS, provider);
+        gFanAllowance = await gFanContract.allowance(address, addresses[networkID].MIGRATOR_ADDRESS);
       } catch (e) {
         handleContractError(e);
       }
@@ -202,10 +202,10 @@ export const getMigrationAllowances = createAsyncThunk(
 
     return {
       migration: {
-        ohm: +ohmAllowance,
-        sohm: +sOhmAllowance,
-        wsohm: +wsOhmAllowance,
-        gohm: +gOhmAllowance,
+        fan: +fanAllowance,
+        sfan: +sFanAllowance,
+        wsfan: +wsFanAllowance,
+        gfan: +gFanAllowance,
       },
       isMigrationComplete: false,
     };
@@ -220,35 +220,35 @@ export const loadAccountDetails = createAsyncThunk(
     let unstakeAllowanceV2 = BigNumber.from("0");
     let unstakeAllowance = BigNumber.from("0");
     let wrapAllowance = BigNumber.from("0");
-    let gOhmUnwrapAllowance = BigNumber.from("0");
+    let gFanUnwrapAllowance = BigNumber.from("0");
     let poolAllowance = BigNumber.from("0");
-    let ohmToGohmAllowance = BigNumber.from("0");
-    let wsOhmMigrateAllowance = BigNumber.from("0");
+    let fanToGfanAllowance = BigNumber.from("0");
+    let wsFanMigrateAllowance = BigNumber.from("0");
 
     try {
-      const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
-      gOhmUnwrapAllowance = await gOhmContract.allowance(address, addresses[networkID].STAKING_V2);
+      const gFanContract = GFAN__factory.connect(addresses[networkID].GFAN_ADDRESS, provider);
+      gFanUnwrapAllowance = await gFanContract.allowance(address, addresses[networkID].STAKING_V2);
 
-      const wsOhmContract = IERC20__factory.connect(addresses[networkID].WSOHM_ADDRESS, provider);
-      wsOhmMigrateAllowance = await wsOhmContract.balanceOf(address);
+      const wsFanContract = IERC20__factory.connect(addresses[networkID].WSFAN_ADDRESS, provider);
+      wsFanMigrateAllowance = await wsFanContract.balanceOf(address);
 
-      const ohmContract = new ethers.Contract(
-        addresses[networkID].OHM_ADDRESS as string,
+      const fanContract = new ethers.Contract(
+        addresses[networkID].FAN_ADDRESS as string,
         ierc20Abi,
         provider,
       ) as IERC20;
-      stakeAllowance = await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
+      stakeAllowance = await fanContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
 
-      const sohmContract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, sOHMv2, provider) as SOhmv2;
-      unstakeAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
-      poolAllowance = await sohmContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
-      wrapAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_V2);
+      const sfanContract = new ethers.Contract(addresses[networkID].SFAN_V2 as string, sFANv2, provider) as SFanv2;
+      unstakeAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
+      poolAllowance = await sfanContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
+      wrapAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_V2);
 
-      const sohmV2Contract = IERC20__factory.connect(addresses[networkID].SOHM_V2, provider);
-      unstakeAllowanceV2 = await sohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+      const sfanV2Contract = IERC20__factory.connect(addresses[networkID].SFAN_V2, provider);
+      unstakeAllowanceV2 = await sfanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
 
-      const ohmV2Contract = IERC20__factory.connect(addresses[networkID].OHM_V2, provider);
-      stakeAllowanceV2 = await ohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+      const fanV2Contract = IERC20__factory.connect(addresses[networkID].FAN_V2, provider);
+      stakeAllowanceV2 = await fanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
     } catch (e) {
       console.warn("failed contract calls in slice", e);
     }
@@ -256,16 +256,16 @@ export const loadAccountDetails = createAsyncThunk(
 
     return {
       staking: {
-        ohmStakeV1: +stakeAllowance,
-        ohmUnstakeV1: +unstakeAllowance,
-        ohmStake: +stakeAllowanceV2,
-        ohmUnstake: +unstakeAllowanceV2,
-        ohmtoGohm: +ohmToGohmAllowance,
+        fanStakeV1: +stakeAllowance,
+        fanUnstakeV1: +unstakeAllowance,
+        fanStake: +stakeAllowanceV2,
+        fanUnstake: +unstakeAllowanceV2,
+        fantoGfan: +fanToGfanAllowance,
       },
       wrapping: {
-        sohmWrap: Number(ethers.utils.formatUnits(wrapAllowance, "gwei")),
-        gOhmUnwrap: Number(ethers.utils.formatUnits(gOhmUnwrapAllowance, "ether")),
-        wsOhmMigrate: Number(ethers.utils.formatUnits(wsOhmMigrateAllowance, "ether")),
+        sfanWrap: Number(ethers.utils.formatUnits(wrapAllowance, "gwei")),
+        gFanUnwrap: Number(ethers.utils.formatUnits(gFanUnwrapAllowance, "ether")),
+        wsFanMigrate: Number(ethers.utils.formatUnits(wsFanMigrateAllowance, "ether")),
       },
     };
   },
@@ -331,36 +331,36 @@ export const calculateUserBondDetails = createAsyncThunk(
 interface IAccountSlice extends IUserAccountDetails {
   bonds: { [key: string]: IUserBondDetails };
   balances: {
-    gohm: string;
-    gOhmAsSohmBal: string;
-    ohmV1: string;
-    ohm: string;
-    sohm: string;
-    sohmV1: string;
+    gfan: string;
+    gFanAsSfanBal: string;
+    fanV1: string;
+    fan: string;
+    sfan: string;
+    sfanV1: string;
     dai: string;
-    oldsohm: string;
-    fsohm: string;
-    fgohm: string;
-    fgOHMAsfsOHM: string;
-    wsohm: string;
-    fiatDaowsohm: string;
+    oldsfan: string;
+    fsfan: string;
+    fgfan: string;
+    fgFANAsfsFAN: string;
+    wsfan: string;
+    fiatDaowsfan: string;
     pool: string;
   };
   loading: boolean;
   staking: {
-    ohmStakeV1: number;
-    ohmUnstakeV1: number;
-    ohmStake: number;
-    ohmUnstake: number;
+    fanStakeV1: number;
+    fanUnstakeV1: number;
+    fanStake: number;
+    fanUnstake: number;
   };
   migration: {
-    ohm: number;
-    sohm: number;
-    wsohm: number;
-    gohm: number;
+    fan: number;
+    sfan: number;
+    wsfan: number;
+    gfan: number;
   };
   pooling: {
-    sohmPool: number;
+    sfanPool: number;
   };
   isMigrationComplete: boolean;
 }
@@ -369,25 +369,25 @@ const initialState: IAccountSlice = {
   loading: false,
   bonds: {},
   balances: {
-    gohm: "",
-    gOhmAsSohmBal: "",
-    ohmV1: "",
-    ohm: "",
-    sohm: "",
-    sohmV1: "",
+    gfan: "",
+    gFanAsSfanBal: "",
+    fanV1: "",
+    fan: "",
+    sfan: "",
+    sfanV1: "",
     dai: "",
-    oldsohm: "",
-    fsohm: "",
-    fgohm: "",
-    fgOHMAsfsOHM: "",
-    wsohm: "",
-    fiatDaowsohm: "",
+    oldsfan: "",
+    fsfan: "",
+    fgfan: "",
+    fgFANAsfsFAN: "",
+    wsfan: "",
+    fiatDaowsfan: "",
     pool: "",
   },
-  staking: { ohmStakeV1: 0, ohmUnstakeV1: 0, ohmStake: 0, ohmUnstake: 0 },
-  wrapping: { sohmWrap: 0, wsohmUnwrap: 0, gOhmUnwrap: 0, wsOhmMigrate: 0 },
-  pooling: { sohmPool: 0 },
-  migration: { ohm: 0, sohm: 0, wsohm: 0, gohm: 0 },
+  staking: { fanStakeV1: 0, fanUnstakeV1: 0, fanStake: 0, fanUnstake: 0 },
+  wrapping: { sfanWrap: 0, wsfanUnwrap: 0, gFanUnwrap: 0, wsFanMigrate: 0 },
+  pooling: { sfanPool: 0 },
+  migration: { fan: 0, sfan: 0, wsfan: 0, gfan: 0 },
   isMigrationComplete: false,
 };
 

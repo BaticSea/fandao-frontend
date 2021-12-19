@@ -2,25 +2,25 @@ import { StableBond, LPBond, NetworkID, CustomBond, BondType } from "src/lib/Bon
 import { addresses } from "src/constants";
 
 import { ReactComponent as DaiImg } from "src/assets/tokens/DAI.svg";
-import { ReactComponent as OhmDaiImg } from "src/assets/tokens/OHM-DAI.svg";
+import { ReactComponent as FanDaiImg } from "src/assets/tokens/FAN-DAI.svg";
 import { ReactComponent as FraxImg } from "src/assets/tokens/FRAX.svg";
-import { ReactComponent as OhmFraxImg } from "src/assets/tokens/OHM-FRAX.svg";
-import { ReactComponent as OhmLusdImg } from "src/assets/tokens/OHM-LUSD.svg";
-import { ReactComponent as OhmEthImg } from "src/assets/tokens/OHM-WETH.svg";
+import { ReactComponent as FanFraxImg } from "src/assets/tokens/FAN-FRAX.svg";
+import { ReactComponent as FanLusdImg } from "src/assets/tokens/FAN-LUSD.svg";
+import { ReactComponent as FanEthImg } from "src/assets/tokens/FAN-WETH.svg";
 import { ReactComponent as wETHImg } from "src/assets/tokens/wETH.svg";
 import { ReactComponent as LusdImg } from "src/assets/tokens/LUSD.svg";
 import { ReactComponent as CvxImg } from "src/assets/tokens/CVX.svg";
 
-import { abi as FraxOhmBondContract } from "src/abi/bonds/OhmFraxContract.json";
-import { abi as BondOhmDaiContract } from "src/abi/bonds/OhmDaiContract.json";
-import { abi as BondOhmLusdContract } from "src/abi/bonds/OhmLusdContract.json";
-import { abi as BondOhmEthContract } from "src/abi/bonds/OhmEthContract.json";
+import { abi as FraxFanBondContract } from "src/abi/bonds/FanFraxContract.json";
+import { abi as BondFanDaiContract } from "src/abi/bonds/FanDaiContract.json";
+import { abi as BondFanLusdContract } from "src/abi/bonds/FanLusdContract.json";
+import { abi as BondFanEthContract } from "src/abi/bonds/FanEthContract.json";
 
 import { abi as DaiBondContract } from "src/abi/bonds/DaiContract.json";
-import { abi as ReserveOhmLusdContract } from "src/abi/reserves/OhmLusd.json";
-import { abi as ReserveOhmDaiContract } from "src/abi/reserves/OhmDai.json";
-import { abi as ReserveOhmFraxContract } from "src/abi/reserves/OhmFrax.json";
-import { abi as ReserveOhmEthContract } from "src/abi/reserves/OhmEth.json";
+import { abi as ReserveFanLusdContract } from "src/abi/reserves/FanLusd.json";
+import { abi as ReserveFanDaiContract } from "src/abi/reserves/FanDai.json";
+import { abi as ReserveFanFraxContract } from "src/abi/reserves/FanFrax.json";
+import { abi as ReserveFanEthContract } from "src/abi/reserves/FanEth.json";
 
 import { abi as FraxBondContract } from "src/abi/bonds/FraxContract.json";
 import { abi as LusdBondContract } from "src/abi/bonds/LusdContract.json";
@@ -38,7 +38,7 @@ export const dai = new StableBond({
   name: "dai",
   displayName: "DAI",
   bondToken: "DAI",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: DaiImg,
   bondContractABI: DaiBondContract,
@@ -83,7 +83,7 @@ export const fraxOld = new StableBond({
   name: "frax-old",
   displayName: "FRAX OLD",
   bondToken: "FRAX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: FraxImg,
   bondContractABI: FraxBondContract,
@@ -128,7 +128,7 @@ export const frax = new StableBond({
   name: "frax",
   displayName: "FRAX",
   bondToken: "FRAX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: true,
   bondIconSvg: FraxImg,
   bondContractABI: FraxBondContract,
@@ -174,7 +174,7 @@ export const lusd = new StableBond({
   name: "lusd",
   displayName: "LUSD",
   bondToken: "LUSD",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: LusdImg,
   bondContractABI: LusdBondContract,
@@ -221,7 +221,7 @@ export const eth = new CustomBond({
   lpUrl: "",
   bondType: BondType.StableAsset,
   bondToken: "wETH",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: wETHImg,
   bondContractABI: EthBondContract,
@@ -278,7 +278,7 @@ export const cvx = new CustomBond({
   lpUrl: "",
   bondType: BondType.StableAsset,
   bondToken: "CVX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: CvxImg,
   bondContractABI: CvxBondContract,
@@ -335,7 +335,7 @@ export const cvx_expired = new CustomBond({
   lpUrl: "",
   bondType: BondType.StableAsset,
   bondToken: "CVX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
   bondIconSvg: CvxImg,
   bondContractABI: CvxBondContract,
@@ -385,15 +385,15 @@ export const cvx_expired = new CustomBond({
   },
 });
 
-export const ohm_dai = new LPBond({
-  name: "ohm_dai_lp",
-  displayName: "OHM-DAI LP",
+export const fan_dai = new LPBond({
+  name: "fan_dai_lp",
+  displayName: "FAN-DAI LP",
   bondToken: "DAI",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: true,
-  bondIconSvg: OhmDaiImg,
-  bondContractABI: BondOhmDaiContract,
-  reserveContract: ReserveOhmDaiContract,
+  bondIconSvg: FanDaiImg,
+  bondContractABI: BondFanDaiContract,
+  reserveContract: ReserveFanDaiContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: false,
@@ -434,15 +434,15 @@ export const ohm_dai = new LPBond({
     "https://app.sushi.com/add/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5/0x6b175474e89094c44da98b954eedeac495271d0f",
 });
 
-export const ohm_daiOld = new LPBond({
-  name: "ohm_dai_lp_old",
-  displayName: "OHM-DAI LP OLD",
+export const fan_daiOld = new LPBond({
+  name: "fan_dai_lp_old",
+  displayName: "FAN-DAI LP OLD",
   bondToken: "DAI",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
-  bondIconSvg: OhmDaiImg,
-  bondContractABI: BondOhmDaiContract,
-  reserveContract: ReserveOhmDaiContract,
+  bondIconSvg: FanDaiImg,
+  bondContractABI: BondFanDaiContract,
+  reserveContract: ReserveFanDaiContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: false,
@@ -482,15 +482,15 @@ export const ohm_daiOld = new LPBond({
     "https://app.sushi.com/add/0x383518188c0c6d7730d91b2c03a03c837814a899/0x6b175474e89094c44da98b954eedeac495271d0f",
 });
 
-export const ohm_frax = new LPBond({
-  name: "ohm_frax_lp",
-  displayName: "OHM-FRAX LP",
+export const fan_frax = new LPBond({
+  name: "fan_frax_lp",
+  displayName: "FAN-FRAX LP",
   bondToken: "FRAX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: true,
-  bondIconSvg: OhmFraxImg,
-  bondContractABI: FraxOhmBondContract,
-  reserveContract: ReserveOhmFraxContract,
+  bondIconSvg: FanFraxImg,
+  bondContractABI: FraxFanBondContract,
+  reserveContract: ReserveFanFraxContract,
   isBondable: {
     [NetworkID.Mainnet]: true,
     [NetworkID.Testnet]: true,
@@ -530,15 +530,15 @@ export const ohm_frax = new LPBond({
     "https://app.uniswap.org/#/add/v2/0x64aa3364f17a4d01c6f1751fd97c2bd3d7e7f1d5/0x853d955acef822db058eb8505911ed77f175b99e",
 });
 
-export const ohm_fraxOld = new LPBond({
-  name: "ohm_frax_lp_old",
-  displayName: "OHM-FRAX LP OLD",
+export const fan_fraxOld = new LPBond({
+  name: "fan_frax_lp_old",
+  displayName: "FAN-FRAX LP OLD",
   bondToken: "FRAX",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
-  bondIconSvg: OhmFraxImg,
-  bondContractABI: FraxOhmBondContract,
-  reserveContract: ReserveOhmFraxContract,
+  bondIconSvg: FanFraxImg,
+  bondContractABI: FraxFanBondContract,
+  reserveContract: ReserveFanFraxContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: false,
@@ -578,15 +578,15 @@ export const ohm_fraxOld = new LPBond({
     "https://app.uniswap.org/#/add/v2/0x853d955acef822db058eb8505911ed77f175b99e/0x383518188c0c6d7730d91b2c03a03c837814a899",
 });
 
-export const ohm_lusd = new LPBond({
-  name: "ohm_lusd_lp",
-  displayName: "OHM-LUSD LP",
+export const fan_lusd = new LPBond({
+  name: "fan_lusd_lp",
+  displayName: "FAN-LUSD LP",
   bondToken: "LUSD",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
-  bondIconSvg: OhmLusdImg,
-  bondContractABI: BondOhmLusdContract,
-  reserveContract: ReserveOhmLusdContract,
+  bondIconSvg: FanLusdImg,
+  bondContractABI: BondFanLusdContract,
+  reserveContract: ReserveFanLusdContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: false,
@@ -618,7 +618,7 @@ export const ohm_lusd = new LPBond({
       reserveAddress: "0xfDf12D1F85b5082877A6E070524f50F6c84FAa6b",
     },
     [NetworkID.Testnet]: {
-      // NOTE (appleseed-lusd): using ohm-dai rinkeby contracts
+      // NOTE (appleseed-lusd): using fan-dai rinkeby contracts
       bondAddress: "0xcF449dA417cC36009a1C6FbA78918c31594B9377",
       reserveAddress: "0x8D5a22Fb6A1840da602E56D1a260E56770e0bCE2",
     },
@@ -627,15 +627,15 @@ export const ohm_lusd = new LPBond({
     "https://app.sushi.com/add/0x383518188C0C6d7730D91b2c03a03C837814a899/0x5f98805A4E8be255a32880FDeC7F6728C6568bA0",
 });
 
-export const ohm_weth = new CustomBond({
-  name: "ohm_weth_lp",
-  displayName: "OHM-WETH SLP",
+export const fan_weth = new CustomBond({
+  name: "fan_weth_lp",
+  displayName: "FAN-WETH SLP",
   bondToken: "WETH",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: true,
-  bondIconSvg: OhmEthImg,
-  bondContractABI: BondOhmEthContract,
-  reserveContract: ReserveOhmEthContract,
+  bondIconSvg: FanEthImg,
+  bondContractABI: BondFanEthContract,
+  reserveContract: ReserveFanEthContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: true,
@@ -668,7 +668,7 @@ export const ohm_weth = new CustomBond({
       reserveAddress: "0x69b81152c5A8d35A67B32A4D3772795d96CaE4da",
     },
     [NetworkID.Testnet]: {
-      // NOTE (unbanksy): using ohm-dai rinkeby contracts
+      // NOTE (unbanksy): using fan-dai rinkeby contracts
       bondAddress: "0xcF449dA417cC36009a1C6FbA78918c31594B9377",
       reserveAddress: "0x8D5a22Fb6A1840da602E56D1a260E56770e0bCE2",
     },
@@ -691,7 +691,7 @@ export const ohm_weth = new CustomBond({
         (Number(valuation.toString()) / Math.pow(10, 9)) * (Number(markdown.toString()) / Math.pow(10, 18));
       return tokenUSD * Number(ethPrice.toString());
     } else {
-      // NOTE (appleseed): using OHM-DAI on rinkeby
+      // NOTE (appleseed): using FAN-DAI on rinkeby
       const token = this.getContractForReserve(networkID, provider);
       const tokenAddress = this.getAddressForReserve(networkID);
       const bondCalculator = getBondCalculator(networkID, provider, false);
@@ -705,15 +705,15 @@ export const ohm_weth = new CustomBond({
   },
 });
 
-export const ohm_wethOld = new CustomBond({
-  name: "ohm_weth_lp_old",
-  displayName: "OHM-WETH SLP OLD",
+export const fan_wethOld = new CustomBond({
+  name: "fan_weth_lp_old",
+  displayName: "FAN-WETH SLP OLD",
   bondToken: "WETH",
-  payoutToken: "OHM",
+  payoutToken: "FAN",
   v2Bond: false,
-  bondIconSvg: OhmEthImg,
-  bondContractABI: BondOhmEthContract,
-  reserveContract: ReserveOhmEthContract,
+  bondIconSvg: FanEthImg,
+  bondContractABI: BondFanEthContract,
+  reserveContract: ReserveFanEthContract,
   isBondable: {
     [NetworkID.Mainnet]: false,
     [NetworkID.Testnet]: true,
@@ -745,7 +745,7 @@ export const ohm_wethOld = new CustomBond({
       reserveAddress: "0xfffae4a0f4ac251f4705717cd24cadccc9f33e06",
     },
     [NetworkID.Testnet]: {
-      // NOTE (unbanksy): using ohm-dai rinkeby contracts
+      // NOTE (unbanksy): using fan-dai rinkeby contracts
       bondAddress: "0xcF449dA417cC36009a1C6FbA78918c31594B9377",
       reserveAddress: "0x8D5a22Fb6A1840da602E56D1a260E56770e0bCE2",
     },
@@ -768,7 +768,7 @@ export const ohm_wethOld = new CustomBond({
         (Number(valuation.toString()) / Math.pow(10, 9)) * (Number(markdown.toString()) / Math.pow(10, 18));
       return tokenUSD * Number(ethPrice.toString());
     } else {
-      // NOTE (appleseed): using OHM-DAI on rinkeby
+      // NOTE (appleseed): using FAN-DAI on rinkeby
       const token = this.getContractForReserve(networkID, provider);
       const tokenAddress = this.getAddressForReserve(networkID);
       const bondCalculator = getBondCalculator(networkID, provider, false);
@@ -791,14 +791,14 @@ export const allBonds = [
   frax,
   eth,
   cvx,
-  ohm_dai,
-  ohm_daiOld,
-  ohm_frax,
-  ohm_fraxOld,
+  fan_dai,
+  fan_daiOld,
+  fan_frax,
+  fan_fraxOld,
   lusd,
-  ohm_lusd,
-  ohm_weth,
-  ohm_wethOld,
+  fan_lusd,
+  fan_weth,
+  fan_wethOld,
 ];
 // TODO (appleseed-expiredBonds): there may be a smarter way to refactor this
 export const allExpiredBonds = [cvx_expired, fraxOld];

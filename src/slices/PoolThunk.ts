@@ -18,7 +18,7 @@ import {
   IActionAsyncThunk,
   IJsonRPCError,
 } from "./interfaces";
-import { AwardAbi2, PrizePoolAbi, PrizePoolAbi2, SOHM } from "src/typechain";
+import { AwardAbi2, PrizePoolAbi, PrizePoolAbi2, SFAN } from "src/typechain";
 import { segmentUA } from "../helpers/userAnalyticHelpers";
 
 export const getPoolValues = createAsyncThunk(
@@ -79,10 +79,10 @@ export const changeApproval = createAsyncThunk(
     }
 
     const signer = provider.getSigner();
-    const sohmContract = new ethers.Contract(addresses[networkID].SOHM_ADDRESS, ierc20Abi, signer) as SOHM;
+    const sfanContract = new ethers.Contract(addresses[networkID].SFAN_ADDRESS, ierc20Abi, signer) as SFAN;
 
     let approveTx;
-    let depositAllowance = await sohmContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
+    let depositAllowance = await sfanContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
 
     // return early if approval already exists
     if (depositAllowance.gt(BigNumber.from("0"))) {
@@ -90,15 +90,15 @@ export const changeApproval = createAsyncThunk(
       return dispatch(
         fetchAccountSuccess({
           pooling: {
-            sohmPool: +depositAllowance,
+            sfanPool: +depositAllowance,
           },
         }),
       );
     }
 
     try {
-      if (token === "sohm") {
-        approveTx = await sohmContract.approve(
+      if (token === "sfan") {
+        approveTx = await sfanContract.approve(
           addresses[networkID].PT_PRIZE_POOL_ADDRESS,
           ethers.utils.parseUnits("1000000000", "gwei").toString(),
         );
@@ -118,12 +118,12 @@ export const changeApproval = createAsyncThunk(
     }
 
     // go get fresh allowance
-    depositAllowance = await sohmContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
+    depositAllowance = await sfanContract.allowance(address, addresses[networkID].PT_PRIZE_POOL_ADDRESS);
 
     return dispatch(
       fetchAccountSuccess({
         pooling: {
-          sohmPool: +depositAllowance,
+          sfanPool: +depositAllowance,
         },
       }),
     );

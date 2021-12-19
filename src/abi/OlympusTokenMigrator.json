@@ -4,12 +4,12 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_oldOHM",
+          "name": "_oldFAN",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_oldsOHM",
+          "name": "_oldsFAN",
           "type": "address"
         },
         {
@@ -24,7 +24,7 @@
         },
         {
           "internalType": "address",
-          "name": "_oldwsOHM",
+          "name": "_oldwsFAN",
           "type": "address"
         },
         {
@@ -174,10 +174,10 @@
     },
     {
       "inputs": [],
-      "name": "gOHM",
+      "name": "gFAN",
       "outputs": [
         {
-          "internalType": "contract IgOHM",
+          "internalType": "contract IgFAN",
           "name": "",
           "type": "address"
         }
@@ -235,12 +235,12 @@
         },
         {
           "internalType": "address",
-          "name": "_newOHM",
+          "name": "_newFAN",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "_newsOHM",
+          "name": "_newsFAN",
           "type": "address"
         },
         {
@@ -302,7 +302,7 @@
     },
     {
       "inputs": [],
-      "name": "newOHM",
+      "name": "newFAN",
       "outputs": [
         {
           "internalType": "contract IERC20",
@@ -341,7 +341,7 @@
     },
     {
       "inputs": [],
-      "name": "ohmMigrated",
+      "name": "fanMigrated",
       "outputs": [
         {
           "internalType": "bool",
@@ -354,7 +354,7 @@
     },
     {
       "inputs": [],
-      "name": "oldOHM",
+      "name": "oldFAN",
       "outputs": [
         {
           "internalType": "contract IERC20",
@@ -406,10 +406,10 @@
     },
     {
       "inputs": [],
-      "name": "oldsOHM",
+      "name": "oldsFAN",
       "outputs": [
         {
-          "internalType": "contract IsOHM",
+          "internalType": "contract IsFAN",
           "name": "",
           "type": "address"
         }
@@ -419,10 +419,10 @@
     },
     {
       "inputs": [],
-      "name": "oldwsOHM",
+      "name": "oldwsFAN",
       "outputs": [
         {
-          "internalType": "contract IwsOHM",
+          "internalType": "contract IwsFAN",
           "name": "",
           "type": "address"
         }
@@ -447,11 +447,11 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "_gOHM",
+          "name": "_gFAN",
           "type": "address"
         }
       ],
-      "name": "setgOHM",
+      "name": "setgFAN",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

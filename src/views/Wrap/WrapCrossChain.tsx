@@ -23,9 +23,9 @@ import {
 import InfoTooltip from "../../components/InfoTooltip/InfoTooltip.jsx";
 import { ReactComponent as ArrowUp } from "../../assets/icons/arrow-up.svg";
 
-import { getOhmTokenImage, getTokenImage, trim, formatCurrency } from "../../helpers";
+import { getFanTokenImage, getTokenImage, trim, formatCurrency } from "../../helpers";
 import { changeApproval, changeWrapV2 } from "../../slices/WrapThunk";
-import { migrateWithType, migrateCrossChainWSOHM, changeMigrationApproval } from "../../slices/MigrateThunk";
+import { migrateWithType, migrateCrossChainWSFAN, changeMigrationApproval } from "../../slices/MigrateThunk";
 import { switchNetwork } from "../../slices/NetworkSlice";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonText, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
@@ -41,8 +41,8 @@ function WrapCrossChain() {
   const networkId = useAppSelector(state => state.network.networkId);
   const networkName = useAppSelector(state => state.network.networkName);
   const [quantity, setQuantity] = useState("");
-  const assetFrom = "wsOHM";
-  const assetTo = "gOHM";
+  const assetFrom = "wsFAN";
+  const assetTo = "gFAN";
 
   const isAppLoading = useAppSelector(state => state.app.loading || state.account.loading);
   const currentIndex =
@@ -55,16 +55,16 @@ function WrapCrossChain() {
       return state.app.marketPrice;
     }) ?? 0;
 
-  const sOhmPrice = marketPrice;
+  const sFanPrice = marketPrice;
 
-  const gOhmPrice = marketPrice * currentIndex;
+  const gFanPrice = marketPrice * currentIndex;
 
-  const gohmBalance = useAppSelector(state => {
-    return state.account.balances && Number(state.account.balances.gohm);
+  const gfanBalance = useAppSelector(state => {
+    return state.account.balances && Number(state.account.balances.gfan);
   });
 
-  const wsOhmAllowance = useAppSelector(state => state.account.migration.wsohm);
-  const wsOhmBalance = useAppSelector(state => Number(state.account.balances.wsohm));
+  const wsFanAllowance = useAppSelector(state => state.account.migration.wsfan);
+  const wsFanBalance = useAppSelector(state => Number(state.account.balances.wsfan));
 
   const pendingTransactions = useAppSelector(state => {
     return state.pendingTransactions;
@@ -75,7 +75,7 @@ function WrapCrossChain() {
   const wrapButtonText = "Migrate";
 
   const setMax = () => {
-    setQuantity(wsOhmBalance.toString());
+    setQuantity(wsFanBalance.toString());
   };
 
   const handleSwitchChain = (id: any) => {
@@ -86,8 +86,8 @@ function WrapCrossChain() {
   };
 
   const hasCorrectAllowance = useCallback(() => {
-    return wsOhmAllowance > wsOhmBalance;
-  }, [wsOhmBalance, wsOhmAllowance]);
+    return wsFanAllowance > wsFanBalance;
+  }, [wsFanBalance, wsFanAllowance]);
 
   const isDataLoading = useAppSelector(state => state.account.loading);
 
@@ -99,9 +99,9 @@ function WrapCrossChain() {
     </Button>,
   );
 
-  const migrateToGohm = () =>
+  const migrateToGfan = () =>
     dispatch(
-      migrateCrossChainWSOHM({
+      migrateCrossChainWSFAN({
         provider,
         address,
         networkID: networkId,
@@ -112,8 +112,8 @@ function WrapCrossChain() {
   const approveWrap = () => {
     dispatch(
       changeMigrationApproval({
-        token: "wsohm",
-        displayName: "wsOHM",
+        token: "wsfan",
+        displayName: "wsFAN",
         insertName: true,
         address,
         networkID: networkId,
@@ -124,17 +124,17 @@ function WrapCrossChain() {
 
   const chooseInputArea = () => {
     if (!address || isAppLoading) return <Skeleton width="80%" />;
-    if (!hasCorrectAllowance() && assetTo === "gOHM")
+    if (!hasCorrectAllowance() && assetTo === "gFAN")
       return (
         <div className="no-input-visible">
-          First time wrapping to <b>gOHM</b>?
+          First time wrapping to <b>gFAN</b>?
           <br />
           Please approve Olympus to use your <b>{assetFrom}</b> for this transaction.
         </div>
       );
 
     return (
-      <FormControl className="ohm-input" variant="outlined" color="primary">
+      <FormControl className="fan-input" variant="outlined" color="primary">
         <InputLabel htmlFor="amount-input"></InputLabel>
         <OutlinedInput
           id="amount-input"
@@ -181,7 +181,7 @@ function WrapCrossChain() {
           variant="contained"
           color="primary"
           disabled={isPendingTxn(pendingTransactions, "wrapping") || isPendingTxn(pendingTransactions, "migrate")}
-          onClick={migrateToGohm}
+          onClick={migrateToGfan}
         >
           {txnButtonTextMultiType(pendingTransactions, ["wrapping", "migrate"], wrapButtonText)}
         </Button>
@@ -191,19 +191,19 @@ function WrapCrossChain() {
   return (
     <div id="stake-view" className="wrapper">
       <Zoom in={true}>
-        <Paper className={`ohm-card`}>
+        <Paper className={`fan-card`}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <div className="card-header">
                 <Typography variant="h5">Wrap / Unwrap</Typography>
                 <Link
-                  className="migrate-sohm-button"
+                  className="migrate-sfan-button"
                   style={{ textDecoration: "none" }}
-                  href={"https://docs.olympusdao.finance/main/contracts/tokens#gohm"}
-                  aria-label="wsohm-wut"
+                  href={"https://docs.olympusdao.finance/main/contracts/tokens#gfan"}
+                  aria-label="wsfan-wut"
                   target="_blank"
                 >
-                  <Typography>gOHM</Typography>{" "}
+                  <Typography>gFAN</Typography>{" "}
                   <SvgIcon component={ArrowUp} color="primary" style={{ marginLeft: "5px", width: ".8em" }} />
                 </Link>
               </div>
@@ -213,12 +213,12 @@ function WrapCrossChain() {
               <div className="stake-top-metrics">
                 <Grid container spacing={2} alignItems="flex-end">
                   <Grid item xs={12} sm={4} md={4} lg={4}>
-                    <div className="wrap-sOHM">
+                    <div className="wrap-sFAN">
                       <Typography variant="h5" color="textSecondary">
-                        sOHM Price
+                        sFAN Price
                       </Typography>
                       <Typography variant="h4">
-                        {sOhmPrice ? formatCurrency(sOhmPrice, 2) : <Skeleton width="150px" />}
+                        {sFanPrice ? formatCurrency(sFanPrice, 2) : <Skeleton width="150px" />}
                       </Typography>
                     </div>
                   </Grid>
@@ -228,21 +228,21 @@ function WrapCrossChain() {
                         Current Index
                       </Typography>
                       <Typography variant="h4">
-                        {currentIndex ? <>{trim(currentIndex, 1)} OHM</> : <Skeleton width="150px" />}
+                        {currentIndex ? <>{trim(currentIndex, 1)} FAN</> : <Skeleton width="150px" />}
                       </Typography>
                     </div>
                   </Grid>
                   <Grid item xs={12} sm={4} md={4} lg={4}>
-                    <div className="wrap-wsOHM">
+                    <div className="wrap-wsFAN">
                       <Typography variant="h5" color="textSecondary">
                         {`${assetTo} Price`}
                         <InfoTooltip
-                          message={`${assetTo} = sOHM * index\n\nThe price of ${assetTo} is equal to the price of OHM multiplied by the current index`}
+                          message={`${assetTo} = sFAN * index\n\nThe price of ${assetTo} is equal to the price of FAN multiplied by the current index`}
                           children={undefined}
                         />
                       </Typography>
                       <Typography variant="h4">
-                        {gOhmPrice ? formatCurrency(gOhmPrice, 2) : <Skeleton width="150px" />}
+                        {gFanPrice ? formatCurrency(gFanPrice, 2) : <Skeleton width="150px" />}
                       </Typography>
                     </div>
                   </Grid>
@@ -264,7 +264,7 @@ function WrapCrossChain() {
                     <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                       <Box height="32px">
                         <Typography>
-                          Transform <b>wsOHM</b> to <b>gOHM</b>
+                          Transform <b>wsFAN</b> to <b>gFAN</b>
                         </Typography>
                       </Box>
                     </Box>
@@ -277,15 +277,15 @@ function WrapCrossChain() {
                   </Box>
                   <div className={`stake-user-data`}>
                     <div className="data-row">
-                      <Typography variant="body1">wsOHM Balance ({networkName})</Typography>
+                      <Typography variant="body1">wsFAN Balance ({networkName})</Typography>
                       <Typography variant="body1">
-                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(wsOhmBalance, 4) + " wsOHM"}</>}
+                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(wsFanBalance, 4) + " wsFAN"}</>}
                       </Typography>
                     </div>
                     <div className="data-row">
-                      <Typography variant="body1">gOHM Balance ({networkName})</Typography>
+                      <Typography variant="body1">gFAN Balance ({networkName})</Typography>
                       <Typography variant="body1">
-                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(gohmBalance, 4) + " gOHM"}</>}
+                        {isAppLoading ? <Skeleton width="80px" /> : <>{trim(gfanBalance, 4) + " gFAN"}</>}
                       </Typography>
                     </div>
                     <Divider />

@@ -9,12 +9,12 @@
       background: rgba(100, 100, 100, 0.11) !important;
       // backdrop-filter: blur(33px) !important;
       // -webkit-backdrop-filter: blur(33px) !important;
-      .ohm-card {
+      .fan-card {
         opacity: 1 !important;
         height: auto;
       }
     }
-    .ohm-modal {
+    .fan-modal {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -32,11 +32,11 @@
   @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
     .MuiBackdrop-root {
       background: rgba(100, 100, 100, 0.95);
-      .ohm-card {
+      .fan-card {
         height: auto;
       }
     }
-    .ohm-modal {
+    .fan-modal {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -150,7 +150,7 @@
 }
 
 .mobile #change-network-view {
-  .ohm-card {
+  .fan-card {
     .card-content {
       justify-content: space-evenly !important;
     }

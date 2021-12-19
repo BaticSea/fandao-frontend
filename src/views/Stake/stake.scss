@@ -11,7 +11,7 @@
     line-height: 110% !important;
   }
 
-  .stake-to-ohm-checkbox {
+  .stake-to-fan-checkbox {
     svg{
       font-size: 0.8em;
     }
@@ -34,13 +34,13 @@
     width: 100%;
   }
 
-  .ohm-card .card-header {
+  .fan-card .card-header {
     position: relative;
   }
-  .ohm-card .header {
+  .fan-card .header {
     min-height: 3em;
   }
-  .ohm-card.secondary .card-header {
+  .fan-card.secondary .card-header {
     min-height: 33px !important;
     height: 20px;
   }
@@ -96,7 +96,7 @@
   }
 }
 
-.migrate-sohm-button {
+.migrate-sfan-button {
   position: absolute;
   right: 0px;
   top: 0px;
@@ -111,7 +111,7 @@
   }
 }
 
-.migrate-sohm-button.complete {
+.migrate-sfan-button.complete {
   color: #35ee66 !important;
 }
 
@@ -149,7 +149,7 @@
   text-align: left;
 }
 
-.ohm-logo-tiny {
+.fan-logo-tiny {
   height: 14px;
   width: 14px;
   vertical-align: middle;
@@ -208,7 +208,7 @@
   }
 }
 
-.ohm-input {
+.fan-input {
   max-width: 542px;
   width: 100%;
   margin: 4px !important;
@@ -295,7 +295,7 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    .ohm-pairs p {
+    .fan-pairs p {
       margin-bottom: 0 !important;
     }
   }

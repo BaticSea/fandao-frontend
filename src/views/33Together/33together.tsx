@@ -57,12 +57,12 @@ const PoolTogether = () => {
   // TODO (appleseed-33T): create a table for AwardHistory
   const [yourAwardHistory, setYourAwardHistory] = useState<Array<AwardItem>>([]);
   const [infoTooltipMessage, setInfoTooltipMessage] = useState<Array<string>>([
-    "Deposit sOHM to win! Once deposited, you will receive a corresponding amount of 33T and be entered to win until your sOHM is withdrawn.",
+    "Deposit sFAN to win! Once deposited, you will receive a corresponding amount of 33T and be entered to win until your sFAN is withdrawn.",
   ]);
   const isAccountLoading = useAppSelector(state => state.account.loading ?? true);
 
-  const sohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.sohmV1;
+  const sfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.sfanV1;
   });
 
   const poolBalance = useAppSelector(state => {
@@ -162,7 +162,7 @@ const PoolTogether = () => {
     <div id="pool-together-view">
       <PoolPrize />
 
-      <Paper className="ohm-card">
+      <Paper className="fan-card">
         <Box display="flex">
           <CardHeader title={t`3, 3 Together`} />
           <InfoTooltipMulti messagesArray={infoTooltipMessage} />
@@ -200,7 +200,7 @@ const PoolTogether = () => {
         graphLoading={graphLoading}
         isAccountLoading={isAccountLoading}
         poolBalance={trimOdds(parseFloat(poolBalance))}
-        sohmBalance={trimOdds(parseFloat(sohmBalance))}
+        sfanBalance={trimOdds(parseFloat(sfanBalance))}
         yourTotalAwards={trimOdds(yourTotalAwards)}
         yourOdds={trimOdds(yourOdds)}
         winners={winners}

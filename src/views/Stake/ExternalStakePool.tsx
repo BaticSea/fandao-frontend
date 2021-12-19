@@ -17,7 +17,7 @@ import { Trans } from "@lingui/macro";
 
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import avaxImage from "src/assets/tokens/avax.png";
-import gOhmImage from "src/assets/tokens/gohm.png";
+import gFanImage from "src/assets/tokens/gfan.png";
 import { ReactComponent as ArrowUp } from "../../assets/icons/arrow-up.svg";
 import { getLusdData } from "../../slices/LusdSlice";
 import { useWeb3Context } from "src/hooks/web3Context";
@@ -56,7 +56,7 @@ export default function ExternalStakePool() {
 
   return (
     <Zoom in={true}>
-      <Paper className={`ohm-card secondary ${isSmallScreen && "mobile"}`}>
+      <Paper className={`fan-card secondary ${isSmallScreen && "mobile"}`}>
         <div className="card-header">
           <Typography variant="h5">
             <Trans>Farm Pool</Trans>
@@ -69,10 +69,10 @@ export default function ExternalStakePool() {
                 <TableBody>
                   <TableRow>
                     <TableCell>
-                      <Box className="ohm-pairs">
-                        <MultiLogo images={[gOhmImage, avaxImage]} avatarStyleOverride={avatarStyle} />
+                      <Box className="fan-pairs">
+                        <MultiLogo images={[gFanImage, avaxImage]} avatarStyleOverride={avatarStyle} />
                         <Box width="16px" />
-                        <Typography>gOHM-AVAX</Typography>
+                        <Typography>gFAN-AVAX</Typography>
                       </Box>
                     </TableCell>
                     <TableCell align="center">
@@ -96,10 +96,10 @@ export default function ExternalStakePool() {
           ) : (
             <div className="stake-pool">
               <div className={`pool-card-top-row ${isMobileScreen && "small"}`}>
-                <Box className="ohm-pairs">
-                  <MultiLogo images={[gOhmImage, avaxImage]} avatarStyleOverride={avatarStyle} />
+                <Box className="fan-pairs">
+                  <MultiLogo images={[gFanImage, avaxImage]} avatarStyleOverride={avatarStyle} />
                   <Box width="16px" />
-                  <Typography gutterBottom={false}>gOHM-AVAX</Typography>
+                  <Typography gutterBottom={false}>gFAN-AVAX</Typography>
                 </Box>
               </div>
               <div className="pool-data">

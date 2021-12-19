@@ -138,8 +138,8 @@
     },
     {
       "inputs": [],
-      "name": "gOHM",
-      "outputs": [{ "internalType": "contract IgOHM", "name": "", "type": "address" }],
+      "name": "gFAN",
+      "outputs": [{ "internalType": "contract IgFAN", "name": "", "type": "address" }],
       "stateMutability": "view",
       "type": "function"
     },
@@ -239,8 +239,8 @@
       "type": "function"
     },
     {
-      "inputs": [{ "internalType": "address", "name": "_gOHM", "type": "address" }],
-      "name": "setgOHM",
+      "inputs": [{ "internalType": "address", "name": "_gFAN", "type": "address" }],
+      "name": "setgFAN",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

@@ -58,7 +58,7 @@ function ZapInfo({ tokens, address }) {
   const classes = useStyles();
   return (
     <>
-      <Paper className="ohm-card" id="olyzaps-info">
+      <Paper className="fan-card" id="olyzaps-info">
         <Grid container direction="row" wrap spacing={4}>
           <Grid item sm={12} md={4} classes={{ root: classes.infoBox, item: classes.infoBoxItem }}>
             <Box
@@ -121,7 +121,7 @@ function ZapInfo({ tokens, address }) {
                 ]}
               />
               <Typography color="textSecondary" align="center">
-                <Trans>You Get sOHM</Trans>{" "}
+                <Trans>You Get sFAN</Trans>{" "}
               </Typography>
             </Box>
             <Box classes={{ root: classes.infoBody }}>
@@ -130,8 +130,8 @@ function ZapInfo({ tokens, address }) {
               </Typography>
               <Typography align="left" variant="body2" className="oly-info-body">
                 <Trans>
-                  Staking is the primary value accrual strategy of Olympus. When you stake, you lock OHM and receive an
-                  equal amount of sOHM.
+                  Staking is the primary value accrual strategy of Olympus. When you stake, you lock FAN and receive an
+                  equal amount of sFAN.
                 </Trans>
               </Typography>
             </Box>

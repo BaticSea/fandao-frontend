@@ -39,7 +39,7 @@ export const MigrateButton = ({ setMigrationModalOpen, btnText }) => {
 
 const CallToAction = ({ setMigrationModalOpen }) => {
   return (
-    <Box className="call-to-action ohm-card">
+    <Box className="call-to-action fan-card">
       <Typography style={{ fontSize: "20px", fontWeight: "600" }} variant="h5">
         <Trans>You have assets ready to migrate to v2</Trans>
       </Typography>

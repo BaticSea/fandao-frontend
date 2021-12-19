@@ -5,27 +5,27 @@ import { abi as PairContractABI } from "../abi/PairContract.json";
 import { abi as RedeemHelperABI } from "../abi/RedeemHelper.json";
 
 import { SvgIcon } from "@material-ui/core";
-import { ReactComponent as OhmImg } from "../assets/tokens/token_OHM.svg";
-import { ReactComponent as SOhmImg } from "../assets/tokens/token_sOHM.svg";
+import { ReactComponent as FanImg } from "../assets/tokens/token_FAN.svg";
+import { ReactComponent as SFanImg } from "../assets/tokens/token_sFAN.svg";
 
-import { ohm_dai, ohm_weth, ohm_daiOld } from "./AllBonds";
+import { fan_dai, fan_weth, fan_daiOld } from "./AllBonds";
 import { JsonRpcSigner, StaticJsonRpcProvider } from "@ethersproject/providers";
 import { IBaseAsyncThunk } from "src/slices/interfaces";
 import { PairContract, RedeemHelper } from "../typechain";
-import { GOHM__factory } from "src/typechain/factories/GOHM__factory";
+import { GFAN__factory } from "src/typechain/factories/GFAN__factory";
 
 import { EnvHelper } from "../helpers/Environment";
 import { NodeHelper } from "../helpers/NodeHelper";
 
 /**
- * gets marketPrice from Ohm-DAI v2
+ * gets marketPrice from Fan-DAI v2
  * @returns Number like 333.33
  */
 export async function getMarketPrice() {
   const mainnetProvider = NodeHelper.getMainnetStaticProvider();
   // v2 price
-  const ohm_dai_address = ohm_dai.getAddressForReserve(1);
-  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
+  const fan_dai_address = fan_dai.getAddressForReserve(1);
+  const pairContract = new ethers.Contract(fan_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
   const reserves = await pairContract.getReserves();
 
   const marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9;
@@ -36,12 +36,12 @@ export async function getMarketPrice() {
 export async function getMarketPriceFromWeth() {
   const mainnetProvider = NodeHelper.getMainnetStaticProvider();
   // v2 price
-  const ohm_weth_address = ohm_weth.getAddressForReserve(1);
-  const wethBondContract = ohm_weth.getContractForBond(1, mainnetProvider);
-  const pairContract = new ethers.Contract(ohm_weth_address || "", PairContractABI, mainnetProvider) as PairContract;
+  const fan_weth_address = fan_weth.getAddressForReserve(1);
+  const wethBondContract = fan_weth.getContractForBond(1, mainnetProvider);
+  const pairContract = new ethers.Contract(fan_weth_address || "", PairContractABI, mainnetProvider) as PairContract;
   const reserves = await pairContract.getReserves();
 
-  // since we're using OHM/WETH... also need to multiply by weth price;
+  // since we're using FAN/WETH... also need to multiply by weth price;
   const wethPriceBN: BigNumber = await wethBondContract.assetPrice();
   const wethPrice = Number(wethPriceBN.toString()) / Math.pow(10, 8);
   const marketPrice = (Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9) * wethPrice;
@@ -51,8 +51,8 @@ export async function getMarketPriceFromWeth() {
 export async function getV1MarketPrice() {
   const mainnetProvider = NodeHelper.getMainnetStaticProvider();
   // v1 price
-  const ohm_dai_address = ohm_daiOld.getAddressForReserve(1);
-  const pairContract = new ethers.Contract(ohm_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
+  const fan_dai_address = fan_daiOld.getAddressForReserve(1);
+  const pairContract = new ethers.Contract(fan_dai_address || "", PairContractABI, mainnetProvider) as PairContract;
   const reserves = await pairContract.getReserves();
   const marketPrice = Number(reserves[1].toString()) / Number(reserves[0].toString()) / 10 ** 9;
   return marketPrice;
@@ -147,19 +147,19 @@ export function prettifySeconds(seconds: number, resolution?: string) {
   return result;
 }
 
-function getSohmTokenImage() {
-  return <SvgIcon component={SOhmImg} viewBox="0 0 100 100" style={{ height: "1rem", width: "1rem" }} />;
+function getSfanTokenImage() {
+  return <SvgIcon component={SFanImg} viewBox="0 0 100 100" style={{ height: "1rem", width: "1rem" }} />;
 }
 
-export function getOhmTokenImage(w?: number, h?: number) {
+export function getFanTokenImage(w?: number, h?: number) {
   const height = h == null ? "32px" : `${h}px`;
   const width = w == null ? "32px" : `${w}px`;
-  return <SvgIcon component={OhmImg} viewBox="0 0 32 32" style={{ height, width }} />;
+  return <SvgIcon component={FanImg} viewBox="0 0 32 32" style={{ height, width }} />;
 }
 
 export function getTokenImage(name: string) {
-  if (name === "ohm") return getOhmTokenImage();
-  if (name === "sohm") return getSohmTokenImage();
+  if (name === "fan") return getFanTokenImage();
+  if (name === "sfan") return getSfanTokenImage();
 }
 
 // TS-REFACTOR-NOTE - Used for:
@@ -269,11 +269,11 @@ export const handleContractError = (e: any) => {
 };
 
 interface ICheckBalance extends IBaseAsyncThunk {
-  readonly sOHMbalance: string;
+  readonly sFANbalance: string;
 }
 
-export const getGohmBalFromSohm = async ({ provider, networkID, sOHMbalance }: ICheckBalance) => {
-  const gOhmContract = GOHM__factory.connect(addresses[networkID].GOHM_ADDRESS, provider);
-  const formattedGohmBal = await gOhmContract.balanceTo(ethers.utils.parseUnits(sOHMbalance, "gwei").toString());
-  return ethers.utils.formatEther(formattedGohmBal);
+export const getGfanBalFromSfan = async ({ provider, networkID, sFANbalance }: ICheckBalance) => {
+  const gFanContract = GFAN__factory.connect(addresses[networkID].GFAN_ADDRESS, provider);
+  const formattedGfanBal = await gFanContract.balanceTo(ethers.utils.parseUnits(sFANbalance, "gwei").toString());
+  return ethers.utils.formatEther(formattedGfanBal);
 };

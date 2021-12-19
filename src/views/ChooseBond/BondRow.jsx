@@ -16,7 +16,7 @@ export function BondDataCard({ bond }) {
 
   return (
     <Slide direction="up" in={true}>
-      <Paper id={`${bond.name}--bond`} className="bond-data-card ohm-card">
+      <Paper id={`${bond.name}--bond`} className="bond-data-card fan-card">
         <div className="bond-pair">
           <BondLogo bond={bond} />
           <div className="bond-name">
@@ -128,8 +128,8 @@ export function BondTableData({ bond }) {
         <Link component={NavLink} to={`/bonds/${bond.name}`}>
           <Button variant="outlined" color="primary" disabled={!bond.isBondable[networkId]} style={{ width: "100%" }}>
             {/* NOTE (appleseed): temporary for ONHOLD MIGRATION */}
-            {/* <Typography variant="h6">{!bond.isBondable[networkId] ? t`Sold Out` : t`do_bond`}</Typography> */}
-            <Typography variant="h6">{bond.isLOLable[networkId] ? bond.LOLmessage : t`do_bond`}</Typography>
+            {/* <Typography variant="h6">{!bond.isBondable[networkId] ? t`Sold Out` : t`Buy Bonds`}</Typography> */}
+            <Typography variant="h6">{bond.isLOLable[networkId] ? bond.LOLmessage : t`Buy Bonds`}</Typography>
           </Button>
         </Link>
       </TableCell>

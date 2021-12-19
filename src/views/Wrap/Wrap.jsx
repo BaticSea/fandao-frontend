@@ -23,9 +23,9 @@ import {
 import InfoTooltip from "../../components/InfoTooltip/InfoTooltip.jsx";
 import { ReactComponent as ArrowUp } from "../../assets/icons/arrow-up.svg";
 
-import { getOhmTokenImage, getTokenImage, trim, formatCurrency } from "../../helpers";
+import { getFanTokenImage, getTokenImage, trim, formatCurrency } from "../../helpers";
 import { changeApproval, changeWrap, changeWrapV2 } from "../../slices/WrapThunk";
-import { migrateWithType, migrateCrossChainWSOHM } from "../../slices/MigrateThunk";
+import { migrateWithType, migrateCrossChainWSFAN } from "../../slices/MigrateThunk";
 import { switchNetwork } from "../../slices/NetworkSlice";
 import { useWeb3Context } from "src/hooks/web3Context";
 import { isPendingTxn, txnButtonText, txnButtonTextMultiType } from "src/slices/PendingTxnsSlice";
@@ -53,13 +53,13 @@ function Wrap() {
   const networkName = useSelector(state => state.network.networkName);
 
   const [zoomed, setZoomed] = useState(false);
-  const [assetFrom, setAssetFrom] = useState("sOHM");
-  const [assetTo, setAssetTo] = useState("gOHM");
+  const [assetFrom, setAssetFrom] = useState("sFAN");
+  const [assetTo, setAssetTo] = useState("gFAN");
   const [quantity, setQuantity] = useState("");
 
   const chooseCurrentAction = () => {
-    if (assetFrom === "sOHM") return "Wrap from";
-    if (assetTo === "sOHM") return "Unwrap from";
+    if (assetFrom === "sFAN") return "Wrap from";
+    if (assetTo === "sFAN") return "Unwrap from";
     return "Transform";
   };
   const currentAction = chooseCurrentAction();
@@ -72,28 +72,28 @@ function Wrap() {
     return state.app.currentIndex;
   });
 
-  const sOhmPrice = useSelector(state => {
+  const sFanPrice = useSelector(state => {
     return state.app.marketPrice;
   });
 
-  const gOhmPrice = useSelector(state => {
+  const gFanPrice = useSelector(state => {
     return state.app.marketPrice * state.app.currentIndex;
   });
 
-  const sohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.sohm;
+  const sfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.sfan;
   });
 
-  const gohmBalance = useAppSelector(state => {
-    return state.account.balances && state.account.balances.gohm;
+  const gfanBalance = useAppSelector(state => {
+    return state.account.balances && state.account.balances.gfan;
   });
 
-  const unwrapGohmAllowance = useAppSelector(state => {
-    return state.account.wrapping && state.account.wrapping.gOhmUnwrap;
+  const unwrapGfanAllowance = useAppSelector(state => {
+    return state.account.wrapping && state.account.wrapping.gFanUnwrap;
   });
 
-  const wrapSohmAllowance = useAppSelector(state => {
-    return state.account.wrapping && state.account.wrapping.sohmWrap;
+  const wrapSfanAllowance = useAppSelector(state => {
+    return state.account.wrapping && state.account.wrapping.sfanWrap;
   });
 
   const pendingTransactions = useSelector(state => {
@@ -106,11 +106,11 @@ function Wrap() {
   const isAvax = useMemo(() => networkId != 1 && networkId != 4 && networkId != -1, [networkId]);
 
   const wrapButtonText =
-    assetTo === "gOHM" ? (assetFrom === "wsOHM" ? "Migrate" : "Wrap") + " to gOHM" : `${currentAction} ${assetFrom}`;
+    assetTo === "gFAN" ? (assetFrom === "wsFAN" ? "Migrate" : "Wrap") + " to gFAN" : `${currentAction} ${assetFrom}`;
 
   const setMax = () => {
-    if (assetFrom === "sOHM") setQuantity(sohmBalance);
-    if (assetFrom === "gOHM") setQuantity(gohmBalance);
+    if (assetFrom === "sFAN") setQuantity(sfanBalance);
+    if (assetFrom === "gFAN") setQuantity(gfanBalance);
   };
 
   const handleSwitchChain = id => {
@@ -121,18 +121,18 @@ function Wrap() {
   };
 
   const hasCorrectAllowance = useCallback(() => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") return wrapSohmAllowance > Number(sohmBalance);
-    if (assetFrom === "gOHM" && assetTo === "sOHM") return unwrapGohmAllowance > Number(gohmBalance);
+    if (assetFrom === "sFAN" && assetTo === "gFAN") return wrapSfanAllowance > Number(sfanBalance);
+    if (assetFrom === "gFAN" && assetTo === "sFAN") return unwrapGfanAllowance > Number(gfanBalance);
 
     return 0;
-  }, [unwrapGohmAllowance, wrapSohmAllowance, assetTo, assetFrom, sohmBalance, gohmBalance]);
+  }, [unwrapGfanAllowance, wrapSfanAllowance, assetTo, assetFrom, sfanBalance, gfanBalance]);
 
   const isAllowanceDataLoading = currentAction === "Unwrap";
   // const convertedQuantity = 0;
   const convertedQuantity = useMemo(() => {
-    if (assetFrom === "sOHM") {
+    if (assetFrom === "sFAN") {
       return quantity / currentIndex;
-    } else if (assetTo === "sOHM") {
+    } else if (assetTo === "sFAN") {
       return quantity * currentIndex;
     } else {
       return quantity;
@@ -161,36 +161,36 @@ function Wrap() {
     dispatch(changeApproval({ address, token: token.toLowerCase(), provider, networkID: networkId }));
   };
 
-  const unwrapGohm = () => {
+  const unwrapGfan = () => {
     dispatch(changeWrapV2({ action: "unwrap", value: quantity, provider, address, networkID: networkId }));
   };
 
-  const wrapSohm = () => {
+  const wrapSfan = () => {
     dispatch(changeWrapV2({ action: "wrap", value: quantity, provider, address, networkID: networkId }));
   };
 
   const approveCorrectToken = () => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") approveWrap("sOHM");
-    if (assetFrom === "gOHM" && assetTo === "sOHM") approveWrap("gOHM");
+    if (assetFrom === "sFAN" && assetTo === "gFAN") approveWrap("sFAN");
+    if (assetFrom === "gFAN" && assetTo === "sFAN") approveWrap("gFAN");
   };
 
   const chooseCorrectWrappingFunction = () => {
-    if (assetFrom === "sOHM" && assetTo === "gOHM") wrapSohm();
-    if (assetFrom === "gOHM" && assetTo === "sOHM") unwrapGohm();
+    if (assetFrom === "sFAN" && assetTo === "gFAN") wrapSfan();
+    if (assetFrom === "gFAN" && assetTo === "sFAN") unwrapGfan();
   };
 
   const chooseInputArea = () => {
     if (!address || isAllowanceDataLoading) return <Skeleton width="150px" />;
     if (assetFrom === assetTo) return "";
-    if (!hasCorrectAllowance() && assetTo === "gOHM")
+    if (!hasCorrectAllowance() && assetTo === "gFAN")
       return (
         <div className="no-input-visible">
-          First time wrapping to <b>gOHM</b>?
+          First time wrapping to <b>gFAN</b>?
           <br />
           Please approve Olympus to use your <b>{assetFrom}</b> for this transaction.
         </div>
       );
-    else if (!hasCorrectAllowance() && assetTo === "sOHM")
+    else if (!hasCorrectAllowance() && assetTo === "sFAN")
       return (
         <div className="no-input-visible">
           First time unwrapping <b>{assetFrom}</b>?
@@ -200,7 +200,7 @@ function Wrap() {
       );
 
     return (
-      <FormControl className="ohm-input" variant="outlined" color="primary">
+      <FormControl className="fan-input" variant="outlined" color="primary">
         <InputLabel htmlFor="amount-input"></InputLabel>
         <OutlinedInput
           id="amount-input"
@@ -259,23 +259,23 @@ function Wrap() {
     return (
       <div id="stake-view" className="wrapper">
         <Zoom in={true} onEntered={() => setZoomed(true)}>
-          <Paper className={`ohm-card`}>
+          <Paper className={`fan-card`}>
             <Grid container direction="column" spacing={2}>
               <Grid item>
                 <div className="card-header">
                   <Typography variant="h5">Wrap / Unwrap</Typography>
                   <Link
-                    className="migrate-sohm-button"
+                    className="migrate-sfan-button"
                     style={{ textDecoration: "none" }}
                     href={
-                      assetTo === "wsOHM"
-                        ? "https://docs.olympusdao.finance/main/contracts/tokens#wsohm"
-                        : "https://docs.olympusdao.finance/main/contracts/tokens#gohm"
+                      assetTo === "wsFAN"
+                        ? "https://docs.olympusdao.finance/main/contracts/tokens#wsfan"
+                        : "https://docs.olympusdao.finance/main/contracts/tokens#gfan"
                     }
-                    aria-label="wsohm-wut"
+                    aria-label="wsfan-wut"
                     target="_blank"
                   >
-                    <Typography>gOHM</Typography>{" "}
+                    <Typography>gFAN</Typography>{" "}
                     <SvgIcon component={ArrowUp} color="primary" style={{ marginLeft: "5px", width: ".8em" }} />
                   </Link>
                 </div>
@@ -283,9 +283,9 @@ function Wrap() {
               <Grid item>
                 <MetricCollection>
                   <Metric
-                    label={`sOHM ${t`Price`}`}
-                    metric={formatCurrency(sOhmPrice, 2)}
-                    isLoading={sOhmPrice ? false : true}
+                    label={`sFAN ${t`Price`}`}
+                    metric={formatCurrency(sFanPrice, 2)}
+                    isLoading={sFanPrice ? false : true}
                   />
                   <Metric
                     label={t`Current Index`}
@@ -294,9 +294,9 @@ function Wrap() {
                   />
                   <Metric
                     label={`${assetTo} ${t`Price`}`}
-                    metric={formatCurrency(gOhmPrice, 2)}
-                    isLoading={gOhmPrice ? false : true}
-                    tooltip={`${assetTo} = sOHM * index\n\nThe price of ${assetTo} is equal to the price of OHM multiplied by the current index`}
+                    metric={formatCurrency(gFanPrice, 2)}
+                    isLoading={gFanPrice ? false : true}
+                    tooltip={`${assetTo} = sFAN * index\n\nThe price of ${assetTo} is equal to the price of FAN multiplied by the current index`}
                   />
                 </MetricCollection>
               </Grid>
@@ -333,8 +333,8 @@ function Wrap() {
                               onChange={changeAssetFrom}
                               disableUnderline
                             >
-                              <MenuItem value={"sOHM"}>sOHM</MenuItem>
-                              <MenuItem value={"gOHM"}>gOHM</MenuItem>
+                              <MenuItem value={"sFAN"}>sFAN</MenuItem>
+                              <MenuItem value={"gFAN"}>gFAN</MenuItem>
                             </Select>
                           </FormControl>
 
@@ -358,8 +358,8 @@ function Wrap() {
                               onChange={changeAssetTo}
                               disableUnderline
                             >
-                              <MenuItem value={"gOHM"}>gOHM</MenuItem>
-                              <MenuItem value={"sOHM"}>sOHM</MenuItem>
+                              <MenuItem value={"gFAN"}>gFAN</MenuItem>
+                              <MenuItem value={"sFAN"}>sFAN</MenuItem>
                             </Select>
                           </FormControl>
                         </>
@@ -374,22 +374,22 @@ function Wrap() {
                     <div className={`stake-user-data`}>
                       <>
                         <div className="data-row">
-                          <Typography variant="body1">sOHM Balance</Typography>
+                          <Typography variant="body1">sFAN Balance</Typography>
                           <Typography variant="body1">
-                            {isAppLoading ? <Skeleton width="80px" /> : <>{trim(sohmBalance, 4)} sOHM</>}
+                            {isAppLoading ? <Skeleton width="80px" /> : <>{trim(sfanBalance, 4)} sFAN</>}
                           </Typography>
                         </div>
                         <div className="data-row">
-                          <Typography variant="body1">gOHM Balance</Typography>
+                          <Typography variant="body1">gFAN Balance</Typography>
                           <Typography variant="body1">
-                            {isAppLoading ? <Skeleton width="80px" /> : <>{trim(gohmBalance, 4)} gOHM</>}
+                            {isAppLoading ? <Skeleton width="80px" /> : <>{trim(gfanBalance, 4)} gFAN</>}
                           </Typography>
                         </div>
 
                         <Divider />
                         <Box width="100%" align="center" p={1}>
                           <Typography variant="body1" style={{ margin: "15px 0 10px 0" }}>
-                            Got wsOHM on Avalanche or Arbitrum? Click below to switch networks and migrate to gOHM (no
+                            Got wsFAN on Avalanche or Arbitrum? Click below to switch networks and migrate to gFAN (no
                             bridge required!)
                           </Typography>
                           <Button

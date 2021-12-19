@@ -36,7 +36,7 @@ function ChangeNetwork() {
       <Grid container id="change-network-view">
         <Backdrop open={true}>
           <Fade in={true}>
-            <Paper className="ohm-card ohm-modal">
+            <Paper className="fan-card fan-modal">
               <Grid container className="grid-container">
                 <Grid className="grid-header">
                   <Grid>

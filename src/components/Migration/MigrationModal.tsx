@@ -74,9 +74,9 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
   const oldAssetsDetected = useAppSelector(state => {
     return (
       state.account.balances &&
-      (Number(state.account.balances.sohmV1) ||
-      Number(state.account.balances.ohmV1) ||
-      Number(state.account.balances.wsohm)
+      (Number(state.account.balances.sfanV1) ||
+      Number(state.account.balances.fanV1) ||
+      Number(state.account.balances.wsfan)
         ? true
         : false)
     );
@@ -101,32 +101,32 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
   const onMigrate = () => dispatch(migrateAll({ provider, address, networkID: networkId }));
   const currentIndex = useAppSelector(state => Number(state.app.currentIndexV1!));
 
-  const currentOhmBalance = useAppSelector(state => Number(state.account.balances.ohmV1));
-  const currentSOhmBalance = useAppSelector(state => Number(state.account.balances.sohmV1));
-  const currentWSOhmBalance = useAppSelector(state => Number(state.account.balances.wsohm));
-  const wsOhmPrice = useAppSelector(state => state.app.marketPrice! * Number(state.app.currentIndex!));
+  const currentFanBalance = useAppSelector(state => Number(state.account.balances.fanV1));
+  const currentSFanBalance = useAppSelector(state => Number(state.account.balances.sfanV1));
+  const currentWSFanBalance = useAppSelector(state => Number(state.account.balances.wsfan));
+  const wsFanPrice = useAppSelector(state => state.app.marketPrice! * Number(state.app.currentIndex!));
 
   const marketPrice = useAppSelector(state => {
     return state.app.marketPrice;
   });
-  const approvedOhmBalance = useAppSelector(state => Number(state.account.migration.ohm));
-  const approvedSOhmBalance = useAppSelector(state => Number(state.account.migration.sohm));
-  const approvedWSOhmBalance = useAppSelector(state => Number(state.account.migration.wsohm));
-  const ohmFullApproval = approvedOhmBalance >= currentOhmBalance;
-  const sOhmFullApproval = approvedSOhmBalance >= currentSOhmBalance;
-  const wsOhmFullApproval = approvedWSOhmBalance >= currentWSOhmBalance;
-  const isAllApproved = ohmFullApproval && sOhmFullApproval && wsOhmFullApproval;
+  const approvedFanBalance = useAppSelector(state => Number(state.account.migration.fan));
+  const approvedSFanBalance = useAppSelector(state => Number(state.account.migration.sfan));
+  const approvedWSFanBalance = useAppSelector(state => Number(state.account.migration.wsfan));
+  const fanFullApproval = approvedFanBalance >= currentFanBalance;
+  const sFanFullApproval = approvedSFanBalance >= currentSFanBalance;
+  const wsFanFullApproval = approvedWSFanBalance >= currentWSFanBalance;
+  const isAllApproved = fanFullApproval && sFanFullApproval && wsFanFullApproval;
 
-  const ohmInUSD = formatCurrency(marketPrice! * currentOhmBalance);
-  const sOhmInUSD = formatCurrency(marketPrice! * currentSOhmBalance);
-  const wsOhmInUSD = formatCurrency(wsOhmPrice * currentWSOhmBalance);
+  const fanInUSD = formatCurrency(marketPrice! * currentFanBalance);
+  const sFanInUSD = formatCurrency(marketPrice! * currentSFanBalance);
+  const wsFanInUSD = formatCurrency(wsFanPrice * currentWSFanBalance);
 
   useEffect(() => {
     if (
       networkId &&
       (networkId === 1 || networkId === 4) &&
       isAllApproved &&
-      (currentOhmBalance || currentSOhmBalance || currentWSOhmBalance)
+      (currentFanBalance || currentSFanBalance || currentWSFanBalance)
     ) {
       dispatch(info("All approvals complete. You may now migrate."));
     }
@@ -134,28 +134,28 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
 
   rows = [
     {
-      initialAsset: "OHM",
-      initialBalance: currentOhmBalance,
-      targetAsset: "gOHM",
-      targetBalance: currentOhmBalance / currentIndex,
-      fullApproval: ohmFullApproval,
-      usdBalance: ohmInUSD,
+      initialAsset: "FAN",
+      initialBalance: currentFanBalance,
+      targetAsset: "gFAN",
+      targetBalance: currentFanBalance / currentIndex,
+      fullApproval: fanFullApproval,
+      usdBalance: fanInUSD,
     },
     {
-      initialAsset: "sOHM",
-      initialBalance: currentSOhmBalance,
-      targetAsset: "gOHM",
-      targetBalance: currentSOhmBalance / currentIndex,
-      fullApproval: sOhmFullApproval,
-      usdBalance: sOhmInUSD,
+      initialAsset: "sFAN",
+      initialBalance: currentSFanBalance,
+      targetAsset: "gFAN",
+      targetBalance: currentSFanBalance / currentIndex,
+      fullApproval: sFanFullApproval,
+      usdBalance: sFanInUSD,
     },
     {
-      initialAsset: "wsOHM",
-      initialBalance: currentWSOhmBalance,
-      targetAsset: "gOHM",
-      targetBalance: currentWSOhmBalance,
-      fullApproval: wsOhmFullApproval,
-      usdBalance: wsOhmInUSD,
+      initialAsset: "wsFAN",
+      initialBalance: currentWSFanBalance,
+      targetAsset: "gFAN",
+      targetBalance: currentWSFanBalance,
+      fullApproval: wsFanFullApproval,
+      usdBalance: wsFanInUSD,
     },
   ];
 
@@ -175,7 +175,7 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
       >
         <Fade in={open}>
           <Box display="flex" alignItems="center" justifyContent="center" style={{ width: "100%", height: "100%" }}>
-            <Paper className="ohm-card migration-card">
+            <Paper className="fan-card migration-card">
               <Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between">
                 <Button onClick={handleClose}>
                   <SvgIcon component={XIcon} color="primary" />
@@ -283,7 +283,7 @@ function MigrationModal({ open, handleClose }: { open: boolean; handleClose: any
                             <Trans>Post-migration</Trans>
                           </Typography>
                           <InfoTooltip
-                            message={t`This is the equivalent amount of gOHM you will have in your wallet once migration is complete.`}
+                            message={t`This is the equivalent amount of gFAN you will have in your wallet once migration is complete.`}
                             children={undefined}
                           ></InfoTooltip>
                         </Box>

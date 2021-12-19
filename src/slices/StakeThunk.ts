@@ -36,13 +36,13 @@ function alreadyApprovedToken(
   let bigZero = BigNumber.from("0");
   let applicableAllowance = bigZero;
   // determine which allowance to check
-  if (token === "ohm" && version2) {
+  if (token === "fan" && version2) {
     applicableAllowance = stakeAllowanceV2;
-  } else if (token === "sohm" && version2) {
+  } else if (token === "sfan" && version2) {
     applicableAllowance = unstakeAllowanceV2;
-  } else if (token === "ohm") {
+  } else if (token === "fan") {
     applicableAllowance = stakeAllowance;
-  } else if (token === "sohm") {
+  } else if (token === "sfan") {
     applicableAllowance = unstakeAllowance;
   }
 
@@ -60,25 +60,25 @@ export const changeApproval = createAsyncThunk(
       return;
     }
     const signer = provider.getSigner();
-    const ohmContract = new ethers.Contract(addresses[networkID].OHM_ADDRESS as string, ierc20ABI, signer) as IERC20;
-    const sohmContract = new ethers.Contract(addresses[networkID].SOHM_ADDRESS as string, ierc20ABI, signer) as IERC20;
-    const ohmV2Contract = new ethers.Contract(addresses[networkID].OHM_V2 as string, ierc20ABI, signer) as IERC20;
-    const sohmV2Contract = new ethers.Contract(addresses[networkID].SOHM_V2 as string, ierc20ABI, signer) as IERC20;
+    const fanContract = new ethers.Contract(addresses[networkID].FAN_ADDRESS as string, ierc20ABI, signer) as IERC20;
+    const sfanContract = new ethers.Contract(addresses[networkID].SFAN_ADDRESS as string, ierc20ABI, signer) as IERC20;
+    const fanV2Contract = new ethers.Contract(addresses[networkID].FAN_V2 as string, ierc20ABI, signer) as IERC20;
+    const sfanV2Contract = new ethers.Contract(addresses[networkID].SFAN_V2 as string, ierc20ABI, signer) as IERC20;
     let approveTx;
-    let stakeAllowance = await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
-    let unstakeAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
-    let stakeAllowanceV2 = await ohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
-    let unstakeAllowanceV2 = await sohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+    let stakeAllowance = await fanContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
+    let unstakeAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
+    let stakeAllowanceV2 = await fanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+    let unstakeAllowanceV2 = await sfanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
     // return early if approval has already happened
     if (alreadyApprovedToken(token, stakeAllowance, unstakeAllowance, stakeAllowanceV2, unstakeAllowanceV2, version2)) {
       dispatch(info("Approval completed."));
       return dispatch(
         fetchAccountSuccess({
           staking: {
-            ohmStakeV1: +stakeAllowance,
-            ohmUnstakeV1: +unstakeAllowance,
-            ohmStake: +stakeAllowanceV2,
-            ohmUnstake: +unstakeAllowanceV2,
+            fanStakeV1: +stakeAllowance,
+            fanUnstakeV1: +unstakeAllowance,
+            fanStake: +stakeAllowanceV2,
+            fanUnstake: +unstakeAllowanceV2,
           },
         }),
       );
@@ -86,33 +86,33 @@ export const changeApproval = createAsyncThunk(
 
     try {
       if (version2) {
-        if (token === "ohm") {
-          approveTx = await ohmV2Contract.approve(
+        if (token === "fan") {
+          approveTx = await fanV2Contract.approve(
             addresses[networkID].STAKING_V2,
             ethers.utils.parseUnits("1000000000", "gwei").toString(),
           );
-        } else if (token === "sohm") {
-          approveTx = await sohmV2Contract.approve(
+        } else if (token === "sfan") {
+          approveTx = await sfanV2Contract.approve(
             addresses[networkID].STAKING_V2,
             ethers.utils.parseUnits("1000000000", "gwei").toString(),
           );
         }
       } else {
-        if (token === "ohm") {
-          approveTx = await ohmContract.approve(
+        if (token === "fan") {
+          approveTx = await fanContract.approve(
             addresses[networkID].STAKING_ADDRESS,
             ethers.utils.parseUnits("1000000000", "gwei").toString(),
           );
-        } else if (token === "sohm") {
-          approveTx = await sohmContract.approve(
+        } else if (token === "sfan") {
+          approveTx = await sfanContract.approve(
             addresses[networkID].STAKING_ADDRESS,
             ethers.utils.parseUnits("1000000000", "gwei").toString(),
           );
         }
       }
 
-      const text = "Approve " + (token === "ohm" ? "Staking" : "Unstaking");
-      const pendingTxnType = token === "ohm" ? "approve_staking" : "approve_unstaking";
+      const text = "Approve " + (token === "fan" ? "Staking" : "Unstaking");
+      const pendingTxnType = token === "fan" ? "approve_staking" : "approve_unstaking";
       if (approveTx) {
         dispatch(fetchPendingTxns({ txnHash: approveTx.hash, text, type: pendingTxnType }));
 
@@ -128,18 +128,18 @@ export const changeApproval = createAsyncThunk(
     }
 
     // go get fresh allowances
-    stakeAllowance = await ohmContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
-    unstakeAllowance = await sohmContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
-    stakeAllowanceV2 = await ohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
-    unstakeAllowanceV2 = await sohmV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+    stakeAllowance = await fanContract.allowance(address, addresses[networkID].STAKING_HELPER_ADDRESS);
+    unstakeAllowance = await sfanContract.allowance(address, addresses[networkID].STAKING_ADDRESS);
+    stakeAllowanceV2 = await fanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
+    unstakeAllowanceV2 = await sfanV2Contract.allowance(address, addresses[networkID].STAKING_V2);
 
     return dispatch(
       fetchAccountSuccess({
         staking: {
-          ohmStakeV1: +stakeAllowance,
-          ohmUnstakeV1: +unstakeAllowance,
-          ohmStake: +stakeAllowanceV2,
-          ohmUnstake: +unstakeAllowanceV2,
+          fanStakeV1: +stakeAllowance,
+          fanUnstakeV1: +unstakeAllowance,
+          fanStake: +stakeAllowanceV2,
+          fanUnstake: +unstakeAllowanceV2,
         },
       }),
     );
@@ -176,7 +176,7 @@ export const changeStake = createAsyncThunk(
     };
     try {
       if (version2) {
-        let rebasing = true; // when true stake into sOHM
+        let rebasing = true; // when true stake into sFAN
         if (action === "stake") {
           uaData.type = "stake";
           // 3rd arg is rebase

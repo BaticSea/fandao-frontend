@@ -65,7 +65,7 @@ const Bond = ({ bond }: { bond: IAllBondData }) => {
       <Grid container id="bond-view">
         <Backdrop open={true} onClick={onClickAway}>
           <Fade in={true}>
-            <Paper className="ohm-card ohm-modal" onClick={onClickModal}>
+            <Paper className="fan-card fan-modal" onClick={onClickModal}>
               <BondHeader
                 bond={bond}
                 slippage={slippage}
@@ -104,7 +104,7 @@ const Bond = ({ bond }: { bond: IAllBondData }) => {
                 <Tab
                   aria-label="bond-tab-button"
                   label={t({
-                    id: "do_bond",
+                    id: "Buy Bonds",
                     comment: "The action of bonding (verb)",
                   })}
                   {...a11yProps(0)}

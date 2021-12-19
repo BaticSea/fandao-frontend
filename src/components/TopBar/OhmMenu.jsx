@@ -4,17 +4,17 @@ import { NavLink, useLocation } from "react-router-dom";
 import { Link, SvgIcon, Popper, Button, Paper, Typography, Divider, Box, Fade, Slide } from "@material-ui/core";
 import { ReactComponent as InfoIcon } from "../../assets/icons/info-fill.svg";
 import { ReactComponent as ArrowUpIcon } from "../../assets/icons/arrow-up.svg";
-import { ReactComponent as sOhmTokenImg } from "../../assets/tokens/token_sOHM.svg";
-import { ReactComponent as wsOhmTokenImg } from "../../assets/tokens/token_wsOHM.svg";
-import { ReactComponent as ohmTokenImg } from "../../assets/tokens/token_OHM.svg";
+import { ReactComponent as sFanTokenImg } from "../../assets/tokens/token_sFAN.svg";
+import { ReactComponent as wsFanTokenImg } from "../../assets/tokens/token_wsFAN.svg";
+import { ReactComponent as fanTokenImg } from "../../assets/tokens/token_FAN.svg";
 import { ReactComponent as t33TokenImg } from "../../assets/tokens/token_33T.svg";
-import "./ohmmenu.scss";
+import "./fanmenu.scss";
 import { dai, frax } from "src/helpers/AllBonds";
 import { Trans } from "@lingui/macro";
 import Grid from "@material-ui/core/Grid";
-import OhmImg from "src/assets/tokens/token_OHM.svg";
-import SOhmImg from "src/assets/tokens/token_sOHM.svg";
-import WsOhmImg from "src/assets/tokens/token_wsOHM.svg";
+import FanImg from "src/assets/tokens/token_FAN.svg";
+import SFanImg from "src/assets/tokens/token_sFAN.svg";
+import WsFanImg from "src/assets/tokens/token_wsFAN.svg";
 import token33tImg from "src/assets/tokens/token_33T.svg";
 import { segmentUA } from "../../helpers/userAnalyticHelpers";
 import { useSelector } from "react-redux";
@@ -26,18 +26,18 @@ const addTokenToWallet = (tokenSymbol, tokenAddress, address) => async () => {
     let tokenPath;
     let tokenDecimals = TOKEN_DECIMALS;
     switch (tokenSymbol) {
-      case "OHM":
-        tokenPath = OhmImg;
+      case "FAN":
+        tokenPath = FanImg;
         break;
       case "33T":
         tokenPath = token33tImg;
         break;
-      case "gOHM":
-        tokenPath = WsOhmImg;
+      case "gFAN":
+        tokenPath = WsFanImg;
         tokenDecimals = 18;
         break;
       default:
-        tokenPath = SOhmImg;
+        tokenPath = SFanImg;
     }
     const imageURL = `${host}/${tokenPath}`;
 
@@ -66,7 +66,7 @@ const addTokenToWallet = (tokenSymbol, tokenAddress, address) => async () => {
   }
 };
 
-function OhmMenu() {
+function FanMenu() {
   const path = useLocation().pathname;
   const [anchorEl, setAnchorEl] = useState(null);
   const isEthereumAPIAvailable = window.ethereum;
@@ -76,9 +76,9 @@ function OhmMenu() {
   const oldAssetsDetected = useSelector(state => {
     return (
       state.account.balances &&
-      (Number(state.account.balances.sohmV1) ||
-      Number(state.account.balances.ohmV1) ||
-      Number(state.account.balances.wsohm)
+      (Number(state.account.balances.sfanV1) ||
+      Number(state.account.balances.fanV1) ||
+      Number(state.account.balances.wsfan)
         ? true
         : false)
     );
@@ -87,23 +87,23 @@ function OhmMenu() {
   const newAssetsDetected = useSelector(state => {
     return (
       state.account.balances &&
-      (Number(state.account.balances.gohm) || Number(state.account.balances.sohm) || Number(state.account.balances.ohm)
+      (Number(state.account.balances.gfan) || Number(state.account.balances.sfan) || Number(state.account.balances.fan)
         ? true
         : false)
     );
   });
 
-  const SOHM_ADDRESS = addresses[networkId] && addresses[networkId].SOHM_V2;
-  const OHM_ADDRESS = addresses[networkId] && addresses[networkId].OHM_V2;
+  const SFAN_ADDRESS = addresses[networkId] && addresses[networkId].SFAN_V2;
+  const FAN_ADDRESS = addresses[networkId] && addresses[networkId].FAN_V2;
   const PT_TOKEN_ADDRESS = addresses[networkId] && addresses[networkId].PT_TOKEN_ADDRESS;
-  const GOHM_ADDRESS = addresses[networkId] && addresses[networkId].GOHM_ADDRESS;
+  const GFAN_ADDRESS = addresses[networkId] && addresses[networkId].GFAN_ADDRESS;
 
   const handleClick = event => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
 
   const open = Boolean(anchorEl);
-  const id = "ohm-popper";
+  const id = "fan-popper";
   const daiAddress = dai.getAddressForReserve(networkId);
   const fraxAddress = frax.getAddressForReserve(networkId);
   return (
@@ -112,21 +112,21 @@ function OhmMenu() {
       component="div"
       onMouseEnter={e => handleClick(e)}
       onMouseLeave={e => handleClick(e)}
-      id="ohm-menu-button-hover"
+      id="fan-menu-button-hover"
     >
-      <Button id="ohm-menu-button" size="large" variant="contained" color="secondary" title="OHM" aria-describedby={id}>
+      <Button id="fan-menu-button" size="large" variant="contained" color="secondary" title="FAN" aria-describedby={id}>
         <SvgIcon component={InfoIcon} color="primary" />
-        <Typography className="ohm-menu-button-text">OHM</Typography>
+        <Typography className="fan-menu-button-text">FAN</Typography>
       </Button>
 
       <Popper id={id} open={open} anchorEl={anchorEl} placement="bottom-start" transition>
         {({ TransitionProps }) => {
           return (
             <Fade {...TransitionProps} timeout={100}>
-              <Paper className="ohm-menu" elevation={1}>
+              <Paper className="fan-menu" elevation={1}>
                 <Box component="div" className="buy-tokens">
                   <Link
-                    href={`https://app.sushi.com/swap?inputCurrency=${daiAddress}&outputCurrency=${OHM_ADDRESS}`}
+                    href={`https://app.sushi.com/swap?inputCurrency=${daiAddress}&outputCurrency=${FAN_ADDRESS}`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -139,7 +139,7 @@ function OhmMenu() {
                   </Link>
 
                   <Link
-                    href={`https://app.uniswap.org/#/swap?inputCurrency=${fraxAddress}&outputCurrency=${OHM_ADDRESS}`}
+                    href={`https://app.uniswap.org/#/swap?inputCurrency=${fraxAddress}&outputCurrency=${FAN_ADDRESS}`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -154,14 +154,14 @@ function OhmMenu() {
                   {path === "/stake" && oldAssetsDetected && (
                     <Link component={NavLink} to="/v1-stake" style={{ textDecoration: "none" }}>
                       <Button size="large" variant="contained" color="secondary" fullWidth>
-                        <Typography align="left">Switch to OHM v1 (Legacy)</Typography>
+                        <Typography align="left">Switch to FAN v1 (Legacy)</Typography>
                       </Button>
                     </Link>
                   )}
                   {path === "/v1-stake" && newAssetsDetected && (
                     <Link component={NavLink} to="/stake" style={{ textDecoration: "none" }}>
                       <Button size="large" variant="contained" color="secondary" fullWidth>
-                        <Typography align="left">Switch to OHM v2</Typography>
+                        <Typography align="left">Switch to FAN v2</Typography>
                       </Button>
                     </Link>
                   )}
@@ -169,7 +169,7 @@ function OhmMenu() {
 
                 <Box component="div" className="data-links">
                   <Divider color="secondary" className="less-margin" />
-                  <Link href={`https://dune.xyz/shadow/Olympus-(OHM)`} target="_blank" rel="noreferrer">
+                  <Link href={`https://dune.xyz/shadow/Olympus-(FAN)`} target="_blank" rel="noreferrer">
                     <Button size="large" variant="contained" color="secondary" fullWidth>
                       <Typography align="left">
                         Shadow's Dune Dashboard <SvgIcon component={ArrowUpIcon} htmlColor="#A3A3A3" />
@@ -185,46 +185,46 @@ function OhmMenu() {
                       <Trans>ADD TOKEN TO WALLET</Trans>
                     </p>
                     <Box display="flex" flexDirection="row" justifyContent="space-between">
-                      {OHM_ADDRESS && (
+                      {FAN_ADDRESS && (
                         <Button
                           variant="contained"
                           color="secondary"
-                          onClick={addTokenToWallet("OHM", OHM_ADDRESS, address)}
+                          onClick={addTokenToWallet("FAN", FAN_ADDRESS, address)}
                         >
                           <SvgIcon
-                            component={ohmTokenImg}
+                            component={fanTokenImg}
                             viewBox="0 0 32 32"
                             style={{ height: "25px", width: "25px" }}
                           />
-                          <Typography variant="body1">OHM</Typography>
+                          <Typography variant="body1">FAN</Typography>
                         </Button>
                       )}
-                      {SOHM_ADDRESS && (
+                      {SFAN_ADDRESS && (
                         <Button
                           variant="contained"
                           color="secondary"
-                          onClick={addTokenToWallet("sOHM", SOHM_ADDRESS, address)}
+                          onClick={addTokenToWallet("sFAN", SFAN_ADDRESS, address)}
                         >
                           <SvgIcon
-                            component={sOhmTokenImg}
+                            component={sFanTokenImg}
                             viewBox="0 0 100 100"
                             style={{ height: "25px", width: "25px" }}
                           />
-                          <Typography variant="body1">sOHM</Typography>
+                          <Typography variant="body1">sFAN</Typography>
                         </Button>
                       )}
-                      {GOHM_ADDRESS && (
+                      {GFAN_ADDRESS && (
                         <Button
                           variant="contained"
                           color="secondary"
-                          onClick={addTokenToWallet("gOHM", GOHM_ADDRESS, address)}
+                          onClick={addTokenToWallet("gFAN", GFAN_ADDRESS, address)}
                         >
                           <SvgIcon
-                            component={wsOhmTokenImg}
+                            component={wsFanTokenImg}
                             viewBox="0 0 180 180"
                             style={{ height: "25px", width: "25px" }}
                           />
-                          <Typography variant="body1">gOHM</Typography>
+                          <Typography variant="body1">gFAN</Typography>
                         </Button>
                       )}
                       {PT_TOKEN_ADDRESS && (
@@ -258,7 +258,7 @@ function OhmMenu() {
                   </Button>
                 </Link>
                 <Link
-                  href="https://synapseprotocol.com/?inputCurrency=gOHM&outputCurrency=gOHM&outputChain=43114"
+                  href="https://synapseprotocol.com/?inputCurrency=gFAN&outputCurrency=gFAN&outputChain=43114"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -277,4 +277,4 @@ function OhmMenu() {
   );
 }
 
-export default OhmMenu;
+export default FanMenu;

@@ -97,7 +97,7 @@ function BondRedeem({ bond }) {
               <Trans>Pending Rewards</Trans>
             </Typography>
             <Typography className="price-data">
-              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.interestDue, 4)} OHM`}
+              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.interestDue, 4)} FAN`}
             </Typography>
           </div>
           <div className="data-row">
@@ -105,7 +105,7 @@ function BondRedeem({ bond }) {
               <Trans>Claimable Rewards</Trans>
             </Typography>
             <Typography id="claimable" className="price-data">
-              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.pendingPayout, 4)} OHM`}
+              {isBondLoading ? <Skeleton width="100px" /> : `${trim(bond.pendingPayout, 4)} FAN`}
             </Typography>
           </div>
           <div className="data-row">

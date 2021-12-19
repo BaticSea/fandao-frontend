@@ -23,14 +23,14 @@ enum TokenType {
 
 const chooseContract = (token: string, networkID: NetworkID, signer: ethers.providers.JsonRpcSigner): IERC20 => {
   let address: string;
-  if (token === "ohm") {
-    address = addresses[networkID].OHM_ADDRESS;
-  } else if (token === "sohm") {
-    address = addresses[networkID].SOHM_ADDRESS;
-  } else if (token === "wsohm") {
-    address = addresses[networkID].WSOHM_ADDRESS;
-  } else if (token === "gohm") {
-    address = addresses[networkID].GOHM_ADDRESS;
+  if (token === "fan") {
+    address = addresses[networkID].FAN_ADDRESS;
+  } else if (token === "sfan") {
+    address = addresses[networkID].SFAN_ADDRESS;
+  } else if (token === "wsfan") {
+    address = addresses[networkID].WSFAN_ADDRESS;
+  } else if (token === "gfan") {
+    address = addresses[networkID].GFAN_ADDRESS;
   } else {
     const message = `Invalid token type: ${token}`;
     console.error(message);
@@ -68,7 +68,7 @@ export const changeMigrationApproval = createAsyncThunk(
     try {
       approveTx = await tokenContract.approve(
         addresses[networkID].MIGRATOR_ADDRESS,
-        ethers.utils.parseUnits("1000000000", token === "wsohm" || token === "gohm" ? "ether" : "gwei").toString(),
+        ethers.utils.parseUnits("1000000000", token === "wsfan" || token === "gfan" ? "ether" : "gwei").toString(),
       );
 
       const text = `Approve ${displayName} Migration`;
@@ -110,12 +110,12 @@ export const bridgeBack = createAsyncThunk(
 
     try {
       unMigrateTx = await migrator.bridgeBack(ethers.utils.parseUnits(value, "ether"), TokenType.STAKED);
-      const text = `Bridge Back gOHM`;
+      const text = `Bridge Back gFAN`;
       const pendingTxnType = `migrate`;
 
       dispatch(fetchPendingTxns({ txnHash: unMigrateTx.hash, text, type: pendingTxnType }));
       await unMigrateTx.wait();
-      dispatch(info("Successfully unwrapped gOHM!"));
+      dispatch(info("Successfully unwrapped gFAN!"));
     } catch (e: unknown) {
       dispatch(error((e as IJsonRPCError).message));
     } finally {
@@ -141,8 +141,8 @@ export const migrateWithType = createAsyncThunk(
     let migrateTx: ethers.ContractTransaction | undefined;
     try {
       migrateTx = await migrator.migrate(
-        ethers.utils.parseUnits(value, type === "wsohm" ? "ether" : "gwei"),
-        type === "wsohm" ? TokenType.WRAPPED : TokenType.STAKED,
+        ethers.utils.parseUnits(value, type === "wsfan" ? "ether" : "gwei"),
+        type === "wsfan" ? TokenType.WRAPPED : TokenType.STAKED,
         TokenType.WRAPPED,
       );
       const text = `Migrate ${type} Tokens`;
@@ -198,7 +198,7 @@ export const migrateAll = createAsyncThunk(
   },
 );
 
-export const migrateCrossChainWSOHM = createAsyncThunk(
+export const migrateCrossChainWSFAN = createAsyncThunk(
   "migrate/migrateCrossChain",
   async ({ provider, address, networkID, value }: IValueAsyncThunk, { dispatch }) => {
     if (!provider) {
@@ -210,7 +210,7 @@ export const migrateCrossChainWSOHM = createAsyncThunk(
     let migrateTx: ethers.ContractTransaction | undefined;
     try {
       migrateTx = await migrator.migrate(ethers.utils.parseUnits(value, "ether"));
-      const text = `Migrate wsOHM Tokens`;
+      const text = `Migrate wsFAN Tokens`;
       const pendingTxnType = `migrate`;
       if (migrateTx) {
         dispatch(fetchPendingTxns({ txnHash: migrateTx.hash, text, type: pendingTxnType }));
